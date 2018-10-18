@@ -1,0 +1,47 @@
+\documentclass{patmorin}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=linkblue,  anchorcolor=linkblue,
+citecolor=linkblue, filecolor=linkblue, menucolor=linkblue,
+urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me} 
+\setlength{\parskip}{1ex}
+
+\title{\MakeUppercase{Optimal Robust Spanners in 1D}}
+    \thanks{This work was partly funded by NSERC and MRI.}}
+
+\author{Vida Dujmovi\'c\thanks{Department of Computer Science and Electrical Engineering, University of Ottawa}\,\, and 
+        Pat Morin\thanks{School of Computer Science, Carleton University}}
+
+\newcommand{\dual}[1]{{#1}^\star}
+\newcommand{\note}[2]{{\color{red}[#1:~#2]}}
+
+\begin{document}
+\maketitle
+
+
+\begin{abstract}
+  We construct a graph $G=(V,E)$ with vertex set $V=\{1,\ldots,n\}$
+  having $O(n\log n)$ edges, and
+  such that, for any set $F\subset\{1,\ldots,n\}$, there is a
+  set $F^*\superset F$, $|F^*|\in O(|F|)$ such that $G\setminus
+  F$ contains a path $x_1,\ldots,x_r$ with $x_1<\cdots<x_r$ such that
+  $\{x_1,\ldots,x_r\}\superseteq V\setminus F^*$.
+  In the terminology of Bose \etal\ (2013), this graph is an $O(k)$-robust 1-spanner.  
+  Our construction has $O(n\log n)$ edges, improving the previous construction of Buchin, Hulshof and Ol\'ah \cite{buchin.hulshof.ea:robust} which required $O(n^{1+\epsilon}$ edges, for any constant $\epsilon >0$. 
+\end{abstract}
+
+\section{Introduction}
+
+
+\bibliographystyle{plain}
+\bibliography{robust2}
+
+\end{document}
+
+
+
+
+
+
+
+
+
