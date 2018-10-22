@@ -1,17 +1,16 @@
 \documentclass{patmorin}
+\usepackage{pat}
 \usepackage{hyperref}
+\usepackage[noend]{algorithmic}
 \hypersetup{colorlinks=true, linkcolor=linkblue,  anchorcolor=linkblue,
 citecolor=linkblue, filecolor=linkblue, menucolor=linkblue,
 urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me} 
 \setlength{\parskip}{1ex}
 
 \title{\MakeUppercase{Optimal Robust Spanners in 1D}}
-    \thanks{This work was partly funded by NSERC and MRI.}}
 
-\author{Vida Dujmovi\'c\thanks{Department of Computer Science and Electrical Engineering, University of Ottawa}\,\, and 
-        Pat Morin\thanks{School of Computer Science, Carleton University}}
+\author{Prosenjit Bose, Paz Carmi, Michael van Dyk, and Pat Morin}
 
-\newcommand{\dual}[1]{{#1}^\star}
 \newcommand{\note}[2]{{\color{red}[#1:~#2]}}
 
 \begin{document}
@@ -19,17 +18,166 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 
 \begin{abstract}
-  We construct a graph $G=(V,E)$ with vertex set $V=\{1,\ldots,n\}$
-  having $O(n\log n)$ edges, and
-  such that, for any set $F\subset\{1,\ldots,n\}$, there is a
-  set $F^*\superset F$, $|F^*|\in O(|F|)$ such that $G\setminus
-  F$ contains a path $x_1,\ldots,x_r$ with $x_1<\cdots<x_r$ such that
-  $\{x_1,\ldots,x_r\}\superseteq V\setminus F^*$.
-  In the terminology of Bose \etal\ (2013), this graph is an $O(k)$-robust 1-spanner.  
-  Our construction has $O(n\log n)$ edges, improving the previous construction of Buchin, Hulshof and Ol\'ah \cite{buchin.hulshof.ea:robust} which required $O(n^{1+\epsilon}$ edges, for any constant $\epsilon >0$. 
+  For any $\epsilon >0$ and any $n\in\N$, we construct a graph $G=(V,E)$
+  with vertex set $V=\{0,\ldots,n-1\}$ having $O(n\log n)$ edges, and such
+  that, for any set $F\subset V$, $G-F$ contains a monotone
+  path of length at least $n-(1+\epsilon)|F|$.  The number of edges
+  in $G$ matches a lower-bound of Bose \etal\ (2013) and improves the
+  previous construction of Buchin, Hulshof and Ol\'ah (2018) which has
+  $O(n^{1+\epsilon})$ edges and guarantees $|F^*|\le c^{1/\epsilon}|F|$,
+  for some constant $c\ge 3$ and any $\epsilon >0$.
 \end{abstract}
 
 \section{Introduction}
+
+\section{The Construction}
+
+%For any integers $i<j$, let $[i,j]=\{i,\ldots,j-1\}$.
+
+Without loss of generality, assume $n$ is a power of 2.  Construct a
+complete ordered binary tree $T$ of height $\log_2 n$ whose nodes are
+contiguous sets of integers..  The leaves of $T$, in left-to-right order,
+are the singleton sets $\{0\},\ldots,\{n-1\}$ and each internal node of
+$T$ is the set obtained by taking the union of its two children.  Stated
+another way, $T=T(0,\log_2 n-1)$, whree $T(i,b)$ has a single node $\{i\}$
+if $b=0$. Otherwise $T(i,b)$ has a root node $\{i,i+1,\ldots,i+2^{b-1}-1\}$
+whose two children are the subtrees $T(i,b-1)$ and $T(i+2^{b-1}, b-1)$.
+
+Note that the nodes of $T$ can be partitioned in levels $L_0,\ldots,L_{\log_2 n}$, where each $L_i=\{u_{i,0},\ldots,u_{i,2^i-1}\}$ and
+\[
+	u_{i,k} = \{kn/2^i,\ldots,(k+1)n/2^{i}-1\} \enspace .
+\]
+For each consecutive pair $(u_{i,k},u_{i,k+1})$ of nodes in $L_i$ we say
+that $u_{i,k}$ and $u_{i,k+1}$ are \emph{buddies} and we call $u_{i,k+1}$
+the \emph{right buddy} of $u_{i,k}$.
+
+\subsection{A First Try}
+
+We now describe a first construction of $G$ that has $O(\epsilon^{-1}n\log
+n)$ edges and guarantees that, for any $F\subset V$,  $G-F$ has a monotone
+path of length at least $n-(2+4\epsilon)|F|$.
+
+The graph $G$ contains, for each $i\in\{1,\ldots,\log_2 n\}$ and each
+$k\in\{0,\ldots,2^{i}-2\}$ the edges of a bipartite \emph{expander graph}
+$B_{i,k}$.  The vertex set of $B_{i,k}$ has two classes $A=u_{i,k}$ and
+$B=u_{i,k+1}$ and has the following property:  For any subset $S\subset
+A$ with $|S|\ge \epsilon |A|$, and every vertex $y$ in $B$, there is
+some $x\in A$ such that $xy$ is an edge of $B_{i,k}$. It is known that
+such expanders exist in which every node has degree $O(\epsilon^{-1})$
+\cite{X}.  Observe that for every pair of buddies $(u,u')$ in $T$,
+there is an expander graph between $u$ and $u'$.
+
+Each node $u_{i,k}$ of $T$ is involved in at most two expander
+graphs $B_{i,k-1}$ and $B_{i,k}$ and each such graph contributes
+$O(\epsilon^{-1}n/2^{i})$ edges to $G$.  Therefore, each level $L_i$
+contributes at most $O(\epsilon^{-1} n)$ edges to $G$ for a total of
+$O(\epsilon^{-1}n\log n)$ edges.  
+
+Next we define our set $F^*\supseteq F$.  Given a set $F\subseteq V$,
+we say that a node $u$ of $T$ is \emph{sparse} (with respect to $F$)
+if $|u\cap F| \ge (1-\epsilon)|u|$ and $u$ is \emph{dense} (with respect
+to $F$) otherwise.  We then define
+\[
+	F^* = \cup\{ u_{i,k}\in V(T): \text{$u_{i,k}$ is dense or $u_{i,k+1}$ is dense} \} \enspace .
+\]
+That is, a node $u$ of $T$ contributes to $F^*$ if $u$ is dense or $u$'s
+right buddy is dense.
+
+First we show that $F^*\supseteq F$ is not overly large:
+
+\begin{clm}\clmlabel{size}
+  $F^*\supseteq F$ and, for any $\epsilon < 1/2$, $|F^*|\le (2+4\epsilon)|F|$.
+\end{clm}
+
+\begin{proof}
+  Consider the set $M$ of \emph{maximal} dense nodes containing exactly
+  those nodes $u$ of $T$ that are dense and such that no ancestor of $u$
+  is dense.  Observe that every $x\in F$ appears in exactly one node
+  of $M$.  This immediately implies that $F^*\supseteq F$.
+
+  To upper bound $|F^*|$, observe that $|F^*| = \sum_{u\in M} 2|u|$
+  and that 
+	$|F| \ge \sum_{u\in M} (1-\epsilon)|u|$, 
+	so
+  \[
+    \frac{|F^*|}{|F|} 
+      \le \frac{2}{1-\epsilon} 
+	= 2\sum_{r=0}^\infty\epsilon^r 
+	= 2(1+\epsilon + \epsilon\sum_{r=1}^\infty \epsilon^r 
+	\le 2(1+2\epsilon) \enspace . \qedhere
+	  \]
+\end{proof}
+
+Next we show that $G-F$ contains a monotone path of length $n-|F^*|$.
+
+\begin{clm}\clmlabel{path}
+  For any $x\in V\setminus F^*$ and any $y\in \{x+1,\ldots,n\}\setminus
+  F$, $G-F$ contains a monotone path from $x$ to $y$.
+\end{clm}
+
+\begin{proof}
+  Let $v_0,\ldots,v_{\log_2 n}$ be the path from the leaf of $T$
+  containing $x$ to the root of $T$ and let $v_t$ be the last node on
+  this path that is the left child of its parent.  Observe that, for
+  each $j\in\{0,\ldots,t\}$, $v_j$ has a right neighbour $v_j'$ and,
+  since $x\not\in F^*$, $v_j'$ is sparse.
+
+  We claim that, for each $j\in\{0,\ldots,k\}$ and each node $y\in
+  v_j'\setminus F$, $G-F$ contains a monotone path from $x$ to $y$.
+  We prove this claim by induction on $j$.  For the base case, $v_0=\{x\}$
+  and $v_0'$ are buddy leaves in $T$ and there is an expander graph
+  for $(v_0,v_0')$
+  that contains the edge $xy$.
+
+  For $j>1$, the inductive hypothesis states that $G-F$ contains
+  a monotone path from $x$ to each $x'\in v_{j-1}'\setminus F$.
+  Let $S=v_{j-1}'\setminus F$.  There are two cases to consider:
+  \begin{enumerate}
+    \item $v_{j-1}$ is the left child $v_{j}$.  In this case,
+	  $S$ is a subset of $v_j$ of size at least $\epsilon|v_{j-1}|
+	  = \epsilon|v_j|/2$.  The graph $G$ contains an expander graph
+	  for the buddy pair $(v_j,v_j')$ and therefore every $y\in v_j'$
+	  contains a neighbour $x'\in S$.  The (inductive) path from
+	  $x$ to $x'$ plus the edge $x'y$ is a monotone path in $G-F$
+	  from $x$ to $y$, as required.
+
+    \item $v_{j-1}$ is the right child of $v_j$.	In this case, let
+	  $v_{j-1}''$ be the right neighbour of $v_{j-1}'$.
+	  The graph $G$ contains an expander graph for the pair
+	  $(v_{j-1}',v_{j-1}'')$ and $S$ is a subset of $v_{j-1}'$ of
+	  size at least $\epsilon|v_{j-1}'|$ so every $y\in v_{j-1}''$ is
+	  adjacent to some $x'\in v_{j-1}'$.  Therefore, for every $y\in
+	  v_{j-1}''$, there is a monotone path from $x$ to $x'$ to $y$.
+	  We finish by observing that $v_j' = v_{j-1}'\cup v_{j-1}''$.
+  \end{enumerate}
+  Finally, we observe that, for any $y\ge x$, $y$ is contained in at least one of of $v_0',\ldots,v_t'$.  Therefore $G-F$ contains a monotone path from $x$ to each $y\in\{x+1,\ldots,n\}\setminus F$, as required.
+\end{proof}
+
+\begin{prop}
+	For the graph $G$ defined above and any $F\subset V(G)$, $G-F$ contains a monotone path of size at least $n-(2+4\epsilon)|F|$.
+\end{prop}
+
+\begin{proof}
+	Let $x_1<x_2<\cdots<x_m$ be the elements of $V(G)\setminus F^*$.
+	Then, by \clmref{path}, there is a monotone path from $x_i$
+	to $x_{i+1}$, for each $i\in\{1,\ldots,m-1\}$.
+	The concatentation of all these paths is a monotone path of size $n-|F^*| \ge n-(2+4\epsilon)|F|$, by \clmref{size}.
+\end{proof}
+
+\section{Achieving $1+\epsilon$}
+
+
+Next, we show how to improve our construction to obtain a set $F^*$
+of size at most $(1+\epsilon)|F|$.  To achieve this, we add more more
+expander graphs. For each $u$ of $T$, let $r(u)$ denote $u$'s right buddy.
+Our graph $G$ is parameterized by an natural number $q$.  For each node
+$u$ of $T$, and each $i\in\{1,\ldots,q\}$, $G$ contains the edges of an
+expander graph for the pair $(u,r^{(i)}(u))$.  Therefore, the graph $G$
+contains $O(q\epsilon^{-1} n\log n)$ edges.
+
+
+
+
 
 
 \bibliographystyle{plain}
