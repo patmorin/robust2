@@ -7,12 +7,12 @@ citecolor=linkblue, filecolor=linkblue, menucolor=linkblue,
 urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me} 
 \setlength{\parskip}{1ex}
 
-\title{\MakeUppercase{Optimal Robust Spanners in 1D}}
+\title{\MakeUppercase{Optimal Robust Spanners in One Dimension}}
 
 \author{Prosenjit Bose, Paz Carmi, Michael van Dyk, Pat Morin, 
-  Jan Volec, and 
   \newline
-  Luis Fernando Schulz Xavier da Silveira}
+  Luis Fernando Schulz Xavier da Silveira,
+  and Jan Volec}
 
 \newcommand{\note}[2]{{\color{red}[#1:~#2]}}
 
@@ -22,54 +22,73 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 \begin{abstract}
   For any $\epsilon >0$ and any $n\in\N$, we construct a graph $G=(V,E)$
-  with vertex set $V=\{0,\ldots,n-1\}$ having $O(\epsilon^{-2}n\log
-  n)$ edges, and such
-  that, for any set $F\subset V$, $G-F$ contains a monotone path of length
-  at least $n-(1+\epsilon)|F|$.  The number of edges in $G$ matches a
-  lower-bound of Bose \etal\ (2013) and improves the previous construction
-  of Buchin, Hulshof and Ol\'ah (2018) which has $O(n^{1+\epsilon})$
-  edges and guarantees $|F^*|\le c^{1/\epsilon}|F|$, for some constant
-  $c\ge 3$ and any $\epsilon >0$.
+  with vertex set $V=\{0,\ldots,n-1\}$ having $O(\epsilon^{-2}n\log n)$
+  edges, and such that, for any $F\subseteq V$, $G-F$ contains a monotone
+  path of length at least $n-(1+\epsilon)|F|$.  The number of edges
+  in $G$ matches a lower-bound of Bose \etal\ (2013) and improves the
+  previous construction of Buchin, Hulshof and Ol\'ah (2018) which has
+  $O(n^{1+\epsilon})$ edges and guarantees $|F^*|\le c^{1/\epsilon}|F|$,
+  for some constant $c\ge 3$ and any $\epsilon >0$.
 \end{abstract}
 
 \section{Introduction}
 
-A (geometric) graph $G$ with vertex set $V(G)\subset\R^d$ is a (geometric)
-$t$-spanner of a subset $X\subset V(G)$ if, for every pair of vertices
+A geometric graph $G=(V,E)$ with vertex set $V\subset\R^d$ is a (geometric)
+$t$-spanner of a subset $X\subset V$ if, for every pair of vertices
 $v,w\in X$, $v\neq w$,
-\[
-	\frac{\|vw\|_G}{\|vw\|} \enspace ,
-\]
+\begin{equation}
+	\frac{\|vw\|_G}{\|vw\|} \enspace , \eqlabel{spanning-ratio}
+\end{equation}
 where $\|vw\|$ denotes the Euclidean distance between $v$ and $w$ and
-$\|vw\|_G$ denote the Euclidean length of the shortest path between
-$v$ and $w$ in $G$.  In addition to having natural applications to
-transportation networks, $t$-spanners have found numerous applications
-in approximation algorithms, geometric data structures.
+$\|vw\|_G$ denote the Euclidean length of the shortest path between $v$
+and $w$ in $G$, where use the convention that $\|vw\|_G=\infty$ if $v$
+and $w$ are in different components of $G$.  
+Most of the research on spanners focus on \emph{sparse}
+spanners, where the number of edges in $G$ is linear, or close to linear,
+in $|V|$.  In addition to having natural applications to transportation
+networks, sparse $t$-spanners have found numerous applications in
+approximation algorithms and geometric data structures.
 
 For any non-decreasing function $f\colon\N\to\N$, Bose \etal\ say that
-a graph $G$ is an \emph{$f(k)$-robust $t$-spanner} if, for every set
-$F\subset V(G)$, there exists a set $F^*\supseteq F$ such that $|F^*|\le
-f(|F|)$ and the graph $G-F$ is a $t$-spanner of $V(G)\setminus F^*$.
-In networking applications, this definition captures the idea that the
-number of nodes $|F^*|$ that are affected by a set $F$ of faulty nodes
-should be related to the size of $F$.
+a geometric graph $G$ is an \emph{$f(k)$-robust $t$-spanner} if, for
+every set $F\subset V(G)$, there exists a set $F^*\supseteq F$ such that
+$|F^*|\le f(|F|)$ and the graph $G-F$ is a $t$-spanner of $V(G)\setminus
+F^*$.  In networking applications, this definition captures the idea
+that a set $F$ of faulty vertices should only have a noticeable effect
+on a set $F^*$ of vertices whose size is a function of the size of $F$.
 
-In this paper, we study $O(k)$-robust 1-spanners for points in 1 dimension.  More specifically, we wish to construct a graph $G$ on the vertex set $V(G)\subset\R$ such that, for any $F\subseteq V(G)$ there exists $F^*\supseteq F$ such that $G-F$ has a monotone path that contains every vertex of $V(G)\setminus F^*$.
+Under this definition, the most robust spanner one could hope for
+would be a $k$-robust spanner, but it is straightforward to argue
+that, even for one dimensional point sets, the complete graph is the
+only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
+$v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
+Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
+F=V\setminus F^*$ for any $t<\infty$.} The natural next-best choice is a
+$ck$-robust spanner with a near-linear number of edges, for some $c>1$ .
+
+Bose \etal \cite[Theorem~3]{bose.dujmovic.ea:robust} show that for any
+constants $c,t>1$ and any $n$-element set $V\subset\R$, any $ck$-robust
+$t$-spanner $G=(V,E)$ must have $\Omega(n\log n)$ edges.  Their work
+does not give any construction matching this lower bound, leaving a
+gap in our understanding of robust spanners, even in one dimension.
+Buchin, Hulshof and Ol\'ah \cite{buchin.hulshof.olah:robust} made the
+first progress in filling this gap by constructing, for any $\delta>0$,
+a $k2^{O(1/\delta)}$-robust spanner 1-spanner having $O(n^{1+\delta})$
+edges.  In the current paper, we prove the following result:
 
 \begin{thm}\thmlabel{main}
-  For every $n$-element set $V\subset\R$ and every $\epsilon>0$, there
-  exist a $(1+\epsilon)k$-robust 1-spanner $G=(V,E)$ with $O(\epsilon^{-2}n\log
-  n)$ edges.
+  For every $n$-element set $V\subset\R$ and every $\epsilon>0$,
+  there exist a $(1+\epsilon)k$-robust 1-spanner $G=(V,E)$ with
+  $O(\epsilon^{-2}n\log n)$ edges.
 \end{thm}
 
-Bose \etal \cite[Theorem~X]{bxx} show that for any constants $c$ and $t$ and any $n$-element set $V\subset\R$, any $ck$-robust $t$-spanner $G=(V,E)$ must have $\Omega(n\log n)$ edges. Thus, \thmref{main} is tight, except possibly for the dependence on $\epsilon$.
+The lower-bound discussed above implies that the number of edges
+in \thmref{main} is optimal, except possibly for the dependence on
+$\epsilon$.
 
-
-In an attempt to define $t$-spanners, Bose \etal\ introduced the notion
 
 \section{The Construction}
 
-%For any integers $i<j$, let $[i,j]=\{i,\ldots,j-1\}$.
 
 Without loss of generality, assume $n$ is a power of 2.  Construct a
 complete ordered binary tree $T$ of height $\log_2 n$ whose nodes are
@@ -132,7 +151,7 @@ First we show that $F^*\supseteq F$ is not overly large:
   is dense.  Observe that every $x\in F$ appears in exactly one node
   of $M$.  This immediately implies that $F^*\supseteq F$.
 
-  To upper bound $|F^*|$, observe that $|F^*| = \sum_{u\in M} 2|u|$
+  To upper bound $|F^*|$, observe that $|F^*| \le \sum_{u\in M} 2|u|$
   and that 
 	$|F| \ge \sum_{u\in M} (1-\epsilon)|u|$, 
 	so
@@ -191,7 +210,9 @@ Next we show that $G-F$ contains a monotone path of length $n-|F^*|$.
 \end{proof}
 
 \begin{prop}
-	For the graph $G$ defined above and any $F\subset V(G)$, $G-F$ contains a monotone path of size at least $n-(2+4\epsilon)|F|$.
+  The graph $G$ defined above has $O(\epsilon^{-1}n\log n)$ edges
+  and, for any $F\subset V(G)$, $G-F$ contains a monotone path of
+  size at least $n-(2+4\epsilon)|F|$.
 \end{prop}
 
 \begin{proof}
@@ -204,18 +225,110 @@ Next we show that $G-F$ contains a monotone path of length $n-|F^*|$.
 \section{Achieving $1+\epsilon$}
 
 
-Next, we show how to improve our construction to obtain a set $F^*$
-of size at most $(1+\epsilon)|F|$.  To achieve this, we add more more
+Next, we show how to generalize our construction to obtain a set $F^*$
+of size at most $(1+\epsilon)|F|$.  To achieve this, we add additional
 expander graphs. For each $u$ of $T$, let $r(u)$ denote $u$'s right buddy.
-Our graph $G$ is parameterized by an natural number $q$.  For each node
-$u$ of $T$, and each $i\in\{1,\ldots,q\}$, $G$ contains the edges of an
-expander graph for the pair $(u,r^{(i)}(u))$.  Therefore, the graph $G$
-contains $O(q\epsilon^{-1} n\log n)$ edges.
+Our graph $G$ is parameterized by a natural number $q$.  For each
+node $u$ of $T$, and each $i\in\{1,\ldots,q\}$, $G$ contains the edges
+of an expander graph for the pair $(u,r^{(i)}(u))$.  Observe that
+this construction, with $q=1$, corresponds exactly to the graph $G$
+described in the previous section.  In this generalized construction,
+the number of edges is $O(q\epsilon^{-1} n\log n)$ edges.
+
+Given a set $F\subset V$, we define $F^*$ as follows: Each node $u$ of $T$
+is included in $F^*$ if
+\begin{enumerate}
+   \item $u$ is dense with respect to $F$; or
+   \item $r^{(i)}(u)$ exists and is dense with respect to 
+	 $F$ for all $i\in\{1,\ldots,q\}$.
+\end{enumerate}
+It follows that 
+\begin{align*} 
+	|F^*| & \le \left(\frac{1+1/q}{1-\epsilon}\right)|F| \\
+	& \le (1+1/q)(1+2\epsilon)|F| &\text{(for any $\epsilon \le 1/2$)} \\
+	& \le (1+4\epsilon)|F| &\text{(for $q=\lceil 1/\epsilon\rceil$).}
+\end{align*}
+
+All that remains is to prove that $G-F$ contains a monotone path that includes every vertex in $V\setminus F^*$.
+
+\begin{clm}
+  For any $x\in V\setminus F^*$ and any $y\in \{x+1,\ldots,n\}\setminus
+  F$, $G-F$ contains a monotone path from $x$ to $y$.
+\end{clm}
+
+\begin{proof}
+  Let $v_0,\ldots,v_{\log_2 n}$ be the path from the leaf of $T$
+  containing $x$ to the root of $T$.  Let $v_t$ be the last node on
+  this path such that at least one of $r^{(1)}(v_t),\ldots,r^{(q)}(v_t)$
+  is defined and is sparse.  Observe that every vertex $y > \max(v_t)$
+  is contained in $F^*$.
+
+  We claim that for every $j\in\{1,\ldots,t\}$ and every node $w$ such
+  that $w=r^{(i)}(v_j)$, for some $i\in\{1,\ldots,q\}$, $G-F$ contains a
+  monotone path from $x$ to every vertex $y\in w\setminus F$.  We prove
+  this by claim by induction on $j$.  When $j=0$, $w = r^{(i)}(v_0)$
+  for some $i\in\{1,\ldots,q\}$, so $G$ contains an expander graph for
+  the pair $(v_0,w)$ and this graph contains the single edge joining $x$
+  to the unique vertex in $y\in w$.
+
+  Now we wish to prove this claim for any $w\in\{r^{(i)}(v_j): i\in\{1,\ldots,q\}\}$.  First observe that, for any $i\in\{1,\ldots,\lfloor(q-1)/2\rfloor\}$, the two children of $r^{(i)}(v_j)$ are contained in 
+	$\{r^{(i)}(v_{j-1}): i\in\{1,\ldots,q\}\}$. Therefore, by induction on $j$ there is a monotone path from $x$ to every vertex of $r^{(i)}(v_j)$ for every $i\in\{1,\ldots,\lfloor (q-1)/2\rfloor\}$. From this point on we therefore assume that $w=r^{(i)}(v_j)$ for some $i \ge $ TODO: Continue here!
+	
+	node $w$
 
 
+  For each $j\in\{1,\ldots,t\}$, let $v_j'$ denote the first node among
+  $r^{(1)}(v_j),\ldots,r^{q}(v_j)$ that is sparse.  To prove our claim
+  for $j>1$, consider the node $v_{j-1}'$.  From the definition of $F^*$
+  (and $t$) the node $v_{j-1}'$ exists.  Let $u$ be the parent
+  of $v_{j-1}'$.
+  Below, we will argue
+  that $w=u$ or that $w=r^{(i)}(u)$ for some $i\in\{1,\ldots,q\}$.
+  \begin{itemize}
+    \item In the case that $w=u$, the node $u$ has two children $v_{j-1}'$
+    and $v$.  If $v_{j-1}'$ is the right child of $u$ then, by induction,
+    there is a monotone path from $x$ to every vertex in $v\setminus F$
+    and a monotone path from $x$ to every vertex in $v_{j-1}'\setminus F$
+    and we are done.  If $v_{j-1}'$ is the left child of $u$, then there
+    is a monotone path from $x$ to every vertex in $x'\in v_{j-1}'$.
+    Now, $v_{j-1}'\cap F$ is a subset of $v_{j-1}'$ of size at least
+    $\epsilon |v_{j-1}'|$ and $G$ contains an expander graph for the
+    pair $(v_{j-1}',v)$.	Therefore, for every $y\in v$ there is
+    vertex in $x'\in v_{j-1}'$ adjacent to $y$ and therefore there is
+    a monotone path from $x$ to $x'$ to $y$, as required.
 
+    \item In the case that $w=r^{(i)}(u)$ for some $i\in\{1,\ldots,q\}$,
+    $v_{j-1}'\setminus F$ is a subset of $u$ of size at least
+    $\epsilon|v_{j-1}'| \ge \epsilon|u|/2$.  Now $G$ contains an expander
+    graph for the pair $(u,w)$.  Therefore every vertex $y\in w$ is
+    adjacent to some vertex $x'\in v_{j-1}'\setminus F$.  By induction there
+    is a monotone path from $x$ to $x'$ and the edge $x'y$ extends this
+    to a monotone path from $x$ to $y$, as required.
+  \end{itemize}
 
+  Thus, all that remains is to show that $w=u$ or $w=r^{(i)}(u)$ for
+  some $i\in\{1,\ldots,q\}$.  Let $\tau\in\{0,\ldots,q-1\}$ be such that
+  $v_{j-1}'=r^{(\tau+1)}(v_j)$.  From the definition of $v_{j-1}'$, we
+  know that $r^{(1)}(v_{j-1}),\ldots,r^{(\tau)}(v_{j-1})$ are all dense
+  nodes.  Any node of $T$ with 2 dense children is itself dense. Therefore
+  $r^{(1)}(v_j),\ldots,r^{(\lfloor\tau/2\rfloor)}(v_j)$ are all dense.
+  Therefore, $w=r^{(\kappa)}(v_j)$ for some $\kappa >
+  \lfloor\tau/2\rfloor$.  On the other hand, $u=r^{(\gamma)}(v_j)$ for
+  some $\gamma\in\{\lfloor\tau/2\rfloor,\lfloor\tau/2\rfloor+1\}$.
+  In either case $\kappa \ge \gamma$ so $w=u$ or
+  $w=r^{(\kappa-\gamma)}(u)$, as required.
+\end{proof}
 
+%\section{Crap}
+%
+%Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus F=V\setminus F^*$ for any $t<\infty$.}
+%A slightly more sophisticated argument shows that any $(1+1/d)k$-robust $t$-spanner must have $\Omega(dn)$ edges.\footnote{Proof: If $G$ has $
+%
+%rules out the existence
+%of $(k+o(k))$-robust spanners having a subquadratic number of edges.
+%
+%
+%
 
 \bibliographystyle{plain}
 \bibliography{robust2}
