@@ -9,7 +9,10 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 \title{\MakeUppercase{Optimal Robust Spanners in 1D}}
 
-\author{Prosenjit Bose, Paz Carmi, Michael van Dyk, and Pat Morin}
+\author{Prosenjit Bose, Paz Carmi, Michael van Dyk, Pat Morin, 
+  Jan Volec, and 
+  \newline
+  Luis Fernando Schulz Xavier da Silveira}
 
 \newcommand{\note}[2]{{\color{red}[#1:~#2]}}
 
@@ -19,16 +22,50 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 \begin{abstract}
   For any $\epsilon >0$ and any $n\in\N$, we construct a graph $G=(V,E)$
-  with vertex set $V=\{0,\ldots,n-1\}$ having $O(n\log n)$ edges, and such
-  that, for any set $F\subset V$, $G-F$ contains a monotone
-  path of length at least $n-(1+\epsilon)|F|$.  The number of edges
-  in $G$ matches a lower-bound of Bose \etal\ (2013) and improves the
-  previous construction of Buchin, Hulshof and Ol\'ah (2018) which has
-  $O(n^{1+\epsilon})$ edges and guarantees $|F^*|\le c^{1/\epsilon}|F|$,
-  for some constant $c\ge 3$ and any $\epsilon >0$.
+  with vertex set $V=\{0,\ldots,n-1\}$ having $O(\epsilon^{-2}n\log
+  n)$ edges, and such
+  that, for any set $F\subset V$, $G-F$ contains a monotone path of length
+  at least $n-(1+\epsilon)|F|$.  The number of edges in $G$ matches a
+  lower-bound of Bose \etal\ (2013) and improves the previous construction
+  of Buchin, Hulshof and Ol\'ah (2018) which has $O(n^{1+\epsilon})$
+  edges and guarantees $|F^*|\le c^{1/\epsilon}|F|$, for some constant
+  $c\ge 3$ and any $\epsilon >0$.
 \end{abstract}
 
 \section{Introduction}
+
+A (geometric) graph $G$ with vertex set $V(G)\subset\R^d$ is a (geometric)
+$t$-spanner of a subset $X\subset V(G)$ if, for every pair of vertices
+$v,w\in X$, $v\neq w$,
+\[
+	\frac{\|vw\|_G}{\|vw\|} \enspace ,
+\]
+where $\|vw\|$ denotes the Euclidean distance between $v$ and $w$ and
+$\|vw\|_G$ denote the Euclidean length of the shortest path between
+$v$ and $w$ in $G$.  In addition to having natural applications to
+transportation networks, $t$-spanners have found numerous applications
+in approximation algorithms, geometric data structures.
+
+For any non-decreasing function $f\colon\N\to\N$, Bose \etal\ say that
+a graph $G$ is an \emph{$f(k)$-robust $t$-spanner} if, for every set
+$F\subset V(G)$, there exists a set $F^*\supseteq F$ such that $|F^*|\le
+f(|F|)$ and the graph $G-F$ is a $t$-spanner of $V(G)\setminus F^*$.
+In networking applications, this definition captures the idea that the
+number of nodes $|F^*|$ that are affected by a set $F$ of faulty nodes
+should be related to the size of $F$.
+
+In this paper, we study $O(k)$-robust 1-spanners for points in 1 dimension.  More specifically, we wish to construct a graph $G$ on the vertex set $V(G)\subset\R$ such that, for any $F\subseteq V(G)$ there exists $F^*\supseteq F$ such that $G-F$ has a monotone path that contains every vertex of $V(G)\setminus F^*$.
+
+\begin{thm}\thmlabel{main}
+  For every $n$-element set $V\subset\R$ and every $\epsilon>0$, there
+  exist a $(1+\epsilon)k$-robust 1-spanner $G=(V,E)$ with $O(\epsilon^{-2}n\log
+  n)$ edges.
+\end{thm}
+
+Bose \etal \cite[Theorem~X]{bxx} show that for any constants $c$ and $t$ and any $n$-element set $V\subset\R$, any $ck$-robust $t$-spanner $G=(V,E)$ must have $\Omega(n\log n)$ edges. Thus, \thmref{main} is tight, except possibly for the dependence on $\epsilon$.
+
+
+In an attempt to define $t$-spanners, Bose \etal\ introduced the notion
 
 \section{The Construction}
 
