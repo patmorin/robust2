@@ -1,6 +1,7 @@
 \documentclass{patmorin}
 \usepackage{pat}
 \usepackage{hyperref}
+\usepackage{paralist}
 \usepackage[noend]{algorithmic}
 \hypersetup{colorlinks=true, linkcolor=linkblue,  anchorcolor=linkblue,
 citecolor=linkblue, filecolor=linkblue, menucolor=linkblue,
@@ -63,7 +64,7 @@ that, even for one dimensional point sets, the complete graph is the
 only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
-F=V\setminus F^*$ for any $t<\infty$.} The natural next-best choice is a
+F=V\setminus F^*$ for any $t<\infty$.} A natural second-best option is a
 $ck$-robust spanner with a near-linear number of edges, for some $c>1$ .
 
 Bose \etal \cite[Theorem~3]{bose.dujmovic.ea:robust} show that for any
@@ -92,7 +93,7 @@ $\epsilon$.
 
 Without loss of generality, assume $n$ is a power of 2.  Construct a
 complete ordered binary tree $T$ of height $\log_2 n$ whose nodes are
-contiguous sets of integers..  The leaves of $T$, in left-to-right order,
+contiguous sets of integers.  The leaves of $T$, in left-to-right order,
 are the singleton sets $\{0\},\ldots,\{n-1\}$ and each internal node of
 $T$ is the set obtained by taking the union of its two children.  Stated
 another way, $T=T(0,\log_2 n-1)$, whree $T(i,b)$ has a single node $\{i\}$
@@ -105,55 +106,92 @@ Note that the nodes of $T$ can be partitioned in levels $L_0,\ldots,L_{\log_2 n}
 \]
 For each consecutive pair $(u_{i,k},u_{i,k+1})$ of nodes in $L_i$ we say
 that $u_{i,k}$ and $u_{i,k+1}$ are \emph{buddies} and we call $u_{i,k+1}$
-the \emph{right buddy} of $u_{i,k}$.
+the \emph{right buddy} of $u_{i,k}$.  For any $k\in\{0,\ldots,2^{i}-1\}$,
+we use the notation $r(u_{i,k})$ to denote the right-buddy, $u_{i,k+1}$,
+of $u_{i,k}$.
 
+\subsection{Expanders}
+
+Our construction $G$ will consist of the union of many \emph{expander graphs} whose properties are given by the following theorem:
+
+\begin{defn}
+   A bipartite graph $B=(X,Y,E)$ with $|X|=|Y|=n$ is called
+   an \emph{order-$n$ $\epsilon$-expander} for $(X,Y)$ if, for
+   every $X'\subseteq X$, $|N_B(X')| \ge \min\{(1-\epsilon/2)n,
+   4|X'|/\epsilon\}$.
+\end{defn}
+
+It is known that, for any $\epsilon >0$ and any $n\in\N$, there exists
+an order-$n$ $\epsilon$-expander having $O(\epsilon^{-1}n\log n)$
+edges \cite{X}.
+
+Our graph $G$ will contain many $\epsilon$-expanders for pairs $(u,w)$
+where $u,w\in L_i$ are nodes at the same level, $i$, of $T$.  Given a
+set $F\subseteq V$, we say that a node $u$ of $T$ is \emph{sparse}
+with respect to $F$ if $|u\cap F| \le (1-\epsilon)|u|$ and $u$ is
+\emph{dense} (with respect to $F$) otherwise.  In other words, if $u$
+is sparse then $|u\setminus F| \ge \epsilon |u|$.
+
+The following observation is a consequence of the definitions so far:
+
+\begin{obs}\obslabel{extend}
+	Let $n$, $G$, $F$, $T$, and $L_0,\ldots,L_{\log_2 n}$ be as defined above and
+  and assume the following:
+  \begin{compactenum}
+     \item $x\in \{1,\ldots,n\}$ is a vertex and $u,w\in L_i$ 
+      is a pair of nodes of $T$;
+     \item $\{x\} \prec u\prec w$;
+     \item $G$ contains an $\epsilon$-expander, $B_{uw}$, for $(u,w)$; and
+     \item $u'\subseteq u$, $|u'|\ge\epsilon|u|/4$, and, for every $x'\in u'$, $G-F$
+   contains a monotone path from $x$ to $x'$.
+   \end{compactenum}
+   Then there exists a
+	subset $w'\subseteq w$, $|w'|\ge(1-\epsilon/2)|u|-|F\cap w|$, and, for
+   every $y\in w'$, $G-F$ contains a monotone path from $x$ to $y$.
+\end{obs}
+
+\begin{proof}
+  By the definition of $\epsilon$-expander definition
+  $N_{B_{uw}}(u')$ is a subset of $w$ of size at least
+  $(1-\epsilon/2)|w|$. Therefore  $w'=N_{B_{uw}}(u')\setminus F$ has
+  size at least $(1-\epsilon/2)|w|-|F\cap w|$.  Every vertex $y$ in $w'$
+  has a neighbour $x'\in u'$. Appending the edge $x'y$ to the monotone
+  path from $x$ to $x'$ gives a monotone path from $x$ to $y$.
+\end{proof}
+   
+	
 \subsection{A First Try}
 
 We now describe a first construction of $G$ that has $O(\epsilon^{-1}n\log
-n)$ edges and guarantees that, for any $F\subset V$,  $G-F$ has a monotone
-path of length at least $n-(2+4\epsilon)|F|$.
+n)$ edges and guarantees that, for any $F\subseteq V$,  $G-F$ has a
+monotone path of length at least $n-(2+O(\epsilon))|F|$.  Changing
+notation slightly, this means that, for any $\delta >0$, $G$ is a
+$(2+\delta)k$-robust 1-spanner with $O(\delta^{-1}n\log n)$ edges.
 
-The graph $G$ contains, for each $i\in\{1,\ldots,\log_2 n\}$ and each
-$k\in\{0,\ldots,2^{i}-2\}$ the edges of a bipartite \emph{expander graph}
-$B_{i,k}$.  The vertex set of $B_{i,k}$ has two classes $A=u_{i,k}$ and
-$B=u_{i,k+1}$ and has the following property:  For any subset $S\subset
-A$ with $|S|\ge \epsilon |A|$, and every vertex $y$ in $B$, there is
-some $x\in A$ such that $xy$ is an edge of $B_{i,k}$. It is known that
-such expanders exist in which every node has degree $O(\epsilon^{-1})$
-\cite{X}.  Observe that for every pair of buddies $(u,u')$ in $T$,
-there is an expander graph between $u$ and $u'$.
+The graph $G$ contains, for each pair $(u,w)$ of buddies in $T$, an
+expander graph $B_{uw}$ for the pair $(u,w)$.  The graph $B_{uw}$ has $O(\epsilon^{-1}|u|)$ edges. Therefore, for each level $L_i$, the buddy pairs in $L_i$ contribute $O(\epsilon^{-1} n)$ edges to $G$.  Summing over all levels we see that $G$ has $O(\epsilon^{-1}n\log n)$ edges.
 
-Each node $u_{i,k}$ of $T$ is involved in at most two expander
-graphs $B_{i,k-1}$ and $B_{i,k}$ and each such graph contributes
-$O(\epsilon^{-1}n/2^{i})$ edges to $G$.  Therefore, each level $L_i$
-contributes at most $O(\epsilon^{-1} n)$ edges to $G$ for a total of
-$O(\epsilon^{-1}n\log n)$ edges.  
-
-Next we define our set $F^*\supseteq F$.  Given a set $F\subseteq V$,
-we say that a node $u$ of $T$ is \emph{sparse} (with respect to $F$)
-if $|u\cap F| \ge (1-\epsilon)|u|$ and $u$ is \emph{dense} (with respect
-to $F$) otherwise.  We then define
+Next we define a set $F^+\supseteq F$ as follows: 
 \[
-	F^* = \cup\{ u_{i,k}\in V(T): \text{$u_{i,k}$ is dense or $u_{i,k+1}$ is dense} \} \enspace .
+	F^+ = \cup\{ u\in V(T): \text{$u$ is dense or $r(u)$ is dense}\} \enspace .
 \]
-That is, a node $u$ of $T$ contributes to $F^*$ if $u$ is dense or $u$'s
-right buddy is dense.
-
-First we show that $F^*\supseteq F$ is not overly large:
+First we show that $F^+\supseteq F$ is not overly large:
 
 \begin{clm}\clmlabel{size}
-  $F^*\supseteq F$ and, for any $\epsilon < 1/2$, $|F^*|\le (2+4\epsilon)|F|$.
+  $F^+\supseteq F$ and, for any $\epsilon < 1/2$, $|F^+|\le (2+4\epsilon)|F|$.
 \end{clm}
 
 \begin{proof}
   Consider the set $M$ of \emph{maximal} dense nodes containing exactly
-  those nodes $u$ of $T$ that are dense and such that no ancestor of $u$
-  is dense.  Observe that every $x\in F$ appears in exactly one node
-  of $M$.  This immediately implies that $F^*\supseteq F$.
+  those nodes $u$ of $T$ that are dense and such that no strict ancestor
+  of $u$ is dense.  Observe that every $x\in F$ appears in exactly one
+  node of $M$.  This immediately implies that $F^+\supseteq F$.
 
-  To upper bound $|F^*|$, observe that $|F^*| \le \sum_{u\in M} 2|u|$
+  To upper bound $|F^+|$, observe that $|F^+| \le \sum_{u\in M} 2|u|$
   and that 
-	$|F| \ge \sum_{u\in M} (1-\epsilon)|u|$, 
+  \[ 
+     |F| = \sum_{u\in M} |F\cap u| \ge \sum_{u\in M} (1-\epsilon)|u| \enspace , 
+  \]
 	so
   \[
     \frac{|F^*|}{|F|} 
@@ -161,164 +199,306 @@ First we show that $F^*\supseteq F$ is not overly large:
 	= 2\sum_{r=0}^\infty\epsilon^r 
 	= 2(1+\epsilon + \epsilon\sum_{r=1}^\infty \epsilon^r 
 	\le 2(1+2\epsilon) \enspace . \qedhere
-	  \]
+  \]
 \end{proof}
 
 Next we show that $G-F$ contains a monotone path of length $n-|F^*|$.
 
 \begin{clm}\clmlabel{path}
-  For any $x\in V\setminus F^*$ and any $y\in \{x+1,\ldots,n\}\setminus
-  F$, $G-F$ contains a monotone path from $x$ to $y$.
+  For any $F\subset V(G)$, $G-F$ contains a monotone path of length
+  at least $n - (2+O(\epsilon))|F|$.
 \end{clm}
 
 \begin{proof}
-  Let $v_0,\ldots,v_{\log_2 n}$ be the path from the leaf of $T$
-  containing $x$ to the root of $T$ and let $v_t$ be the last node on
-  this path that is the left child of its parent.  Observe that, for
-  each $j\in\{0,\ldots,t\}$, $v_j$ has a right neighbour $v_j'$ and,
-  since $x\not\in F^*$, $v_j'$ is sparse.
+  We will construct the path in $G-F$ in a sequence of phases. At
+  the beginning of each phase we begin at a vertex $x\not\in F^+$
+  and the phase will end when the path reaches another vertex
+  $y\not\in F^+$.  Initially, we begin with $x$ as the first vertex
+  not in $F^+$, i.e., $x=\min(V(G)\setminus F^+)$.
 
-  We claim that, for each $j\in\{0,\ldots,k\}$ and each node $y\in
-  v_j'\setminus F$, $G-F$ contains a monotone path from $x$ to $y$.
-  We prove this claim by induction on $j$.  For the base case, $v_0=\{x\}$
-  and $v_0'$ are buddy leaves in $T$ and there is an expander graph
-  for $(v_0,v_0')$
-  that contains the edge $xy$.
+  During each phase we will always consider a pair of nodes $(a,u)$
+  in $T$ where $a$ contains $x$ and $u=r(a)$.  At all times we will
+  maintain a \emph{witness set} $u'\subseteq u$ of size
+  \[
+     |u'| \ge (1-\epsilon/2)|u|-|F\cap u|
+  \]
+  such that, for each $x'\in u'$, $G-F$ contains a monotone path from $x$
+  to $x'$.  We call any set $u'\subseteq u$ satisfying these criteria a
+  \emph{witness set} for $(x,u)$.
 
-  For $j>1$, the inductive hypothesis states that $G-F$ contains
-  a monotone path from $x$ to each $x'\in v_{j-1}'\setminus F$.
-  Let $S=v_{j-1}'\setminus F$.  There are two cases to consider:
+  When a phase begins, $a$ is the leaf of $T$ that contains only $x$ and
+  therefore $u=r(a)$ is the leaf of $T$ containing only $x+1$.  Since $a$
+  and $u$ are buddies, $G$ contains an expander $B_{au}$ that contains the
+  single edge joining $x$ and $x+1$.  Therefore, the set $u'=u=\{x+1\}$
+  is indeed a witness set for $(x,u)$.  
+  At this point, if $x+1\not\in
+  F^+$, then we extend our path from $x$ to $x+1$ and begin a new phase.
+  Therefore, from this point on we will assume that $w\subseteq F^+$.
+
+  Now consider the general case where $a\supset\{x\}$, $u=r(a)$ and
+  $u'\subset u$ is a witness set for $(x,u)$.  Note that, since $x\not\in
+  F^+$, each of $a$ and $u$ are sparse with respect to $F$. There are two cases to consider:
   \begin{enumerate}
-    \item $v_{j-1}$ is the left child $v_{j}$.  In this case,
-	  $S$ is a subset of $v_j$ of size at least $\epsilon|v_{j-1}|
-	  = \epsilon|v_j|/2$.  The graph $G$ contains an expander graph
-	  for the buddy pair $(v_j,v_j')$ and therefore every $y\in v_j'$
-	  contains a neighbour $x'\in S$.  The (inductive) path from
-	  $x$ to $x'$ plus the edge $x'y$ is a monotone path in $G-F$
-	  from $x$ to $y$, as required.
+    \item $a$ and $u$ are siblings with a common parent $\hat{a}$.  In this case, let $\hat{u}=r(\hat{a})$.  Notice that $u'\subseteq u\subset\hat{a}$ and that $|u'|\ge \epsilon|u|/2 = \epsilon|\hat{a}|/4$.  
+	    Therefore, by \obsref{extend}, $\hat{u}'= N_{B_{\hat{a}\hat{u}}}(u')\setminus F$ is a witness set for $(x,\hat{u})$.
+	    %Thus, we can continue this phase with $a=\hat{a}$, $u=\hat{u}$ and $u'=\hat{u}$.
 
-    \item $v_{j-1}$ is the right child of $v_j$.	In this case, let
-	  $v_{j-1}''$ be the right neighbour of $v_{j-1}'$.
-	  The graph $G$ contains an expander graph for the pair
-	  $(v_{j-1}',v_{j-1}'')$ and $S$ is a subset of $v_{j-1}'$ of
-	  size at least $\epsilon|v_{j-1}'|$ so every $y\in v_{j-1}''$ is
-	  adjacent to some $x'\in v_{j-1}'$.  Therefore, for every $y\in
-	  v_{j-1}''$, there is a monotone path from $x$ to $x'$ to $y$.
-	  We finish by observing that $v_j' = v_{j-1}'\cup v_{j-1}''$.
+    \item The parent $\hat{a}$ of $a$ and the parent $\hat{u}$ of $u$ are distinct.  In this case, $u'\subset u$ has size
+    \[  |u'| \ge (1-\epsilon/2)|u|-|F\cap u| \ge \epsilon|u|/2 > \epsilon|u|/4 \enspace .\]
+		  Let $w=r(u)$ be the right child of $\hat{u}$.  Then $G$ contains the expander $B_{uw}$, by \obsref{extend} $w'=N_{B_{uw}}(u')\setminus F$
+		  is a witness set for $(x,w)$. 
+		   Now, for every $y\in \hat{u}'=u'\cup w'$, $G-F$ contains a monotone path from $x$ to $y$ and 
+		  \[ |\hat{u}'| \ge |u'|+|w'| \ge 2(1-\epsilon/2)|u| - |F\cap u| - |F\cap w| = (1-\epsilon/2)|\hat{u}| - |F\cap \hat{u}|  \enspace .
+	    \]
+		  Therefore $\hat{u}'$ is a witness set for $(x,\hat{u})$.
+		  %and 
+     %the phase can continue with $a=\hat{a}$, $u=\hat{u}$ and $u'=\hat{u}'$.
   \end{enumerate}
-  Finally, we observe that, for any $y\ge x$, $y$ is contained in at least one of of $v_0',\ldots,v_t'$.  Therefore $G-F$ contains a monotone path from $x$ to each $y\in\{x+1,\ldots,n\}\setminus F$, as required.
-\end{proof}
 
-\begin{prop}
-  The graph $G$ defined above has $O(\epsilon^{-1}n\log n)$ edges
-  and, for any $F\subset V(G)$, $G-F$ contains a monotone path of
-  size at least $n-(2+4\epsilon)|F|$.
-\end{prop}
+  Thus far, we have reached the point $\hat{u'}\subseteq \hat{u}$ is a
+  witness set for $(x,\hat{u})$.  If $\hat{u}\subseteq F^+$ then we set
+  $a=\hat{a}$, $u=\hat{u}$ and $u'=\hat{u}'$ and continue the phase.
+  Otherwise, $\hat{u}$ contains some vertex $y\not\in F^+$.  If this
+  occurs, then we complete the phase using the monotone path from $x$
+  to $y$ and beging a new phase starting at $y$.
 
-\begin{proof}
-	Let $x_1<x_2<\cdots<x_m$ be the elements of $V(G)\setminus F^*$.
-	Then, by \clmref{path}, there is a monotone path from $x_i$
-	to $x_{i+1}$, for each $i\in\{1,\ldots,m-1\}$.
-	The concatentation of all these paths is a monotone path of size $n-|F^*| \ge n-(2+4\epsilon)|F|$, by \clmref{size}.
-\end{proof}
-
-\section{Achieving $1+\epsilon$}
-
-
-Next, we show how to generalize our construction to obtain a set $F^*$
-of size at most $(1+\epsilon)|F|$.  To achieve this, we add additional
-expander graphs. For each $u$ of $T$, let $r(u)$ denote $u$'s right buddy.
-Our graph $G$ is parameterized by a natural number $q$.  For each
-node $u$ of $T$, and each $i\in\{1,\ldots,q\}$, $G$ contains the edges
-of an expander graph for the pair $(u,r^{(i)}(u))$.  Observe that
-this construction, with $q=1$, corresponds exactly to the graph $G$
-described in the previous section.  In this generalized construction,
-the number of edges is $O(q\epsilon^{-1} n\log n)$ edges.
-
-Given a set $F\subset V$, we define $F^*$ as follows: Each node $u$ of $T$
-is included in $F^*$ if
-\begin{enumerate}
-   \item $u$ is dense with respect to $F$; or
-   \item $r^{(i)}(u)$ exists and is dense with respect to 
-	 $F$ for all $i\in\{1,\ldots,q\}$.
-\end{enumerate}
-It follows that 
-\begin{align*} 
-	|F^*| & \le \left(\frac{1+1/q}{1-\epsilon}\right)|F| \\
-	& \le (1+1/q)(1+2\epsilon)|F| &\text{(for any $\epsilon \le 1/2$)} \\
-	& \le (1+4\epsilon)|F| &\text{(for $q=\lceil 1/\epsilon\rceil$).}
-\end{align*}
-
-All that remains is to prove that $G-F$ contains a monotone path that includes every vertex in $V\setminus F^*$.
-
-\begin{clm}
-  For any $x\in V\setminus F^*$ and any $y\in \{x+1,\ldots,n\}\setminus
-  F$, $G-F$ contains a monotone path from $x$ to $y$.
-\end{clm}
-
-\begin{proof}
-  Let $v_0,\ldots,v_{\log_2 n}$ be the path from the leaf of $T$
-  containing $x$ to the root of $T$.  Let $v_t$ be the last node on
-  this path such that at least one of $r^{(1)}(v_t),\ldots,r^{(q)}(v_t)$
-  is defined and is sparse.  Observe that every vertex $y > \max(v_t)$
-  is contained in $F^*$.
-
-  We claim that for every $j\in\{1,\ldots,t\}$ and every node $w$ such
-  that $w=r^{(i)}(v_j)$, for some $i\in\{1,\ldots,q\}$, $G-F$ contains a
-  monotone path from $x$ to every vertex $y\in w\setminus F$.  We prove
-  this by claim by induction on $j$.  When $j=0$, $w = r^{(i)}(v_0)$
-  for some $i\in\{1,\ldots,q\}$, so $G$ contains an expander graph for
-  the pair $(v_0,w)$ and this graph contains the single edge joining $x$
-  to the unique vertex in $y\in w$.
-
-  Now we wish to prove this claim for any $w\in\{r^{(i)}(v_j): i\in\{1,\ldots,q\}\}$.  First observe that, for any $i\in\{1,\ldots,\lfloor(q-1)/2\rfloor\}$, the two children of $r^{(i)}(v_j)$ are contained in 
-	$\{r^{(i)}(v_{j-1}): i\in\{1,\ldots,q\}\}$. Therefore, by induction on $j$ there is a monotone path from $x$ to every vertex of $r^{(i)}(v_j)$ for every $i\in\{1,\ldots,\lfloor (q-1)/2\rfloor\}$. From this point on we therefore assume that $w=r^{(i)}(v_j)$ for some $i \ge $ TODO: Continue here!
+  We claim that, if a phase does not complete, the $|F\cap\hat{u}|
+  \ge (1/2-\epsilon/4)|u|$.  Indeed, otherwise, 
+  \[
+	  |\hat{u}\setminus F^+| \ge
+	  |\hat{u}|-(2+4\epsilon)|F\cap\hat{u}| \ge
+	  |\hat{u}|-(2+4\epsilon)(1/2-\epsilon/4)|u|\ge
+	  \epsilon/2 \enspace .
+  \]
 	
-	node $w$
-
-
-  For each $j\in\{1,\ldots,t\}$, let $v_j'$ denote the first node among
-  $r^{(1)}(v_j),\ldots,r^{q}(v_j)$ that is sparse.  To prove our claim
-  for $j>1$, consider the node $v_{j-1}'$.  From the definition of $F^*$
-  (and $t$) the node $v_{j-1}'$ exists.  Let $u$ be the parent
-  of $v_{j-1}'$.
-  Below, we will argue
-  that $w=u$ or that $w=r^{(i)}(u)$ for some $i\in\{1,\ldots,q\}$.
-  \begin{itemize}
-    \item In the case that $w=u$, the node $u$ has two children $v_{j-1}'$
-    and $v$.  If $v_{j-1}'$ is the right child of $u$ then, by induction,
-    there is a monotone path from $x$ to every vertex in $v\setminus F$
-    and a monotone path from $x$ to every vertex in $v_{j-1}'\setminus F$
-    and we are done.  If $v_{j-1}'$ is the left child of $u$, then there
-    is a monotone path from $x$ to every vertex in $x'\in v_{j-1}'$.
-    Now, $v_{j-1}'\cap F$ is a subset of $v_{j-1}'$ of size at least
-    $\epsilon |v_{j-1}'|$ and $G$ contains an expander graph for the
-    pair $(v_{j-1}',v)$.	Therefore, for every $y\in v$ there is
-    vertex in $x'\in v_{j-1}'$ adjacent to $y$ and therefore there is
-    a monotone path from $x$ to $x'$ to $y$, as required.
-
-    \item In the case that $w=r^{(i)}(u)$ for some $i\in\{1,\ldots,q\}$,
-    $v_{j-1}'\setminus F$ is a subset of $u$ of size at least
-    $\epsilon|v_{j-1}'| \ge \epsilon|u|/2$.  Now $G$ contains an expander
-    graph for the pair $(u,w)$.  Therefore every vertex $y\in w$ is
-    adjacent to some vertex $x'\in v_{j-1}'\setminus F$.  By induction there
-    is a monotone path from $x$ to $x'$ and the edge $x'y$ extends this
-    to a monotone path from $x$ to $y$, as required.
-  \end{itemize}
-
-  Thus, all that remains is to show that $w=u$ or $w=r^{(i)}(u)$ for
-  some $i\in\{1,\ldots,q\}$.  Let $\tau\in\{0,\ldots,q-1\}$ be such that
-  $v_{j-1}'=r^{(\tau+1)}(v_j)$.  From the definition of $v_{j-1}'$, we
-  know that $r^{(1)}(v_{j-1}),\ldots,r^{(\tau)}(v_{j-1})$ are all dense
-  nodes.  Any node of $T$ with 2 dense children is itself dense. Therefore
-  $r^{(1)}(v_j),\ldots,r^{(\lfloor\tau/2\rfloor)}(v_j)$ are all dense.
-  Therefore, $w=r^{(\kappa)}(v_j)$ for some $\kappa >
-  \lfloor\tau/2\rfloor$.  On the other hand, $u=r^{(\gamma)}(v_j)$ for
-  some $\gamma\in\{\lfloor\tau/2\rfloor,\lfloor\tau/2\rfloor+1\}$.
-  In either case $\kappa \ge \gamma$ so $w=u$ or
-  $w=r^{(\kappa-\gamma)}(u)$, as required.
-\end{proof}
-
+%	
+%	
+%	$\hat{u}\not\subseteq F^+$
+%  and it is time to complete the phase.  
+%	
+%  We claim that, at this point, $w=r(u)$ is dense.  Indeed, since
+%  $u\subseteq F^+$ and $u$ is sparse, the only other possibility is
+%  that $u$ has some strict ancestor $\hat\hat{u}$ that is dense or has
+%  a right buddy that is dense.  In Case~1 above, this is not possible
+%  because every strict ancestor $\hat\hat{u}$ of $u$ contains $x$ but we
+%  know that $x\not\in F^+$.  In Case~2 above, this is also not possible
+%  because every strict ancestor $\hat\hat{u}$ of $u$ is an ancestor of
+%  $\hat{u}$ and we know that $\hat{u}\not\subseteq F^+$.
+%
+%  Now, in Case~2 above, if $w$ is dense, then $w\subseteq F^+$ and
+%  therefore $u\subseteq F^+$, so $\hat{u}=u\cup w\subseteq F^+$.
+%  Therefore, a phase can never complete after Case~2.  Therefore,
+%  the phase completes in Case~1 so the left child $w$ of $\hat{u}$
+%  is dense and, since $\hat{u}$ is not dense the right child
+%  $r(w)$ of $\hat{u}$ must be sparse.  By the same reasoning, the right child of $
+%  
+%  
+%  , so $|r(w)\setminus F|>
+%  \epsilon|r(w)|=\epsilon|\hat{u}|/2$.
+%
+%
+%  To do this we take the first vertex $y=\min(\hat{u}')$ in $\hat{u}$
+%  that can be reached by a monotone path from $x$.
+%
+%
+%  Note that the monotone path from $x$ does not contain any of the
+%  elements $\{z\in \hat{u}: z < y\}$.  None of these elements are in $F^+$
+%  so we must take care to prove that the monotone path is, indeed, long.
+%  Since we are assuming that $\hat{u}\not\subseteq F^+$, this means that
+%  no ancestor of $\hat{u}$ is dense or has a right buddy that is dense.
+%  On the other hand, $u\subseteq F^+$ since, otherwise, the phase would
+%  have completed upon reaching $u$.  
+%  
+%
+%  Therefore, $w=r(u)$ is dense.
+%
+%
+%
+%  Suppose that, after the completion of a round, 
+%  $u\not\subset F^+$, 
+%	
+%	
+%	then we have a monotone path from $x$ 
+%	
+%	satisifies our requirement
+%
+%
+%
+%
+%  We being the phase at the leaf $u$ of $T$ that contains only $x$.
+%  Since $x\not\in F^+$, we know that, for each ancestor $w$ of $u$, $w$
+%  and $r(w)$ are both sparse.  The preceding statement is true even for
+%  $w=u$, so we know that $r(u)$ is sparse.  The pair $(u,w)$ are a buddy
+%  pair so $G$ contains the expander $B_{uw}$ which consists of a single
+%  edge joining $x$ and $x+1$. If $w\not\subseteq F^+$, then we add the
+%  edge $(x,x+1)$ to our path and the phase is complete.
+%
+%    Otherwise, we set $u=w$ and continue from $u$.  From this point onward,
+%  $u\subset F^+$ will be a sparse node that contains a subset $u'\subset
+%  u$, $|u'|\ge \epsilon|u|/2$, such that, for each $x'\in u'$, $G-F$
+%  contains a monotone path from $x$ to $x'$.  
+%
+%  The fact that $u\subset F^+$ implies that $u$ has an ancestor $w$ such that $w$ or $r(w)$ is dense.  (This includes the case where $w=u$ and $r(u)$ is dense.)
+%	
+%	
+%	Note that, in this case $G-F$ contains a monotone path from $x$ to every vertex in $u\setminus F$.
+%
+%	
+%	From this we conclude that $r(u)$ is sparse.
+%
+%  During a phase we will have a specific node $u$ of $T$ and a subset
+%	
+%	for which we know thereare 
+%
+%
+%
+%  Let $v_0,\ldots,v_{\log_2 n}$ be the path from the leaf of $T$
+%  containing $x$ to the root of $T$ and let $v_t$ be the last node on
+%  this path that is the left child of its parent.  Observe that, for
+%  each $j\in\{0,\ldots,t\}$, $v_j$ has a right neighbour $v_j'$ and,
+%  since $x\not\in F^*$, $v_j'$ is sparse.
+%
+%  We claim that, for each $j\in\{0,\ldots,k\}$ and each node $y\in
+%  v_j'\setminus F$, $G-F$ contains a monotone path from $x$ to $y$.
+%  We prove this claim by induction on $j$.  For the base case, $v_0=\{x\}$
+%  and $v_0'$ are buddy leaves in $T$ and there is an expander graph
+%  for $(v_0,v_0')$
+%  that contains the edge $xy$.
+%
+%  For $j>1$, the inductive hypothesis states that $G-F$ contains
+%  a monotone path from $x$ to each $x'\in v_{j-1}'\setminus F$.
+%  Let $S=v_{j-1}'\setminus F$.  There are two cases to consider:
+%  \begin{enumerate}
+%    \item $v_{j-1}$ is the left child $v_{j}$.  In this case,
+%	  $S$ is a subset of $v_j$ of size at least $\epsilon|v_{j-1}|
+%	  = \epsilon|v_j|/2$.  The graph $G$ contains an expander graph
+%	  for the buddy pair $(v_j,v_j')$ and therefore every $y\in v_j'$
+%	  contains a neighbour $x'\in S$.  The (inductive) path from
+%	  $x$ to $x'$ plus the edge $x'y$ is a monotone path in $G-F$
+%	  from $x$ to $y$, as required.
+%
+%    \item $v_{j-1}$ is the right child of $v_j$.	In this case, let
+%	  $v_{j-1}''$ be the right neighbour of $v_{j-1}'$.
+%	  The graph $G$ contains an expander graph for the pair
+%	  $(v_{j-1}',v_{j-1}'')$ and $S$ is a subset of $v_{j-1}'$ of
+%	  size at least $\epsilon|v_{j-1}'|$ so every $y\in v_{j-1}''$ is
+%	  adjacent to some $x'\in v_{j-1}'$.  Therefore, for every $y\in
+%	  v_{j-1}''$, there is a monotone path from $x$ to $x'$ to $y$.
+%	  We finish by observing that $v_j' = v_{j-1}'\cup v_{j-1}''$.
+%  \end{enumerate}
+%  Finally, we observe that, for any $y\ge x$, $y$ is contained in at least one of of $v_0',\ldots,v_t'$.  Therefore $G-F$ contains a monotone path from $x$ to each $y\in\{x+1,\ldots,n\}\setminus F$, as required.
+%\end{proof}
+%
+%\begin{prop}
+%  The graph $G$ defined above has $O(\epsilon^{-1}n\log n)$ edges
+%  and, for any $F\subset V(G)$, $G-F$ contains a monotone path of
+%  size at least $n-(2+4\epsilon)|F|$.
+%\end{prop}
+%
+%\begin{proof}
+%	Let $x_1<x_2<\cdots<x_m$ be the elements of $V(G)\setminus F^*$.
+%	Then, by \clmref{path}, there is a monotone path from $x_i$
+%	to $x_{i+1}$, for each $i\in\{1,\ldots,m-1\}$.
+%	The concatentation of all these paths is a monotone path of size $n-|F^*| \ge n-(2+4\epsilon)|F|$, by \clmref{size}.
+%\end{proof}
+%
+%\section{Achieving $1+\epsilon$}
+%
+%
+%Next, we show how to generalize our construction to obtain a set $F^*$
+%of size at most $(1+\epsilon)|F|$.  To achieve this, we add additional
+%expander graphs. For each $u$ of $T$, let $r(u)$ denote $u$'s right buddy.
+%Our graph $G$ is parameterized by a natural number $q$.  For each
+%node $u$ of $T$, and each $i\in\{1,\ldots,q\}$, $G$ contains the edges
+%of an expander graph for the pair $(u,r^{(i)}(u))$.  Observe that
+%this construction, with $q=1$, corresponds exactly to the graph $G$
+%described in the previous section.  In this generalized construction,
+%the number of edges is $O(q\epsilon^{-1} n\log n)$ edges.
+%
+%Given a set $F\subset V$, we define $F^*$ as follows: Each node $u$ of $T$
+%is included in $F^*$ if
+%\begin{enumerate}
+%   \item $u$ is dense with respect to $F$; or
+%   \item $r^{(i)}(u)$ exists and is dense with respect to 
+%	 $F$ for all $i\in\{1,\ldots,q\}$.
+%\end{enumerate}
+%It follows that 
+%\begin{align*} 
+%	|F^*| & \le \left(\frac{1+1/q}{1-\epsilon}\right)|F| \\
+%	& \le (1+1/q)(1+2\epsilon)|F| &\text{(for any $\epsilon \le 1/2$)} \\
+%	& \le (1+4\epsilon)|F| &\text{(for $q=\lceil 1/\epsilon\rceil$).}
+%\end{align*}
+%
+%All that remains is to prove that $G-F$ contains a monotone path that includes every vertex in $V\setminus F^*$.
+%
+%\begin{clm}
+%  For any $x\in V\setminus F^*$ and any $y\in \{x+1,\ldots,n\}\setminus
+%  F$, $G-F$ contains a monotone path from $x$ to $y$.
+%\end{clm}
+%
+%\begin{proof}
+%  Let $v_0,\ldots,v_{\log_2 n}$ be the path from the leaf of $T$
+%  containing $x$ to the root of $T$.  Let $v_t$ be the last node on
+%  this path such that at least one of $r^{(1)}(v_t),\ldots,r^{(q)}(v_t)$
+%  is defined and is sparse.  Observe that every vertex $y > \max(v_t)$
+%  is contained in $F^*$.
+%
+%  We claim that for every $j\in\{1,\ldots,t\}$ and every node $w$ such
+%  that $w=r^{(i)}(v_j)$, for some $i\in\{1,\ldots,q\}$, $G-F$ contains a
+%  monotone path from $x$ to every vertex $y\in w\setminus F$.  We prove
+%  this by claim by induction on $j$.  When $j=0$, $w = r^{(i)}(v_0)$
+%  for some $i\in\{1,\ldots,q\}$, so $G$ contains an expander graph for
+%  the pair $(v_0,w)$ and this graph contains the single edge joining $x$
+%  to the unique vertex in $y\in w$.
+%
+%  Now we wish to prove this claim for any $w\in\{r^{(i)}(v_j): i\in\{1,\ldots,q\}\}$.  First observe that, for any $i\in\{1,\ldots,\lfloor(q-1)/2\rfloor\}$, the two children of $r^{(i)}(v_j)$ are contained in 
+%	$\{r^{(i)}(v_{j-1}): i\in\{1,\ldots,q\}\}$. Therefore, by induction on $j$ there is a monotone path from $x$ to every vertex of $r^{(i)}(v_j)$ for every $i\in\{1,\ldots,\lfloor (q-1)/2\rfloor\}$. From this point on we therefore assume that $w=r^{(i)}(v_j)$ for some $i \ge $ TODO: Continue here!
+%	
+%	node $w$
+%
+%
+%  For each $j\in\{1,\ldots,t\}$, let $v_j'$ denote the first node among
+%  $r^{(1)}(v_j),\ldots,r^{q}(v_j)$ that is sparse.  To prove our claim
+%  for $j>1$, consider the node $v_{j-1}'$.  From the definition of $F^*$
+%  (and $t$) the node $v_{j-1}'$ exists.  Let $u$ be the parent
+%  of $v_{j-1}'$.
+%  Below, we will argue
+%  that $w=u$ or that $w=r^{(i)}(u)$ for some $i\in\{1,\ldots,q\}$.
+%  \begin{itemize}
+%    \item In the case that $w=u$, the node $u$ has two children $v_{j-1}'$
+%    and $v$.  If $v_{j-1}'$ is the right child of $u$ then, by induction,
+%    there is a monotone path from $x$ to every vertex in $v\setminus F$
+%    and a monotone path from $x$ to every vertex in $v_{j-1}'\setminus F$
+%    and we are done.  If $v_{j-1}'$ is the left child of $u$, then there
+%    is a monotone path from $x$ to every vertex in $x'\in v_{j-1}'$.
+%    Now, $v_{j-1}'\cap F$ is a subset of $v_{j-1}'$ of size at least
+%    $\epsilon |v_{j-1}'|$ and $G$ contains an expander graph for the
+%    pair $(v_{j-1}',v)$.	Therefore, for every $y\in v$ there is
+%    vertex in $x'\in v_{j-1}'$ adjacent to $y$ and therefore there is
+%    a monotone path from $x$ to $x'$ to $y$, as required.
+%
+%    \item In the case that $w=r^{(i)}(u)$ for some $i\in\{1,\ldots,q\}$,
+%    $v_{j-1}'\setminus F$ is a subset of $u$ of size at least
+%    $\epsilon|v_{j-1}'| \ge \epsilon|u|/2$.  Now $G$ contains an expander
+%    graph for the pair $(u,w)$.  Therefore every vertex $y\in w$ is
+%    adjacent to some vertex $x'\in v_{j-1}'\setminus F$.  By induction there
+%    is a monotone path from $x$ to $x'$ and the edge $x'y$ extends this
+%    to a monotone path from $x$ to $y$, as required.
+%  \end{itemize}
+%
+%  Thus, all that remains is to show that $w=u$ or $w=r^{(i)}(u)$ for
+%  some $i\in\{1,\ldots,q\}$.  Let $\tau\in\{0,\ldots,q-1\}$ be such that
+%  $v_{j-1}'=r^{(\tau+1)}(v_j)$.  From the definition of $v_{j-1}'$, we
+%  know that $r^{(1)}(v_{j-1}),\ldots,r^{(\tau)}(v_{j-1})$ are all dense
+%  nodes.  Any node of $T$ with 2 dense children is itself dense. Therefore
+%  $r^{(1)}(v_j),\ldots,r^{(\lfloor\tau/2\rfloor)}(v_j)$ are all dense.
+%  Therefore, $w=r^{(\kappa)}(v_j)$ for some $\kappa >
+%  \lfloor\tau/2\rfloor$.  On the other hand, $u=r^{(\gamma)}(v_j)$ for
+%  some $\gamma\in\{\lfloor\tau/2\rfloor,\lfloor\tau/2\rfloor+1\}$.
+%  In either case $\kappa \ge \gamma$ so $w=u$ or
+%  $w=r^{(\kappa-\gamma)}(u)$, as required.
+%\end{proof}
+%
 %\section{Crap}
 %
 %Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus F=V\setminus F^*$ for any $t<\infty$.}
