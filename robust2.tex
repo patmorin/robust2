@@ -151,16 +151,16 @@ The following observation is a consequence of the definitions so far:
 \end{obs}
 
 \begin{proof}
-  By the definition of $\epsilon$-expander definition
-  $N_{B_{uw}}(u')$ is a subset of $w$ of size at least
-  $(1-\epsilon/2)|w|$. Therefore  $w'=N_{B_{uw}}(u')\setminus F$ has
-  size at least $(1-\epsilon/2)|w|-|F\cap w|$.  Every vertex $y$ in $w'$
-  has a neighbour $x'\in u'$. Appending the edge $x'y$ to the monotone
-  path from $x$ to $x'$ gives a monotone path from $x$ to $y$.
+  By the definition of $\epsilon$-expander, $N_{B_{uw}}(u')$ is a
+  subset of $w$ of size at least $(1-\epsilon/2)|w|$. Therefore
+  $w'=N_{B_{uw}}(u')\setminus F$ has size $|w'|\ge
+  (1-\epsilon/2)|w|-|F\cap w|$.  Every vertex $y$ in $w'$ has a neighbour
+  $x'\in u'$. Appending the edge $x'y$ to the monotone path from $x$
+  to $x'$ gives a monotone path from $x$ to $y$.
 \end{proof}
    
 	
-\subsection{A First Try}
+\subsection{A $(2+\epsilon)k$-Robust Construction}
 
 We now describe a first construction of $G$ that has $O(\epsilon^{-1}n\log
 n)$ edges and guarantees that, for any $F\subseteq V$,  $G-F$ has a
@@ -169,7 +169,7 @@ notation slightly, this means that, for any $\delta >0$, $G$ is a
 $(2+\delta)k$-robust 1-spanner with $O(\delta^{-1}n\log n)$ edges.
 
 The graph $G$ contains, for each pair $(u,w)$ of buddies in $T$, an
-expander graph $B_{uw}$ for the pair $(u,w)$.  The graph $B_{uw}$ has $O(\epsilon^{-1}|u|)$ edges. Therefore, for each level $L_i$, the buddy pairs in $L_i$ contribute $O(\epsilon^{-1} n)$ edges to $G$.  Summing over all levels we see that $G$ has $O(\epsilon^{-1}n\log n)$ edges.
+expander graph $B_{uw}$ for the pair $(u,w)$.  The graph $B_{uw}$ has $O(|u|/\epsilon)$ edges. Therefore, for each level $L_i$, the buddy pairs in $L_i$ contribute $O(n/\epsilon)$ edges to $G$.  Summing over all levels we see that $G$ has $O(\epsilon^{-1}n\log n)$ edges.
 
 Next we define a set $F^+\supseteq F$ as follows: 
 \[
@@ -194,7 +194,7 @@ First we show that $F^+\supseteq F$ is not overly large:
   \]
 	so
   \[
-    \frac{|F^*|}{|F|} 
+    \frac{|F^+|}{|F|} 
       \le \frac{2}{1-\epsilon} 
 	= 2\sum_{r=0}^\infty\epsilon^r 
 	= 2(1+\epsilon + \epsilon\sum_{r=1}^\infty \epsilon^r 
@@ -202,84 +202,183 @@ First we show that $F^+\supseteq F$ is not overly large:
   \]
 \end{proof}
 
-Next we show that $G-F$ contains a monotone path of length $n-|F^*|$.
-
 \begin{clm}\clmlabel{path}
-  For any $F\subset V(G)$, $G-F$ contains a monotone path of length
-  at least $n - (2+O(\epsilon))|F|$.
+  For any $F\subset V(G)$, $G-F$ contains a monotone path 
+  of size at least $n - (2+O(\epsilon))|F|$.
 \end{clm}
 
 \begin{proof}
+  For a sparse node $u$ of $T$ with $x<\min(u)$ we say that a subset
+  $u'\subset u$ is a \emph{witness set} for $(x,u)$ if $|u'|\ge
+  (1-\epsilon/2)|u|-|F\cap u|$ and, for every $x'\in u$, $G-F$ contains
+  a monotone path from $x$ to $x'$.
+
   We will construct the path in $G-F$ in a sequence of phases. At
-  the beginning of each phase we begin at a vertex $x\not\in F^+$
-  and the phase will end when the path reaches another vertex
-  $y\not\in F^+$.  Initially, we begin with $x$ as the first vertex
-  not in $F^+$, i.e., $x=\min(V(G)\setminus F^+)$.
+  the beginning of phase $p$ we begin at a vertex $x_p\not\in F^+$
+  and the phase will end when we are able to construct a monotone path to some
+  vertex $y_p>x_p$, $y_p\not\in F^+$.  For the first phase, we begin with $x_1$
+  as the first vertex not in $F^+$, i.e., $x_1=\min(V(G)\setminus F^+)$.
+  For each subsequent phase $p$, the starting vertex $x_p=y_{p-1}$ found
+  in the previous phase.
 
-  During each phase we will always consider a pair of nodes $(a,u)$
-  in $T$ where $a$ contains $x$ and $u=r(a)$.  At all times we will
-  maintain a \emph{witness set} $u'\subseteq u$ of size
-  \[
-     |u'| \ge (1-\epsilon/2)|u|-|F\cap u|
-  \]
-  such that, for each $x'\in u'$, $G-F$ contains a monotone path from $x$
-  to $x'$.  We call any set $u'\subseteq u$ satisfying these criteria a
-  \emph{witness set} for $(x,u)$.
+  The $p$th phase consists of a sequence of rounds. At the beginning of
+  the $i$th round we have a triple $(a_i,u_i,u_i')$ where $a_i$ is a
+  node of $T$ containing $x_p$, $u_i=r(a_i)$, and $u_i'$ is a witness
+  set for $(x_p,u_i)$.  To begin phase $p$ we set $a_0=\{x_p\}$,
+  $u_0=r(a_0)=\{x_p+1\}$, and $u_0'=u_0$.  Since $x_p\not\in F^+$,
+  neither $a_0$ nor $u_0$ is dense.  Since $a_0$ and $u_0$ are buddies,
+  $G$ contains the expander $B_{a_0u_0}$ which contains the single
+  edge with endpoints $x_p$ and $x_p+1$.  Therefore, $u_0'=\{x_p+1\}$
+  is indeed a witness set for $(x_p,u_0)$.
 
-  When a phase begins, $a$ is the leaf of $T$ that contains only $x$ and
-  therefore $u=r(a)$ is the leaf of $T$ containing only $x+1$.  Since $a$
-  and $u$ are buddies, $G$ contains an expander $B_{au}$ that contains the
-  single edge joining $x$ and $x+1$.  Therefore, the set $u'=u=\{x+1\}$
-  is indeed a witness set for $(x,u)$.  
-  At this point, if $x+1\not\in
-  F^+$, then we extend our path from $x$ to $x+1$ and begin a new phase.
-  Therefore, from this point on we will assume that $w\subseteq F^+$.
-
-  Now consider the general case where $a\supset\{x\}$, $u=r(a)$ and
-  $u'\subset u$ is a witness set for $(x,u)$.  Note that, since $x\not\in
-  F^+$, each of $a$ and $u$ are sparse with respect to $F$. There are two cases to consider:
+  Now consider a general round that begins with $(a_i,u_i,u_i')$.
+  Since $x_p\in a_i$ and $x_p\not\in F^+$, each of $a_i$ and $u_i$ are
+  sparse with respect to $F$. There are three cases to consider. These
+  cases are not mutually exclusive, but when more than one applies,
+  we consider the first applicable case.
   \begin{enumerate}
-    \item $a$ and $u$ are siblings with a common parent $\hat{a}$.  In this case, let $\hat{u}=r(\hat{a})$.  Notice that $u'\subseteq u\subset\hat{a}$ and that $|u'|\ge \epsilon|u|/2 = \epsilon|\hat{a}|/4$.  
-	    Therefore, by \obsref{extend}, $\hat{u}'= N_{B_{\hat{a}\hat{u}}}(u')\setminus F$ is a witness set for $(x,\hat{u})$.
-	    %Thus, we can continue this phase with $a=\hat{a}$, $u=\hat{u}$ and $u'=\hat{u}$.
+   \item $u_i'\setminus F^+$ is non-empty. In this case we take
+    $y_p=\min(u_i'\setminus F^+)$. We have found a monotone
+    path from $x_p$ to $y_p\not\in F^+$ so we complete the phase and
+    being the next phase starting from $x_{p+1}=y_p$.
 
-    \item The parent $\hat{a}$ of $a$ and the parent $\hat{u}$ of $u$ are distinct.  In this case, $u'\subset u$ has size
-    \[  |u'| \ge (1-\epsilon/2)|u|-|F\cap u| \ge \epsilon|u|/2 > \epsilon|u|/4 \enspace .\]
-		  Let $w=r(u)$ be the right child of $\hat{u}$.  Then $G$ contains the expander $B_{uw}$, by \obsref{extend} $w'=N_{B_{uw}}(u')\setminus F$
-		  is a witness set for $(x,w)$. 
-		   Now, for every $y\in \hat{u}'=u'\cup w'$, $G-F$ contains a monotone path from $x$ to $y$ and 
-		  \[ |\hat{u}'| \ge |u'|+|w'| \ge 2(1-\epsilon/2)|u| - |F\cap u| - |F\cap w| = (1-\epsilon/2)|\hat{u}| - |F\cap \hat{u}|  \enspace .
-	    \]
-		  Therefore $\hat{u}'$ is a witness set for $(x,\hat{u})$.
-		  %and 
-     %the phase can continue with $a=\hat{a}$, $u=\hat{u}$ and $u'=\hat{u}'$.
+    \item $u_i$ contains $n-1$.  In this case, $r(u_i)$ does not exist.
+    This is the final phase.  We take $y_p$ to be any element of $u_i'$.
+    Since $y_p\in F^+$ we can not begin another phase and we terminate
+    the entire procedure, having constructed a path that terminates at
+    any node $y_p$.
+
+    \item $a_i$ and $u_i$ are siblings with a common
+    parent $a_{i+1}$.  In this case, we set $u_{i+1}=r(a_{i+1})$.
+    Notice that $u_i'\subseteq u_{i}\subset a_{i+1}$ and that
+    $|u_i'|\ge \epsilon|u_i|/2 = \epsilon|a_{i+1}|/4$.  Therefore, by
+    \obsref{extend}, $u_{i+1}'= N_{B_{a_{i+1}u_{i+1}}}(u')\setminus F$
+    is a witness set for $(x_p,u_{i+1})$.
+
+   \item Otherwise, the parent $a_{i+1}$ of $a_i$ and the parent
+   $u_{i+1}$ of $u_i$ are distinct (and $u_i$ is the left child
+   of $u_{i+1}$.  Let $w_i=r(u_i)$ be the right child of $u_{i+1}$.
+   Then $G$ contains the expander $B_{u_iw_i}$, so by \obsref{extend}
+   $w_i'=N_{B_{uw}}(u')\setminus F$ is a witness set for $(x_p,w)$.
+
+   Now, for every $y\in u_{i+1}'=u_i'\cup w_i'$, $G-F$ contains a monotone
+   path from $x$ to $y$ and
+   \begin{align*}
+	   |u_{i+1}'| 
+	   & \ge |u_i'|+|w_i'| \\
+	   & \ge (1-\epsilon/2)|u_{i}| - |F\cap u_i| + (1-\epsilon/2)|w_i| - |F\cap w_i| \\
+	   &= (1-\epsilon/2)|u_{i+1}| - |F\cap u_{i+1}|  \enspace .
+   \end{align*}
+  Therefore $u_{i+1}'$ is a witness set for $(x_p,u_{i+1})$.
   \end{enumerate}
 
-  Thus far, we have reached the point $\hat{u'}\subseteq \hat{u}$ is a
-  witness set for $(x,\hat{u})$.  If $\hat{u}\subseteq F^+$ then we set
-  $a=\hat{a}$, $u=\hat{u}$ and $u'=\hat{u}'$ and continue the phase.
-  Otherwise, $\hat{u}$ contains some vertex $y\not\in F^+$.  If this
-  occurs, then we complete the phase using the monotone path from $x$
-  to $y$ using the minimum such vertex and begin a new phase starting at $y$.
+  This completes the description of phase $p$ that constructs a
+  monotone path in $G-P$ that begins at $x_p$
+  and ends at $y_p$.  We will now argue that the vast majority of
+  vertices in $\{x_p+1,\ldots,y_p-1\}$ are in the set $F^+$.  More
+  specifically, we will show that $|F^+\cap\{x_p+1,\ldots,y_p-1\}| \ge
+  (1-O(\epsilon))(y_p-x_p-1)$.
 
-  We claim that, if a phase does not complete, then $|F^+\cap\hat{u}|
-  \ge (1-\epsilon/2)|\hat{u}|$. This is true in Case~1, above because
-  $N_{B_{\hat{a}\hat{u}}}(u)$ is a subset of $\hat{u}$ whose size is at
-  least $(1-\epsilon/2)|\hat{u}|$.  This is also true in Case~2 because
-  $u\cup N_{B_{uw}}(u)$ is a subset of $\hat{u}$ whose size is at least
-	$u\cup N_{B_{uw}}(u)$. (TODO: In Case~2, $w$ is also blech-dense.)
-
-  Summarizing, a phase visits a sequence of nodes $u_0,\ldots,u_k$ defined as follows: $u_0=x$ and for $i\in\{2,\ldots,k\}$, 
-  \begin{enumerate}
-     \item In Case~1, $u_{i}$ is the parent of $r(u_{i-1})$.
-     \item In Case~2, $u_i$ is the parent of (its left child) $u_{u-1}$.
-  \end{enumerate}
-  For each $i\in\{1,\ldots,k-1\}$,
+  Consider the sequence $u_0,\ldots,u_k$.  This sequence begins at
+  $u_0=\{x_p+1\}$ and each set in the sequence is twice as large as its
+  predecessor.   If, for some node $u_i$ in this sequence $u_i\supset
+  u_{i-1}$, then $u_{i-1}$ is the left child of $u_i$ in $T$ and
+  $w_{i-1}$ is the right child of $u_i$.    We create a new sequence
+  $v_0,\ldots,v_k$ where
   \[
-	  |u_i\setminus F^+| \le (\epsilon/2)|u_i| \le \epsilon|F^+\cap u_i|
+    v_i = \begin{cases} 
+	    w_{i-1} & \text{if $i>0$ and $u_{i-1}\subset u_i$} \\
+	    u_i & \text{otherwise}
+    \end{cases}
   \]
-  where the second inquality holds provided that $\epsilon \le 2/3$.
-  For $u_k$ TODO: be more careful to partition here.
+  The nodes in the modified sequence $v_0,\ldots,v_k$ form a partition
+  of $\{\min(v_0),\ldots,\max(v_k)\}$ and each node $v_i$ is at most
+  four times the size of $v_{i-1}$.
+
+  In Case~3, above, the phase will terminate in round $i+1$ if
+  $|u_{i+1}\setminus F^+|>\epsilon|u_{i+1}|/2$.  In Case~4, the phase
+  will terminate in round $i+1$ if $|w_i\setminus F^+|>\epsilon|w_i|/2$.
+  This implies that, for each $i\in\{1,\ldots,k-1\}$, $|v_i\setminus
+  F^+|\le\epsilon|v_i|/2$, otherwise the phase would have terminated
+  in round $i<k$.  Stated another way,
+  \[
+	  |v_i|\le \frac{|v_i\cap F^+|}{1-\epsilon/2} \le (1+\epsilon)|v_i\cap F^+| \enspace .
+  \]
+
+  Let $\hat{v}_k=\{z\in v_k:z< y\}$.  Observe that $\hat{v}_k$ contains
+  at most $\epsilon|v_k|/2$ vertices that are not in $F^+$, otherwise
+  $v_k'\cap \hat{v}_k$ is non-empty, contradicting the minimality of $y_p$. 
+  This means
+  \[    |\hat{v}_k| \le |F^+\cap \hat{v}_k| + \epsilon|v_k|/2 \enspace .
+  \]
+  Now we have
+  \begin{align*}
+	  y_p - x_p - 1 & = \sum_{i=0}^{k-1} |v_i| + |\hat{v}_k|  \\
+	  & \le (1+\epsilon)\sum_{i=0}^{k-1} |v_i\cap F^+| + |\hat{v}_k| \\
+	  & \le (1+\epsilon)\sum_{i=0}^{k-1} |v_i\cap F^+| + |\hat{v}_k\cap F^+| + \epsilon|v_k|/2 \\ 
+	  & \le  (1+\epsilon)\sum_{i=0}^{k-1}|v_i\cap F^+| + |\hat{v}_k\cap F^+| + 2\epsilon|v_{k-1}| \\ 
+	  & \le  (1+\epsilon)\sum_{i=0}^{k-1}|v_i\cap F^+| + |\hat{v}_k\cap F^+| + (2\epsilon+2\epsilon^2)|v_{k-1}\cap F^+| \\ 
+	  & \le  (1+3\epsilon+\epsilon^2)\sum_{i=0}^{k-1}|v_i\cap F^+| + |\hat{v}_k\cap F^+| \\
+	  & <  (1+4\epsilon)\sum_{i=0}^{k-1}|v_i\cap F^+| + |\hat{v}_k\cap F^+|  \\
+	  & =  (1+4\epsilon)|\{z\in F^+: x_p< z< y_p\}|
+  \end{align*}
+
+  Suppose the procedure terminates after $s-1$ phases, so that $x_1<\cdots<x_{s-1}$ are the vertices that begin each phase.  For convenience we define $x_s=y_{s-1}$, $x_0=-1$ and $x_{s+1}=n$.
+
+  For each $p\in\{0,\ldots,s\}$, let $F_p^+=\{z\in F^+: x_p <
+  x < x_{p+1}\}$.  Since none of $x_1,\ldots,x_s$ are in $F^+$,
+  $F_0^+,\ldots,F_{s}$ is a partition of $F^+$.  
+
+ For each $p\in\{1,\ldots,s\}$, the argument above shows that $(1+4\epsilon)|F_i^+|\ge x_{p+1}-x_p-1$.
+  Furthermore, the minimality of $x_1$ ensures that $(1+4\epsilon)|F_0^+|\ge |F_0^+|=x_1=x_1-x_0-1$.  
+   Therefore,
+  \begin{align*}
+	  (1+4\epsilon)|F^+| & = (1+4\epsilon)\sum_{i=0}^s |F^+_i| \\
+		& \ge \sum_{i=0}^s (x_{i+1}-x_i-1) \\
+		& = n-s \enspace .
+  \end{align*}
+  so 
+  \begin{align*}
+	  s & \ge n-(1+4\epsilon)|F^+| \\
+	  & \ge n-(1+4\epsilon)(2+4\epsilon)|F|\\
+	  & =n-(2+O(\epsilon))|F| \enspace . 
+  \end{align*}
+  Since $s$ is a lower bound on the size of the monotone path
+  constructed by this procedure, this completes the proof.
+\end{proof}
+
+\begin{cor}
+	The graph $G$ is a $(2+O(\epsilon))k$-robust 1-spanner.
+\end{cor}
+
+\begin{proof}
+	For any $F\subset V(G)$, \clmref{path} constructs a monotone path $P$ in $G-F$ of size $n-(2+O(\epsilon))|F|$.  Let $F^*=V(G)\setminus V(P)$ so $|F^*|\le (2+O(\epsilon))|F|$.  Then $P$, which is a subgraph of $G-F$ is a 1-spanner of $V(G)\setminus F^*$. Therefore $G-F$ is a 1-spanner of $V(G)\setminus F^*$, as required.
+\end{proof}
+%  
+%  
+%  For each such node, we replace $u_i$ with $w_i=r_{i-1}$
+%
+%	
+%	
+%	Now, modify this sequence so that, for each $i\in\{2,\ldots,k\}$, if $u_i$ contains $u_{i-1}$ if a node contains its predecessor
+%	
+%	
+%	$u_0,\ldots,u_k$ defined as follows: $u_0=\{x+1\}$ and, for each 
+%  $i\in\{1,\ldots,k-1\}$
+%  \begin{enumerate}	
+%    \item if $u_i$ is the left child of its parent, then $u_i$ is the parent of $u_{i-1}$, if $u_{i-1}$ is 
+%		  
+%		  
+%		  
+%		  $u_i$In Case~1, $u_{i}$ is the parent of $r(u_{i-1})$.
+%     \item In Case~2, $u_i$ is the parent of (its left child) $u_{u-1}$.
+%  \end{enumerate}
+%  For each $i\in\{1,\ldots,k-1\}$,
+%  \[
+%	  |u_i\setminus F^+| \le (\epsilon/2)|u_i| \le \epsilon|F^+\cap u_i|
+%  \]
+%  where the second inquality holds provided that $\epsilon \le 2/3$.
+%  For $u_k$ TODO: be more careful to partition here.
 %	
 %	
 %	$\hat{u}\not\subseteq F^+$
