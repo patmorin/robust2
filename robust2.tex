@@ -44,19 +44,19 @@ where $\|vw\|$ denotes the Euclidean distance between $v$ and $w$ and
 $\|vw\|_G$ denote the Euclidean length of the shortest path between $v$
 and $w$ in $G$, where use the convention that $\|vw\|_G=\infty$ if $v$
 and $w$ are in different components of $G$.  
-Most of the research on spanners focus on \emph{sparse}
+Most of the research on spanners focuses on \emph{sparse}
 spanners, where the number of edges in $G$ is linear, or close to linear,
 in $|V|$.  In addition to having natural applications to transportation
 networks, sparse $t$-spanners have found numerous applications in
 approximation algorithms and geometric data structures.
 
-For any non-decreasing function $f\colon\N\to\N$, Bose \etal\ say that
-a geometric graph $G$ is an \emph{$f(k)$-robust $t$-spanner} if, for
-every set $F\subset V(G)$, there exists a set $F^*\supseteq F$ such that
-$|F^*|\le f(|F|)$ and the graph $G-F$ is a $t$-spanner of $V(G)\setminus
-F^*$.  In networking applications, this definition captures the idea
-that a set $F$ of faulty vertices should only have a noticeable effect
-on a set $F^*$ of vertices whose size is a function of the size of $F$.
+For any non-decreasing function $f\colon\N\to\N$, Bose \etal\ say
+that a geometric graph $G$ is an \emph{$f(k)$-robust $t$-spanner}
+if, for every set $F\subset V(G)$, there exists a set $F^*\supseteq
+F$ such that $|F^*|\le f(|F|)$ and the graph $G-F$ is a $t$-spanner
+of $V(G)\setminus F^*$.  In networking applications, this definition
+captures the idea that the number of nodes harmed by a set faulty nodes
+should be bounded by a function of the number of faulty nodes.
 
 Under this definition, the most robust spanner one could hope for
 would be a $k$-robust spanner, but it is straightforward to argue
@@ -64,8 +64,10 @@ that, even for one dimensional point sets, the complete graph is the
 only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
-F=V\setminus F^*$ for any $t<\infty$.} A natural second-best option is a
-$ck$-robust spanner with a near-linear number of edges, for some $c>1$ .
+F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
+and is therefore not suitable for many applications. A natural second-best
+option is a $ck$-robust spanner with a near-linear number of edges,
+for some $c>1$ .
 
 Bose \etal \cite[Theorem~3]{bose.dujmovic.ea:robust} show that for any
 constants $c,t>1$ and any $n$-element set $V\subset\R$, any $ck$-robust
