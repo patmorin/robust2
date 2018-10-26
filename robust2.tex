@@ -2,7 +2,7 @@
 \usepackage{pat}
 \usepackage{hyperref}
 \usepackage{paralist}
-\usepackage[noend]{algorithmic}
+\usepackage{graphicx}
 \hypersetup{colorlinks=true, linkcolor=linkblue,  anchorcolor=linkblue,
 citecolor=linkblue, filecolor=linkblue, menucolor=linkblue,
 urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me} 
@@ -93,14 +93,22 @@ $\epsilon$.
 \section{The Construction}
 
 
-Without loss of generality, assume $n$ is a power of 2.  Construct a
-complete ordered binary tree $T$ of height $\log_2 n$ whose nodes are
-contiguous sets of integers.  The leaves of $T$, in left-to-right order,
-are the singleton sets $\{0\},\ldots,\{n-1\}$ and each internal node of
-$T$ is the set obtained by taking the union of its two children.  Stated
-another way, $T=T(0,\log_2 n-1)$, whree $T(i,b)$ has a single node $\{i\}$
-if $b=0$. Otherwise $T(i,b)$ has a root node $\{i,i+1,\ldots,i+2^{b-1}-1\}$
-whose two children are the subtrees $T(i,b-1)$ and $T(i+2^{b-1}, b-1)$.
+Without loss of generality, assume $n$ is a power of 2 and refer to
+\figref{sets}.  Construct a complete ordered binary tree $T$ of height
+$\log_2 n$ whose nodes are contiguous sets of integers.  The leaves of
+$T$, in left-to-right order, are the singleton sets $\{0\},\ldots,\{n-1\}$
+and each internal node of $T$ is the set obtained by taking the union
+of its two children.  Stated another way, $T=T(0,\log_2 n-1)$, whree
+$T(i,b)$ has a single node $\{i\}$ if $b=0$. Otherwise $T(i,b)$ has
+a root node $\{i,i+1,\ldots,i+2^{b-1}-1\}$ whose two children are the
+subtrees $T(i,b-1)$ and $T(i+2^{b-1}, b-1)$.
+
+\begin{figure}
+  \begin{center}
+   \includegraphics[width=.98\textwidth]{figs/binary-tree-1}
+  \end{center}
+  \caption{The binary tree $T$ on $\{0,\ldots,n-1\}$.}
+\end{figure}
 
 Note that the nodes of $T$ can be partitioned in levels $L_0,\ldots,L_{\log_2 n}$, where each $L_i=\{u_{i,0},\ldots,u_{i,2^i-1}\}$ and
 \[
@@ -177,7 +185,15 @@ Next we define a set $F^+\supseteq F$ as follows:
 \[
 	F^+ = \cup\{ u\in V(T): \text{$u$ is dense or $r(u)$ is dense}\} \enspace .
 \]
+Refer to \figref{dense-sparse}.
 First we show that $F^+\supseteq F$ is not overly large:
+
+\begin{figure}
+  \begin{center}
+	  \includegraphics[width=.98\textwidth]{figs/binary-tree-2}
+  \end{center}
+  \caption{An example with $\epsilon=1/4$.  Elements in $F$ are denoted by $\times$, dense nodes are shaded blue, sparse nodes whose right buddy is dense are shaded in pink. $F^+$ includes every value in every shaded node.}
+\end{figure}
 
 \begin{clm}\clmlabel{size}
   $F^+\supseteq F$ and, for any $\epsilon < 1/2$, $|F^+|\le (2+4\epsilon)|F|$.
