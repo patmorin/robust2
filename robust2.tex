@@ -134,7 +134,8 @@ In our construction, $d=\Theta(\log^2 n)$ and the remaining parameters
 are small values that are upper bounded by some function of $\epsilon$. In particular, for any constant $\epsilon >0$, these parameters are also constant.
 
 \begin{clm}
-	For any constant $\epsilon>0$, the graph $H_T$ has $O(d^2|T|)$ edges.
+	For any constants $\alpha,\beta,\zeta,\eta>0$, the graph $H_T$ has 
+	$O(d^2|T|)$ edges.
 \end{clm}
 
 Finally, we recursively construct $G_{T_{u_0}}$ and $G_{T_1}$ and add the
@@ -210,55 +211,118 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
 
 \begin{clm}
   For any $F\subset L(T)$ and every point $p\in L(T)\setminus F^+_T$,
-	there exists $X\subset L(T)$, $|X|\ge (1-\beta\rank(T)/d)|T|-|F\cap L(T)|$
+	there exists $X\subset L(T)$, $|X|\ge (1-a\rank(T)/d)|T|-|F^+_T\cap L(T)|$
   such that for every $q\in X$, $G_T-F$
   contains a path from $p$ to $q$ of length $C\diam(T)$.
 \end{clm}
 
 \begin{proof}
   The proof is by induction on $|T|$.  If $|T|\le\kappa$, the result is trivial since $G_T$ is the complete graph.
-  For $|T|>0$, there are two cases to consider:
+  For $|T|>\kappa$, there are several cases to consider:
   \begin{enumerate}
-    \item $T_{u_1}$ is $F$-dense.  In this case we apply induction on $T_1$
-       and obtain a set $X$ with required properties.  Now, 
-		  \[  |X| \ge (1-\beta\rank(T_1)/d)|T_1|-|F \cap L(T_1)|
-		     \ge (1-\beta\rank(T)/d)|T_1|-|F \cap L(T_1)|
-		  \]
-       On the other hand,
-       \begin{align*}
-	       (1-\beta\rank(T)/d)|T| - |F\cap L(T)|
-	        & = (1-\beta\rank(T)/d)|T_{u_0}| - |F\cap L(T_{u_0})|
-		  + (1-\beta\rank(T)/d)|T_{1}| - |F\cap L(T_{1})| \\
-		& \le (1-\beta\rank(T)/d)|T_{u_0}| - (1-\delta\rank(T_{u_0})/d)|T_0|
-		  + (1-\beta\rank(T)/d)|T_{1}| - |F\cap L(T_{1})| \\
-		& \le 
-		  + (1-\beta\rank(T)/d)|T_{1}| - |F\cap L(T_{1})| = |X| \\
-       \end{align*} 
-       where the final inequality follows provided that $\beta \le
-       \delta\rank(T_{u_0})/\rank(T)$.  (Note that, for $|T|\ge \kappa
-       \ge 6$, $\rank(T)\ge 4$ and $\rank(T_{u_0})\ge\rank(T)-3\ge 1$,
-       so it is sufficient to take $\beta\le \delta/4$.)
-
-    \item $T_{u_0}$ is not $F$-dense.  There are two subcases to consider:
+	  \item $T_{u_1}$ is $F$-dense. In this case $F^+_T\supseteq
+	  F^+_{T_{u_1}}= L(T_{u_1})$. Therefore, $p\in L(T_1)$.
+          Now, we apply induction on $T_1$
+       and obtain a set $X$ that is $p$-reachable with paths of length at
+		  most $C\diam'(T_1)< C\diam'(T)$.  Now, 
+	\begin{align*}
+		|X| & \ge (1-a\rank(T_1)/d)|T_1|-|F^+_{T_1} \cap L(T_1)| \\
+		& \ge (1-a\rank(T)/d)|T_1|-|F^+_{T_1} \cap L(T_1)| 
+	 	& \text{(since $\rank(T)>\rank(T_1)$)} \\
+		& \ge (1-a\rank(T)/d)|T_1|-|F^+_{T} \cap L(T_1)| 
+		& \text{(since $F^+_T\supseteq F^+_{T_1}$)} \\
+		& > (1-a\rank(T)/d)|T_1|-|F^+_{T} \cap L(T_1)| 
+		  + (1-a\rank(T)/d)|T_{u_0}|-|F^+_{T_{u_0}}|
+		& \text{(since $|T_{u_0}|=|F^+_{T_{u_0}}|$)} \\
+		& = (1-a\rank(T)/d)|T|-|F^+_{T}\cap L(T_1)| - |F^+_{T_{u_0}}|
+		& \text{(since $|T_1|+|T_{u_0}|=|T|$)} \\
+		& = (1-a\rank(T)/d)|T|-|F^+_{T}\cap L(T_1)| - |F^+_T\cap L(T_{u_0})|
+		& \text{(since $F^+_{T_{u_0}}=F^+_T\cap L(T_{u_0})$)} \\
+		& = (1-a\rank(T)/d)|T|-|F^+_{T}| \enspace , 
+	\end{align*}
+	as required.
+    \item $T_{u_1}$ is not $F$-dense. In this case, there are two subcases
+    to consider:
     \begin{enumerate}
-	    \item If $p\in L(T_{u_0})$, then we can apply induction on $T_{u_0}$ to obtain a set $X_0$ that is $p$-reachable by paths of length at most $C\diam'(T_{u_0}) < (1-1/2d)C\diam'(T)$.  The set reached this way has size $(1-\beta\diam(X).      Hmmmmmmmmm
+	    \item $p\in L(T_{u_0})$. 
+		    Since $u_0$ is not the root of $T$, $\diam'(T_{u_0}) \le (1-1/2d)\diam'(T)$.  We can therefore apply induction on $T_{u_0}$ to find a $p$-reachable set $X_0\subseteq L(T_{u_0})$ of size 
+\begin{align*}
+	|X_0| & \ge (1-a\rank(T_{u_0})/d)|T_{u_0}|-F^+_{T_{u_0}} \\
+	      & \ge (1-a\rank(T_{u_0})/d)|T_{u_0}|-(1-\epsilon\rank(T_{u_0})/d)|T_{u_0}| \\
+	      & = (\epsilon-a)(\rank(T_{u_0}/d)|T_{u_0}| \\
+	      & \ge (\epsilon-a)((\rank(T)-3)/d)|T_{u_0}| \\
+	      & \ge ((\epsilon-a)/d)|T_{u_0}| 
+		& \text{(for $|T|\ge \kappa \ge 5$)} \\
+	      & \ge ((\epsilon-a)/(3d))|T| \enspace .
+\end{align*}
+		    By Property~PR2 of $H_T$ (with $\zeta = (\epsilon-a)/3$ and $\eta \le a\rank(T)$), we can then take $X=N_{H_T}(X_0)\setminus F^+_T$.  Then $|X| \ge (1-a\rank(T)/d)|T|-|F^+_T|$ and every point $q\in X$ is reachable from $p$ by a path of length at most
+		    \[ (C(1-(1/2d))+1)\diam'(P) \le C\diam'(P) \]
+	     for $C\ge 4d$.
 
-       \item If $p\in L(T_1)$, then there is an edge from $p$ to some $p'\in L(T_{u_0}\setminus F^+_{T_{u_0}}$.  We can then proceed from $p'$ as in the previous case to obtain a set $X$ reachable by paths of length at most $(1-1/2d)(C+2)\diam(T)\le C\diam(T)$ for $C\ge XXX$.
-	    
-	    
-	    TFor any node $u$ of $T$, let $\diam'(u)$ denote the the sum of the lengths of the sides of the minimum bounding box of $u$.  Recall
+	    \item $p\in L(T_1)$. Since $p\not\in F^+_T$, $H_T$ contains an
+	    edge from $p$ to some point $p'\in L(T_{u_1})$.  As described
+	    in the previous case, there is a $p'$-reachable set $X$ of
+	    size $(1-a\rank(T)/d)|T|-|F^+_T|$ that is reachable from $p'$
+	    by paths of length at most $((1-1/2d)C+1)\diam'(P)$.
+	    The edge $pp'$ has length at most
+	    $\diam'(T)$. Therefore $X$ is $p$-reachable using
+	    paths of length at most $((1-1/2d)C+2)\diam'(P)
+	    \le C\diam'(P)$ for $C\ge 4d$.
+    \end{enumerate}
   \end{enumerate}
-
-  For a node $u$ of $T$, let $\diam'(u)$ denote 
-  If $p$ is in $L(T_{u_0})$ then $T_{u_0}$ is not $F$-dense, so we apply
-  induction on $T_{u_0}$ to get to a huge set in $L(T_{u_0})$. From
-  there we expand into $L(T)$ using Property~2.
-
-  If $p$ is in $L(T_1)$ then, since $p\not\in F^+_T$, there is an edge
-  from $p$ to some point $p'$ in $L(T_{u_0})$.  At this point we proceed
-  from $p'$ as described above.
 \end{proof}
 
+\subsection{Multiple Scales}
+
+\begin{lem}
+  For any $n$-point set $P\subset\R^d$ with fair-split tree $T$, there
+  exists a graph $G_P=(P,E)$ with $O(n\log^5 n)$ edges such that, 
+  for any $F\subseteq P$, there
+  exists a superset $F^+_P\supseteq F$ with $|F^+_P|\le
+  (1+\epsilon)|F|$ such that for any node $u$ of $T$ and any point
+	$p\in L(T_u)$, there is a subset $X\subseteq L(T_u)$ with $|X|\ge (1-\epsilon)|T_u|$ such that
+  for every $q\in X$, $G_P-F$ contains a path from $p$ to $q$
+  of length at most $C\diam'(T_u)$.
+\end{lem}
+
+
+\begin{proof}
+  For each node $u$ of $T$, define $\lbl(u)=\floor{\log_{1+tau}|T_u|}$. We
+  say that a node $u$ of $T$ is \emph{special} if $u$ is the root of $T$
+  or $\lbl(u)\neq\lbl(\parent(u))$.  The graph $G_P$ contains all edges
+  of construct $G_{T_u}$ for each special node $u$.  Since there are only
+  $1+\log_{1+\tau} n$ it follows that the total number of edges in
+  all graphs generated by nodes with label $i$ is $O(n\log^4 n)$,
+  for a total of $O(n\log^5 n)$ edges.
+
+  The set $F^+_P$ is the union over all special nodes $u$ of $F^+_{T_u}$.
+  Again, it follows that $|F^+_P| \le ((1+\log_{1+\tau}n)(1+\log_{3/2}
+  n)\epsilon/d)|F|$.  Thus, $|F^+_P|\le (1+\epsilon)|F^+|$ for some
+  $d\in O(\log^2 n)$.
+
+	Now, for any node $u$ of $T$, $T_u$ contains a special node $u'$ with $|T_{u'}|\ge c|T_u|$ (\note{PM}{sort out $c$ and $\tau$}.).
+\end{proof}
+
+
+%    \begin{enumerate}
+%	    \item If $p\in L(T_{u_0})$, then we can apply induction on $T_{u_0}$ to obtain a set $X_0$ that is $p$-reachable by paths of length at most $C\diam'(T_{u_0}) < (1-1/2d)C\diam'(T)$.  The set reached this way has size $(1-\beta\diam(X)$.      Hmmmmmmmmm
+%
+%       \item If $p\in L(T_1)$, then there is an edge from $p$ to some $p'\in L(T_{u_0}\setminus F^+_{T_{u_0}}$.  We can then proceed from $p'$ as in the previous case to obtain a set $X$ reachable by paths of length at most $(1-1/2d)(C+2)\diam(T)\le C\diam(T)$ for $C\ge XXX$.
+%	    
+%	    
+%	    TFor any node $u$ of $T$, let $\diam'(u)$ denote the the sum of the lengths of the sides of the minimum bounding box of $u$.  Recall
+%  \end{enumerate}
+%
+%  For a node $u$ of $T$, let $\diam'(u)$ denote 
+%  If $p$ is in $L(T_{u_0})$ then $T_{u_0}$ is not $F$-dense, so we apply
+%  induction on $T_{u_0}$ to get to a huge set in $L(T_{u_0})$. From
+%  there we expand into $L(T)$ using Property~2.
+%
+%  If $p$ is in $L(T_1)$ then, since $p\not\in F^+_T$, there is an edge
+%  from $p$ to some point $p'$ in $L(T_{u_0})$.  At this point we proceed
+%  from $p'$ as described above.
+%\end{proof}
+%
 
 \bibliographystyle{plain}
 \bibliography{robust2}
