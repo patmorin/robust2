@@ -76,6 +76,10 @@ for some $c>1$ .
 
 \section{Background}
 
+In this section we briefly review some of the existing results used in
+our construction.
+
+\subsection{Expanders}
 A weak $d$-expander for a pair of sets $(A,B)$ is a bipartite graph
 $H=(A,B,E)$ in which, for every $B'\subset B$,
 \[
@@ -91,6 +95,7 @@ A strong $t$-expander for an ordered pair of sets $(A,B)$ is a bipartite graph $
 It is well-known that strong $t$-expanders exist that have $O(\epsilon^{-1}(|A|+|B|))$
 edges.
 
+\subsection{Fair-Split Trees}
 
 For a rooted binary tree $T$, $L(T)$ denotes the set of leaves in $T$. The
 \emph{size} of $T$, denoted $|T|$ is the number of leaves $|L(T)|$
@@ -98,11 +103,22 @@ of $T$. For a node $u$ in $T$, $T_u$ denotes the subtree of $T$ rooted
 at $u$.  We say that $T$ is \emph{full} if each non-leaf node of $T$
 has exactly two children.
 
-Define the \emph{rank} of $T$ as $\floor\log_2|T|$.  We say that a node
-$u$ of $T$ is \emph{marked} in $T$ if $u$ is the root of $T$ or if $w$
-is the paent of $u$ and $\rank(T_u)<\rank(T_w)$.  Note that if $T$
-is full then, for any non-leaf node $u$ of $T$, there is a marked node
-$u_0\neq u$ in $T_u$ such that $|T_{u_0}|> |T_u|/4$.
+A \emph{fair-split tree} $T$ for $P$ is a full binary tree whose leaves
+are points in $\R^d$.  We let $R(T)$ denote the minimum axis-aligned bounding
+box of $L(T)$ and we let $\ell(T)$ denote the length of the longest edge of $R(T)$.  A fair-split tree has the following \emph{fair-split property}: For any node $u$
+
+
+
+For each internal $w$ of $T$, we let $R_{T_w}$ denote the minimum axis-aligned bounded box of $L(T_w)$ and we let $\ell(w)$ denote the length of $R_{T_w}$'s
+
+
+
+
+%Define the \emph{rank} of $T$ as $\floor\log_2|T|$.  We say that a node
+%$u$ of $T$ is \emph{marked} in $T$ if $u$ is the root of $T$ or if $w$
+%is the paent of $u$ and $\rank(T_u)<\rank(T_w)$.  Note that if $T$
+%is full then, for any non-leaf node $u$ of $T$, there is a marked node
+%$u_0\neq u$ in $T_u$ such that $|T_{u_0}|> |T_u|/4$.
 
 
 
@@ -115,13 +131,16 @@ so $L(T)=P$.
 
 Let $T$ be the fair-split tree for an $n$-point set $P$ and consider
 the following recursively constructed graph $G_{T}$ whose vertex set
-is $L(T)$.  If $|T| \le \kappa$ for some constant $\kappa$, then $G_T$ uses is the complete graph on $L(T)$.  
+is $L(T)$.  If $|T| \le \kappa$ for some constant $\kappa$, then $G_T$
+is the complete graph on $L(T)$.
 
 If $|T|>\kappa$, let $u_0$ be a node of $T$ with the property that
-$|T|/3\le |T_{u_0}|\le 2|T|/3$.  Let $T_1$ be the full binary tree
-obtained from $T_u-T_{u_0}$ by contracting an edge incident to the unique
-non-leaf node of $T_u-T_{u_0}$ that has only one child.  The graph $G_{T}$
-contains an expander $H_T=(L(T),E_T)$. This expander has parameters $d>1$,
+$|T|/3\le |T_{u_0}|\le 2|T|/3$.  The existence of $u_0$ (or rather
+the edge from $u_0$ to its parent) is a standard result on binary
+trees \cite{X}.  Let $T_1$ be the full binary tree obtained from
+$T_u-T_{u_0}$ by contracting an edge incident to the unique non-leaf node
+of $T_u-T_{u_0}$ that has only one child.  The graph $G_{T}$ contains
+an expander $H_T=(L(T),E_T)$. This expander has parameters $d>1$,
 $\alpha, \beta,\zeta,\eta > 0$ and is constructed so that it satisfies
 the following properties:
 \begin{enumerate}
@@ -155,7 +174,7 @@ edges of each of the resulting graphs to $G_{T}$. This concludes the description
   $O(d^2|T|)$ edges for a total of $O(d^2|T|\log|T|)$ edges.
 \end{proof}
 
-Define $\rank(T)=\floor{\log_{3/2} |T|}$ and observe that, in
+Recall that $\rank(T)=\floor{\log_{3/2} |T|}$ and observe that, in
 the preceding construction, $\rank(T_{u_0}) \le \rank(T)-1$ and
 $\rank(T_1)\le\rank(T)-1$.  Let $F$ be an arbitrary subset of $P$.  We say
 that $T$ is \emph{$F$-dense} if $|L(T)\cap F|\ge (1-\delta\rank(T)/d)|T|$
@@ -281,7 +300,7 @@ $\lbl(u)=\floor{\log_{1+\epsilon}|T_u|}$. We say that a node $u$ of $T$
 is \emph{special} if $u$ is a leaf or if $\lbl(u)$ is different from
 both its children.  If $u$ is special, then $T_u$ is also special.  Observe that for every node $w$ of $T$, $T_w$
 contains a special subtree $T_u$ with $|T_u|\ge (1-O(\epsilon))|T_w|$.
-\note{PM}{Prove this, or redefine special appropriately if it's not
+\note{PM}{Prove/check this, or redefine special appropriately if it's not
 true.}
 
 \begin{lem}
@@ -292,7 +311,7 @@ true.}
   (1+\epsilon')|F|$ such that for any node $w$ of $T$ and any point
   $p\in L(T_w)\setminus F^+_P$, there is a special node $u$ in $T_w$
   and a subset $X\subseteq L(T_u)$
-  with $|X|\ge \epsilon')|T_u|$ such that for every $q\in X$, $G_P-F$
+  with $|X|\ge \epsilon'|T_u|$ such that for every $q\in X$, $G_P-F$
   contains a path from $p$ to $q$ of length at most $(C+1)\diam'(T_w)$.
 \end{lem}
 
@@ -378,6 +397,11 @@ true.}
     We can now proceed, as in the previous case, from $p'$.
   \end{enumerate}
 \end{proof}
+
+
+\subsection{Navigating the Well-Separated Pairs}
+
+
 
 
 %    \begin{enumerate}
