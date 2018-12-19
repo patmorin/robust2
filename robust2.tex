@@ -20,6 +20,7 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 \DeclareMathOperator{\sz}{size}
 \DeclareMathOperator{\rank}{r}
 \DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\dist}{dist}
 \DeclareMathOperator{\lbl}{label}
 
 \begin{document}
@@ -27,14 +28,18 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 
 \begin{abstract}
-  For any $\epsilon >0$ and any $n\in\N$, we construca a graph $G=(V,E)$
-  with vertex set $V=\{0,\ldots,n-1\}$ having $O(\epsilon^{-2}n\log n)$
-  edges, and such that, for any $F\subseteq V$, $G-F$ contains a monotone
-  path of length at least $n-(1+\epsilon)|F|$.  The number of edges
-  in $G$ matches a lower-bound of Bose \etal\ (2013) and improves the
-  previous construction of Buchin, Hulshof and Ol\'ah (2018) which has
-  $O(n^{1+\epsilon})$ edges and guarantees $|F^*|\le c^{1/\epsilon}|F|$,
-  for some constant $c\ge 3$ and any $\epsilon >0$.
+  For any constant dimension $d\ge 1$, any constant $\epsilon >0$, any
+  constant $t>1$, and any $n$-point set $P\subset\R^d$, we show that there
+  is a graph $G=(P,E)$ having $O(n\log^3 n\log\log n)$ edges with the following
+  property:  For any $F\subseteq P$, there exists $F^+\supseteq F$, $|F^+|
+  \le (1+\epsilon)|F|$ such that, for any pair $p,q\in P\setminus F^+$,
+  the graph $G-F$ contains a path of length at most $t\cdot\dist(p,q)$.
+  
+  In the terminology of robust spanners (Bose etal 2013) the graph $G$
+  is a $(1+\epsilon)k$-robust $t$-spanner of $P$. This construction is
+  sparser than the most recent work (Buchin, Olah, and Har-Peled 2018)
+  which proves the existence of $(1+\epsilon)k$-robust $t$-spanners with
+  $n\log^{O(d)} n$ edges.
 \end{abstract}
 
 \section{Introduction}
@@ -43,11 +48,11 @@ A geometric graph $G=(V,E)$ with vertex set $V\subset\R^d$ is a (geometric)
 $t$-spanner of a subset $X\subset V$ if, for every pair of vertices
 $v,w\in X$, $v\neq w$,
 \begin{equation}
-	\frac{\|vw\|_G}{\|vw\|} \enspace , \eqlabel{spanning-ratio}
+	\frac{\dist_G(vw)}{\dist(vw)} \enspace , \eqlabel{spanning-ratio}
 \end{equation}
-where $\|vw\|$ denotes the Euclidean distance between $v$ and $w$ and
-$\|vw\|_G$ denote the Euclidean length of the shortest path between $v$
-and $w$ in $G$, where use the convention that $\|vw\|_G=\infty$ if $v$
+where $\dist(vw)$ denotes the Euclidean distance between $v$ and $w$ and
+$\dist_G(vw)$ denote the Euclidean length of the shortest path between $v$
+and $w$ in $G$, where use the convention that $\dist_G(vw)=\infty$ if $v$
 and $w$ are in different components of $G$.  
 Most of the research on spanners focuses on \emph{sparse}
 spanners, where the number of edges in $G$ is linear, or close to linear,
@@ -55,13 +60,14 @@ in $|V|$.  In addition to having natural applications to transportation
 networks, sparse $t$-spanners have found numerous applications in
 approximation algorithms and geometric data structures.
 
-For any non-decreasing function $f\colon\N\to\N$, Bose \etal\ say
-that a geometric graph $G$ is an \emph{$f(k)$-robust $t$-spanner}
-if, for every set $F\subset V(G)$, there exists a set $F^*\supseteq
-F$ such that $|F^*|\le f(|F|)$ and the graph $G-F$ is a $t$-spanner
-of $V(G)\setminus F^*$.  In networking applications, this definition
-captures the idea that the number of nodes harmed by a set faulty nodes
-should be bounded by a function of the number of faulty nodes.
+For any non-decreasing function $f\colon\N\to\N$, Bose \etal\
+\cite{bose.dujmovic.ea:robust} say that a geometric graph $G$ is an
+\emph{$f(k)$-robust $t$-spanner} if, for every set $F\subset V(G)$,
+there exists a set $F^*\supseteq F$ such that $|F^*|\le f(|F|)$ and
+the graph $G-F$ is a $t$-spanner of $V(G)\setminus F^*$.  In networking
+applications, this definition captures the idea that the number of nodes
+harmed by a set of faulty nodes should be bounded by a function of the
+number of faulty nodes.
 
 Under this definition, the most robust spanner one could hope for
 would be a $k$-robust spanner, but it is straightforward to argue
@@ -70,102 +76,191 @@ only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
 F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
-and is therefore not suitable for many applications. A natural second-best
-option is a $ck$-robust spanner with a near-linear number of edges,
-for some $c>1$ .
+and is therefore not suitable for many applications. 
+
+A natural second-best option is a $(1+\epsilon)k$-robust spanner with
+a near-linear number of edges, for some small $\epsilon >0$.  Buchin
+\etal\ call these objects $\epsilon$-resilient spanners and prove the
+existence of $\epsilon$-resilient spanners with $O(n\log^c n)$ edges,
+where $c=O(d)$.  In the current paper we reduce the dependence on $d$
+by proving the following theorem:
+
+\begin{thm}\thmlabel{main-i}
+  For every constant $d\ge 1$, $\epsilon>0$, $t>1$ and every $n$-point set $P\subseteq\R^d$, there exists an $\epsilon$-resilient $t$-spanner $G=(P,E)$ with $|E|=O(n\log^3 n\log\log n)$.
+\end{thm}
+
+Bose \etal\ \cite{bose.dujmovic.ea:robust} show that, for any constants
+$d\ge 1$, $\epsilon>0$ and $t\ge 1$, there exists $d$-dimensional point
+sets for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
+n)$ edges.  Thus, \thmlabel{main-i} is within a factor of of $O(\log^2
+n\log\log n)$ of optimal.
+
 
 \section{Background}
 
-In this section we briefly review some of the existing results used in
+In this section we briefly review some existing results used in
 our construction.
 
 \subsection{Expanders}
-A weak $d$-expander for a pair of sets $(A,B)$ is a bipartite graph
-$H=(A,B,E)$ in which, for every $B'\subset B$,
+
+Results like the following, and its proof, are fairly standard expanders (see, for example, Hoory \etal\ \cite{hoory.linial.ea:expanders}.
+
+
+\begin{lem}\lemlabel{expander-a}
+   For any $k\ge 2$, $\ell\ge 2$, $n\in\N$ and any two sets $A$ and $B$
+   each of size $\Theta(n)$, there exists a bipartite graph $H=(A,B,E)$
+   with $|E|=O(n(k\log \ell + \ell\log k))$ such that, for any set $B'\subset B$, $|B'|\ge |B|/\ell$, $|N_H(B')| \ge (1-1/k)|A|$.
+\end{lem}
+
+\begin{proof}
+For simplicity of calculation, assume that $|A|=|B|=n$.
+Fix some subset $A'\subset A$ of size $|A'|=(1-1/k)|A|$.  Let $a_1,\ldots,a_r$ be a sequence of $n$ uid random samples from $A$.
+Then the probability that all of these samples a in $A'$ is 
 \[
-	|N_H(B')| \ge \min\{(1-1/d)|A|, d|B'|\}
+   \Pr\{\{a_1,\ldots,a_r\}\subset A'\} = (|A'|/|A|)^r = (1-1/k)^r \le e^{-r/k}
 \]
-It is well known that weak $d$-expanders exist that have $O(d|B|)$ edges.\note{PM}{Check the dependence on $d$.}
-
-A strong $t$-expander for an ordered pair of sets $(A,B)$ is a bipartite graph $H=(A,B,E)$ in which, for every $A'\subset A$,
+Let $A$ and $B$ be disjoint $n$-element sets and construct a random graph $H$ where each element in $B$ forms an edge with $\Delta$ randomly chosen (with replacement) elements in $A$.  For a fixed $A'\subset A$ with $|A'|=(1-1/k)|A|$ and a fixed $B'\subset B$ with $|B'| = n/\ell$,
 \[
-	|N_H(A')| \ge \min\{t|A'|,(1-\sqrt{t})|B|\}
+    \Pr\{N_H(B') \subseteq A'\} \le (1-1/k)^{\Delta n/\ell} \le e^{-\frac{\Delta n}{k\ell}}
 \]
+Now, the probability that there exists any such pair $(A',B')$ is at most
+\begin{align*}
+    \Pr\{\mathcal{E}\} 
+        & \le \binom{n}{n/k}\binom{n}{n/d}e^{-\frac{\Delta n}{k\ell}} \\
+        & \le (ek)^{n/k} (ed)^{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
+        & = \exp((n/k)(1+\ln k) + (n/\ell)(1+\ln(\ell)) - (\Delta n)/(k\ell)) \\
+        & < 1
+\end{align*}
+for $\Delta \ge (1+k)\log \ell + ((1+\ell)\log k$.  In particular, there must exist at least one graph that satisifies the conditions of the lemma.
+\end{proof}
 
-It is well-known that strong $t$-expanders exist that have $O(\epsilon^{-1}(|A|+|B|))$
-edges.
+The following interpretation of \lemref{expander-a} will also be useful:
 
-\subsection{Fair-Split Trees}
-
-For a rooted binary tree $T$, $L(T)$ denotes the set of leaves in $T$. The
-\emph{size} of $T$, denoted $|T|$ is the number of leaves $|L(T)|$
-of $T$. For a node $u$ in $T$, $T_u$ denotes the subtree of $T$ rooted
-at $u$.  We say that $T$ is \emph{full} if each non-leaf node of $T$
-has exactly two children.
-
-A \emph{fair-split tree} $T$ for $P$ is a full binary tree whose leaves
-are points in $\R^d$.  We let $R(T)$ denote the minimum axis-aligned bounding
-box of $L(T)$ and we let $\ell(T)$ denote the length of the longest edge of $R(T)$.  A fair-split tree has the following \emph{fair-split property}: For any node $u$
-
-
-
-For each internal $w$ of $T$, we let $R_{T_w}$ denote the minimum axis-aligned bounded box of $L(T_w)$ and we let $\ell(w)$ denote the length of $R_{T_w}$'s
+\begin{cor}\corlabel{expander-a}
+   For any $k\ge 2$, $\ell\ge 2$, $n\in\N$ and any two sets $A$ and $B$
+   each of size $\Theta(n)$, there exists a bipartite graph $H=(A,B,E)$
+   with $|E|=O(n(k\log \ell + \ell\log k))$ such that
+   for any $A'\subset A$ with $|A'|\le (1-1/k)|A|$, 
+   \[ |\{x\in B : N_H(x)\subset A' \}| \le |B|/\ell \enspace .\]
+\end{cor}
 
 
 
 
-%Define the \emph{rank} of $T$ as $\floor\log_2|T|$.  We say that a node
-%$u$ of $T$ is \emph{marked} in $T$ if $u$ is the root of $T$ or if $w$
-%is the paent of $u$ and $\rank(T_u)<\rank(T_w)$.  Note that if $T$
-%is full then, for any non-leaf node $u$ of $T$, there is a marked node
-%$u_0\neq u$ in $T_u$ such that $|T_{u_0}|> |T_u|/4$.
+\subsection{Fair-Split Trees and Well-Separated Pair Decompositions}
 
+For two points $p,q\in\R^d$, $\dist(p,q)$, denotes the Euclidean distance
+between $p$ and $q$. For two sets $P,Q\subset\R^d$, the distance between
+$P$ and $Q$ is $\dist(P,Q)=\max\{\dist(p,q):p\in P, q\in Q\}$.  For a
+single point set $P\subset\R^d$, the \emph{diameter} of $P$ is denoted
+by $\diam(P)=\max\{\dist(p,q):p,q\in P\}$.
+
+For a rooted binary tree $T$, $L(T)$ denotes the set of leaves in
+$T$. We use the convention that, if $T$ consists of a single node $u$,
+then $L(T)=\{u\}$. The \emph{size} of $T$, denoted $|T|$ is the number of
+leaves $|L(T)|$ of $T$. For a node $u$ in $T$, $T_u$ denotes the subtree
+of $T$ rooted at $u$.  We say that $T$ is \emph{full} if each non-leaf
+node of $T$ has exactly two children.
+
+A \emph{fair-split tree} $T$ is a full binary tree whose
+leaves are points in $\R^d$.  We let $R(T)$ denote the minimum
+axis-aligned bounding box of $L(T)$ and we let $\diam'(T)$ denote the
+sum of the side lengths of $R(T)$.  A fair-split tree has the following
+\emph{fair-split property}: For any node $w$ with parent $x$, $\diam'(T_w)
+\le (1-1/(2d))\diam'(T_x)$.\footnote{Traditionally, fair-split trees
+are described as splitting $R(x)$ by bisecting its longest side.
+This obviously implies that $\ell(u)\le 1-(1/2d)\ell(x)$.} It is worth
+noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
+\[
+	\diam(L(T)) \le \diam'(T) \le d\cdot\diam(L(T)) \enspace .
+\]	
+For any
+$n$-point set $P\subset\R^d$, the fair-split tree for $P$ can be computed
+in $O(dn\log n)$ time \cite{callahan.kosaraju:decomposition}.
+
+For a finite point set $P\subset\R^d$ and any $s>0$,
+\emph{well-separated pair decomposition (WSPD)} of $P$ is a set of pairs
+$\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ with the following properties:
+\begin{enumerate}
+  \item For every $i\in\{1,\ldots,m\}$, 
+    $\dist(A_i,B_i)\ge s\cdot\max\{\diam(A_i),\diam(B_i)\}$.
+  \item For every pair $p,q\in P$ there exists exactly one
+    $i\in\{1,\ldots,m\}$ such that $p\in A_i$ and $q\in B_i$, or $q\in A_i$
+    and $p\in B_i$.
+\end{enumerate}
+Well-separated pair decompositions were introduced by Callahan and
+Kosaraju \cite{callahan.kosaraju:decomposition}, who construct them
+using fair-split trees.
+
+\begin{thm}[Callaghan and Kosaraju 1995]\thmlabel{wspd}
+  For any $s\ge 1$ and any $n$-point set $P\subset\R^d$ with fair
+  split tree $T=T(P)$, there exists a WSPD
+  $\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ of $P$ with size $m\in O(s^d n)$.
+  Furthermore, each pair $(A_i,B_i)=(L(T_{a_i}),L(T_{b_i}))$ where $a_i$
+  and $b_i$ are nodes of the fair-split tree $T$.
+\end{thm}
+We call the WSPD guaranteed by \thmref{wspd} a WSPD of $P$ \emph{using}
+$T$.  In his thesis, Callaghan proves an additional useful result about
+well-separated pair decompositions \cite[Lemma~4.5]{callahan:dealing}:
+
+\begin{lem}\lemlabel{wspd-ii}[Callaghan 1995]
+  In the WSPD of \thmref{wspd},
+   $\sum_{i=1}^m\min\{|A_i|,|B_i|\} = O(s^d n\log n)$.
+\end{lem}
 
 
 \section{The Construction}
 
-$P\subset \R^d$ is an $n$-point set.  $T$ is a fair split tree for $P$,
-so $L(T)=P$.
-
+In this section we describe our construction.
 \subsection{Exploding into the Root}
 
 Let $T$ be the fair-split tree for an $n$-point set $P$ and consider
 the following recursively constructed graph $G_{T}$ whose vertex set
-is $L(T)$.  If $|T| \le \kappa$ for some constant $\kappa$, then $G_T$
+is $P=L(T)$.  If $|T| \le \kappa$ for some constant $\kappa$, then $G_T$
 is the complete graph on $L(T)$.
 
 If $|T|>\kappa$, let $u_0$ be a node of $T$ with the property that
 $|T|/3\le |T_{u_0}|\le 2|T|/3$.  The existence of $u_0$ (or rather
 the edge from $u_0$ to its parent) is a standard result on binary
-trees \cite{X}.  Let $T_1$ be the full binary tree obtained from
+trees.  Let $T_1$ be the full binary tree obtained from
 $T_u-T_{u_0}$ by contracting an edge incident to the unique non-leaf node
 of $T_u-T_{u_0}$ that has only one child.  The graph $G_{T}$ contains
 an expander $H_T=(L(T),E_T)$. This expander has parameters $d>1$,
 $\alpha, \beta,\zeta,\eta > 0$ and is constructed so that it satisfies
 the following properties:
 \begin{enumerate}
-	\item[(PR1)] For any $X\subset L(T_{u_0})$ with
-  $|X|<(1-\beta\rank(T)/d)|T_{u_0}|$, the number of $p\in L(T_1)$ such
-  that $N_{H_T}(p)\subset X$ is most $(\alpha/d)|X|$.
+  \item[(PR1)] For any $X\subset L(T_{u_0})$ with
+    $|X|<(1-\beta/\Delta)|T_{u_0}|$, the number of $p\in L(T_1)$ such that
+    $N_{H_T}(p)\subset X$ is most $(\alpha/\Delta)|X|$.
 
-   \item[(PR2)] For any set $S\subset L(T_{u_0})$ with $|S|\ge (\zeta/d)L(T_{u_0})$, $|N_{H_T}(S)|\ge (1-\eta/d)|T|$.
+  \item[(PR2)] For any set $S\subset L(T_{u_0})$ with $|S|\ge
+    (\zeta/\Delta)L(T_{u_0})$, $|N_{H_T}(S)|\ge (1-\eta/\Delta)|T|$.
 \end{enumerate}
-In our construction, $d=\Theta(\log^2 n)$ and the remaining parameters
+In our construction, $\Delta=\Theta(\log^2 n)$ and the remaining parameters
 are small values that are upper bounded by some function of $\epsilon$. In particular, for any constant $\epsilon >0$, these parameters are also constant.
 
 \begin{clm}
-	For any constants $\alpha,\beta,\zeta,\eta>0$, the graph $H_T$ has 
-	$O(d^2|T|)$ edges.
+  For any constants $\alpha,\beta,\zeta,\eta>0$, the graph $H_T$ has
+  $O(|T|\Delta\log\Delta)$ edges.
 \end{clm}
+
+\begin{proof}
+  To satisfy Property~(PR1), $H_T$ contains an expander described by
+  \corref{expander-a} for the pair $(A=L(T_{u_0}),B=L(T_1)$ with parameter
+  $k=\Delta/\beta$ and $\ell=\Delta/\alpha$.  This graph has $O(|T|\Delta\log\Delta)$ edges.
+
+  To satisfy Property~(PR2), $H$ contains an expander described \lemref{expander-a} for the pair $(A=L(T_{u_0}),B=L(T))$ with parameters $k=\Delta/\eta$ and $\ell=\Delta/\zeta$. This graph also has $O(|T|\Delta\log\Delta)$ edges.
+\end{proof}
 
 Finally, we recursively construct $G_{T_{u_0}}$ and $G_{T_1}$ and add the
 edges of each of the resulting graphs to $G_{T}$. This concludes the description of the graph $G_T$.
 
 \begin{clm}
-  $G_{T}$ has $O(d^2|T|\log |T|)$ edges.
+  $G_{T}$ has $O((\Delta\log\Delta)|T|\log |T|)$ edges.
 \end{clm}
 
 \begin{proof}
+  \note{PM}{Continue here with transition from $d$ to $\Delta$.}
   The graph $H_T$ has
   $O(d^2|T|)$ edges.  The recursive constructions are on two trees $T_{u_0}$
   and $T_1$ where $|T_{u_0}|+|T_1|=|T|$ and $\max\{|T_{u_0}|,T_1\}\le
@@ -213,7 +308,8 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
      \]
      All that remains is to consider the set $F^+_{01}$ of points in 
      $L(T_1)$ added to $F^+_T$ in Step~3.  In particular, we must show that
-     $|F^+_{01}|\le (\epsilon/d)|F\cap L(T)|$. By Property~(P1) of $H_T$,
+     $|F^+_{01}|\le (\epsilon/d)|F\cap L(T)|$. If $\beta \le \delta$ then, 
+     by Property~(PR1) of $H_T$,\note{PM}{($\epsilon$ should be $\delta$ in the following array)}
      \begin{align*}
       |F^+_{01}| \le (\alpha/d)|F^+_{T_{u_0}}|
         & \le (\alpha/d)(1+\epsilon\rank(T_{u_0})/d)|F\cap L(T_{u_0})| \\
@@ -232,9 +328,9 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
 
 \begin{clm}
   For any $F\subset L(T)$ and every point $p\in L(T)\setminus F^+_T$,
-	there exists $X\subset L(T)$, $|X|\ge (1-a\rank(T)/d)|T|-|F^+_T\cap L(T)|$
-  such that for every $q\in X$, $G_T-F$
-  contains a path from $p$ to $q$ of length $C\diam(T)$.
+  there exists $X\subset L(T)$, $|X|\ge (1-a\rank(T)/d)|T|-|F^+_T\cap
+  L(T)|$ such that for every $q\in X$, $G_T-F$ contains a path from $p$
+  to $q$ of length at most $C\diam(T)$, for $C\le 4d$.
 \end{clm}
 
 \begin{proof}
@@ -276,7 +372,7 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
 		& \text{(for $|T|\ge \kappa \ge 5$)} \\
 	      & \ge ((\epsilon-a)/(3d))|T| \enspace .
 \end{align*}
-		    By Property~PR2 of $H_T$ (with $\zeta = (\epsilon-a)/3$ and $\eta \le a\rank(T)$), we can then take $X=N_{H_T}(X_0)\setminus F^+_T$.  Then $|X| \ge (1-a\rank(T)/d)|T|-|F^+_T|$ and every point $q\in X$ is reachable from $p$ by a path of length at most
+	    By Property~PR2 of $H_T$ (with $\zeta = (\epsilon-a)/3$ and $\eta \le a\rank(T)$), we can then take $X=N_{H_T}(X_0)\setminus F^+_T$.  Then $|X| \ge (1-a\rank(T)/d)|T|-|F^+_T|$ and every point $q\in X$ is reachable from $p$ by a path of length at most
 		    \[ (C(1-(1/2d))+1)\diam'(P) \le C\diam'(P) \]
 	     for $C\ge 4d$.
 
@@ -294,6 +390,7 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
 \end{proof}
 
 \subsection{Multiple Scales}
+\seclabel{g-p}
 
 For each node $u$ of $T$, define
 $\lbl(u)=\floor{\log_{1+\epsilon}|T_u|}$. We say that a node $u$ of $T$
@@ -303,7 +400,7 @@ contains a special subtree $T_u$ with $|T_u|\ge (1-O(\epsilon))|T_w|$.
 \note{PM}{Prove/check this, or redefine special appropriately if it's not
 true.}
 
-\begin{lem}
+\begin{lem}\lemlabel{exploder-main}
   For any constant $\epsilon' >0$, any $n\in\N$, and any $n$-point
   set $P\subset\R^d$ with fair-split tree $T$, there exists a graph
   $G_P=(P,E)$ with $O(n\log^5 n)$ edges such that, for any $F\subseteq
@@ -401,28 +498,103 @@ true.}
 
 \subsection{Navigating the Well-Separated Pairs}
 
+Let $P\subset\R^d$ be an $n$-point set, let $T$ be a fair-split tree for
+$P$ and let $W=\{(A_i,B_i):i\in\{1,\ldots,m\}$ be an $s$-well-separated
+pair decomposition for $P$ using $T$. We use the convention that,
+for each $i\in\{1,\ldots,m\}$, $|A_i|\ge |B_i|$ and $A_i=L(T_{a_i})$
+and $B_i=L(T_{b_i})$ where $a_i$ and $b_i$ are nodes of $T$.
+
+Our robust spanner begins with the graph $G_P$ described in the previous
+section that is constructed using the fair-split tree $T$.  Next,
+we create a new set of well-separated pair $W'$ as follows:  For each
+pair $(A_i,B_i)\in W$, we find the largest special subtree $T_{a_i'}$
+of $T_{a_i}$ and the largest special subtree $T_{b_i'}$ of $T_{b_i}$
+and add the pair $(A_i',B_i')=(L(T_{a_i'}),L(T_{b_i'}))$ to $W'$.
+Although each pair $(A_i',B_i')\in W'$ is well-separated, $W'$ is not
+necessarily a WSPD for $P$.  In particular, there are pairs of points
+with $p\in A_i\setminus A_i'$, $q\in B_i\setminus B_i'$ that are not
+represented in $W'$.
+
+Next, we partition $W'$ into groups $\{W'_u: u\in V(T)\}$ indexed by
+the special nodes of $T$ where, for each special node $u\in V(T)$:
+\[
+	W'_u = \{ (A_i',B_i')\in W' : a_i' = u \}
+\]
+For each group $G'_u$, define $B'_u=\bigcup\{B_i' : (L(u),B_i')\in
+W'_u\}$ and let $H'_u$ be on the pair $(L(T_u), B'_u)$ with the following
+properties: 
+\begin{enumerate}
+  \item[(PR3)] For any $X\subseteq P$ with $|X\cap A_i|\le
+  (1-\epsilon/\log n)|A_i|$, define $X'_u = \{p\in B'_u: N_{H'_u}\subseteq
+  X\}$.  Then $|X'_u|\le \epsilon|X|/\log n$.
+
+  \item[(PR4)] For any two sets $X,Y\subset A_i'$ with $|X|,|Y|\ge
+  \epsilon|A_i'|$, $G$ contains at least one edge $xy$ with $x\in X$
+  and $y\in Y$.
+\end{enumerate}
+
+Let $G'_P$ denote the graph obtained by taking all the edges of $H'_u$ for every special node $u$ in $T$.
+
+\begin{clm}
+  The graph $G'_P$ has $O(n\log^3 n)$ edges.
+\end{clm}
+
+\begin{proof}
+  Each expander graph $H'_u$ has $O(|T_u|\log^2 n)$.  As usual, the claim
+  then follows by paritition the special nodes of $T$ into $O(\log n)$
+  sets where, for any two nodes $u$ and $u'$ in the same set, $T_u$ and
+  $T_{u'}$ are disjoint.
+\end{proof}
+
+Our final construction $G'_P$ contains the graph $G_P$ described in
+\secref{g-p} as well $H'_u$ for every special node $u$ of $T$.
+
+For any set $X\subset P$, we define $X'\supseteq F$ as 
+$X' = \bigcup_{u\in S(T)} X'_u$.
+
+\begin{clm}\clmlabel{f-prime-size}
+  $|F'| \le O(\epsilon)|F|$.
+\end{clm}
+
+\begin{proof}
+  For each special node $u$ of $T$, $|F'_u|\le \epsilon|F\cap L(T_u)|/\log
+  n$.  Again, the claim follows by paritioning the special nodes in
+  $O(\log n)$ sets.
+\end{proof}
+
+Finally, the graph $G$ consists of the union of $G_P$ and $G'_P$
 
 
+\begin{clm}
+  For any $n$-point set $P\subset\R^d$, The graph $G'_P$  is a
+  $(1+O(\epsilon))$-robust $t$-spanner of $P$.
+\end{clm}
 
-%    \begin{enumerate}
-%	    \item If $p\in L(T_{u_0})$, then we can apply induction on $T_{u_0}$ to obtain a set $X_0$ that is $p$-reachable by paths of length at most $C\diam'(T_{u_0}) < (1-1/2d)C\diam'(T)$.  The set reached this way has size $(1-\beta\diam(X)$.      Hmmmmmmmmm
-%
-%       \item If $p\in L(T_1)$, then there is an edge from $p$ to some $p'\in L(T_{u_0}\setminus F^+_{T_{u_0}}$.  We can then proceed from $p'$ as in the previous case to obtain a set $X$ reachable by paths of length at most $(1-1/2d)(C+2)\diam(T)\le C\diam(T)$ for $C\ge XXX$.
-%	    
-%	    
-%	    TFor any node $u$ of $T$, let $\diam'(u)$ denote the the sum of the lengths of the sides of the minimum bounding box of $u$.  Recall
-%  \end{enumerate}
-%
-%  For a node $u$ of $T$, let $\diam'(u)$ denote 
-%  If $p$ is in $L(T_{u_0})$ then $T_{u_0}$ is not $F$-dense, so we apply
-%  induction on $T_{u_0}$ to get to a huge set in $L(T_{u_0})$. From
-%  there we expand into $L(T)$ using Property~2.
-%
-%  If $p$ is in $L(T_1)$ then, since $p\not\in F^+_T$, there is an edge
-%  from $p$ to some point $p'$ in $L(T_{u_0})$.  At this point we proceed
-%  from $p'$ as described above.
-%\end{proof}
-%
+\begin{proof}
+  For any set $F\subset P$, we define $F^+ = F^+_P \cup (F^+_P)'$, where
+  $F^+_P$ is defined in the proof of \lemref{exploder-main}.  That $|F^+|
+  \le (1+O(\epsilon))|F|$ follows from \lemref{exploder-main}, which
+  shows that $|F^+_P|\le (1+O(\epsilon))|F|$ and \clmref{f-prime-size}.
+
+  Now, consider any two distinct points $p,q\in P\setminus F^+$ and
+  $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
+  Since $p\not\in F^+_P$, $|F^+_P\cap A_i'|\le (1-2\epsilon)|A_i'|$.
+  Since $q\not\in F'$, $G-F$ Property~(PR3) of $H'_{a_i'}$ contains
+  an edge $qq'$ with $q'\in A_i'\setminus F^+_P$.
+
+  Therefore, $A_i'$ contains a set $X$ of size
+  $(1-\epsilon)|A_i'|-|F^+_P\cap A_i'|\ge \epsilon|A_i'|$ such that, for
+  every point $r\in X_{q'}$, $G-F$ contains a path from $p'$ to $r$ of
+  length at most $C\diam'(T_{a_i'})$.  There is a similar set $Y\subseteq
+  A_i'$ defined for $p$.  Property~(PR4) of $H'_{a_i'}$ therefore implies
+  that there exists an edge $xy$ with $x\in X$ and $y\in Y$.
+
+  Therefore, $G-F$ contains a path from $p$ to $q$ of length at most
+  \[  \diam(A_i) + \diam(B_i) + \dist(A_i,B_i) + C\diam'(A_i) = (1+O(1/s))\dist(p,q)
+  \]
+  as required.
+\end{proof}
+
 
 \bibliographystyle{plain}
 \bibliography{robust2}
