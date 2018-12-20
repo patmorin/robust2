@@ -37,7 +37,7 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
   
   In the terminology of robust spanners (Bose \etal\ 2013) the graph $G$
   is a $(1+\epsilon)k$-robust $t$-spanner of $P$. This construction is
-  more sparse than the most recent work (Buchin, Olah, and Har-Peled 2018)
+  more sparse than the most recent work (Buchin, Ol\`ah, and Har-Peled 2018)
   which proves the existence of $(1+\epsilon)k$-robust $t$-spanners with
   $n\log^{O(d)} n$ edges.
 \end{abstract}
@@ -48,17 +48,17 @@ A geometric graph $G=(P,E)$ with vertex set $P\subset\R^d$ is a (geometric)
 $t$-spanner of a subset $X\subset P$ if, for every pair of distinct vertices
 $v,w\in X$, 
 \begin{equation}
-	\frac{\dist_G(vw)}{\dist(vw)} \le t \enspace , \eqlabel{spanning-ratio}
+  \frac{\dist_G(vw)}{\dist(vw)} \le t \enspace , \eqlabel{spanning-ratio}
 \end{equation}
 where $\dist(vw)$ denotes the Euclidean distance between $v$ and $w$ and
-$\dist_G(vw)$ denote the Euclidean length of the shortest path between $v$
-and $w$ in $G$, where use the convention that $\dist_G(vw)=\infty$ if $v$
-and $w$ are in different components of $G$.  
-Most of the research on spanners focuses on \emph{sparse}
-spanners, where the number of edges in $G$ is linear, or close to linear,
-in $|P|$.  In addition to having natural applications to transportation
-networks, sparse $t$-spanners have found numerous applications in
-approximation algorithms and geometric data structures.
+$\dist_G(vw)$ denote the Euclidean length of the shortest path between
+$v$ and $w$ in $G$, where use the convention that $\dist_G(vw)=\infty$
+if $v$ and $w$ are in different components of $G$.  Most of the research
+on spanners focuses on \emph{sparse} spanners, where the number of edges
+in $G$ is linear, or close to linear, in $|P|$.  In addition to having
+natural applications to transportation networks, sparse $t$-spanners have
+found numerous applications in approximation algorithms and geometric
+data structures.
 
 For any non-decreasing function $f\colon\N\to\N$, Bose \etal\
 \cite{bose.dujmovic.ea:robust} say that a geometric graph $G$ is an
@@ -76,14 +76,14 @@ only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
 F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
-and is therefore not suitable for many applications. 
+and is therefore not suitable for many applications.
 
-A natural second-best option is a $(1+\epsilon)k$-robust spanner with
-a near-linear number of edges, for some small $\epsilon >0$.  Buchin
-\etal\ \cite{buchin.har-peled.ea:spanner} call these objects $\epsilon$-resilient spanners and prove the
-existence of $\epsilon$-resilient spanners with $O(n\log^c n)$ edges,
-where $c=O(d)$.  In the current paper we reduce the dependence on $d$
-by proving the following theorem:
+A natural second-best option is a $(1+\epsilon)k$-robust spanner with a
+near-linear number of edges, for some small $\epsilon >0$.  Buchin \etal\
+\cite{buchin.har-peled.ea:spanner} call these objects $\epsilon$-resilient
+spanners and prove the existence of $\epsilon$-resilient spanners with
+$O(n\log^c n)$ edges, where $c=O(d)$.  In the current paper we reduce
+the dependence on $d$ by proving the following theorem:
 
 \begin{thm}\thmlabel{main-i}
   For every constant $d\ge 1$, $\epsilon>0$, $t>1$ and every $n$-point
@@ -96,14 +96,38 @@ $\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point sets
 for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
 n)$ edges.  Thus, \thmref{main-i} is within a factor of of $O(\log^2
 n\log\log n)$ of optimal in any constant dimension.  (Note that in
-dimension $d=-1$, optimal constructions, having $O(n\log n)$ are known
+dimension $d=1$, optimal constructions, having $O(n\log n)$ are known
 \cite{buchin.har-peled.ea:spanner}.)
 
+The proof of \thmref{main-i} uses several ingredients: The well-separated
+pair decomposition \cite{callahan.kosaraju:decomposition}, which
+is fairly standard in spanner constructions.  Expander graphs
+\cite{hoory.linial.ea:expanders}, that are a natural tool to
+achieve robustness. Two less obvious techniques we use are a centroid
+decompositions (i.e., hierarchical balanced separators) for binary trees
+and an old idea of Willard \cite{willard:maintaining} for file maintenance
+(aka, order maintenance) that involves a hierarchical structure whose
+smaller substructures have more stringent density requirements than
+larger substructures.
+
+These last two ideas represent a significant departure from the work of
+Buchin \etal\ \cite{buchin.har-peled.ea:spanner} who 
+(among other tools) also use well-separated
+pair decompositions and expanders.  However, their constructions, of
+which there are two, rely on a a reduction to the 1-dimensional problem
+and the fact that the paths obtained in 1-d case have $O(\log n)$ edges.
+However, they have very little fine-grained control over the lengths of
+these edges, which requires them to construct $d$-dimensional objects
+($\theta$-graphs  \cite{keil.gutwin:classes} and locality-preserving curves \cite{chan.har-peled.ea:on}) in which the relevant
+parameter ($\theta$ and $\varsigma$, respectively) is $O(1/\log n)$.  This leads
+to $\log^{O(d)} n$ factors in the number of edges in their constructions.
+
+In the remainder of the paper we first review some relevant background material and then present our $\epsilon$-resilient spanner construction.
 
 \section{Background}
 
-In this section we briefly review some existing results used in
-our construction.
+In this section we briefly review some existing results used in our
+construction.
 
 \subsection{Expanders}
 
@@ -532,7 +556,7 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   \[
       |F^{**}_P| \le |F^*_P|/(1-3\epsilon) \le (1+\epsilon)|F|/(1-3\epsilon) \le (1+5\epsilon)|F|
   \]
-  \note{PM}{state condition on $\epsilon$ for the last inequality.}
+  \note{PM}{state upper-bound on $\epsilon$ required for the last inequality.}
 
   Finally, define 
   \[  F^{***}_P = \bigcup_{u\in S(T)} \{p \in K_u : N_{H_u}(p)\subseteq F^{**}_P \} \]
@@ -684,7 +708,7 @@ S(T)} K_{X,u}$.
 
 We can now complete the proof of \thmref{main-i}.
 
-\begin{proof}[Proof of \thmref{main}]
+\begin{proof}[Proof of \thmref{main-i}]
   The graph $G$ consists of the union of $G_P$ and $G'_P$ where each
   graph is constructed with some value $\epsilon' = \epsilon/c$ for
   some sufficiently large constant $c$.  For any set $F\subset P$, we
@@ -701,28 +725,28 @@ We can now complete the proof of \thmref{main-i}.
 
   Now, consider any two distinct points $p,q\in P\setminus F^+$ and
   let $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
-  Since $p\not\in F^+_P$, \clmref{root-explode} implies that there is a
-  subset $X_{p'}\subseteq A_i'$, with $|X_{p'}|\ge (\epsilon/4)|A_i'|$
-  such that, for every $x\in X_{p'}$, $G-F$ contains a path from $p$
-  to $x$ of length at most $C\diam'(T_{a_i'})\le C\diam'(T_{a_i})$.
+  Since $p\not\in F^+_P$, \lemref{exploder-main} implies that there is a
+  subset $X_{p}\subseteq A_i'$, with $|X_{p}|\ge (\epsilon/4)|A_i'|$
+  such that, for every $x\in X_{p}$, $G-F$ contains a path from $p$
+  to $x$ of length at most $(C+1)\diam'(T_{a_i})$.
   
   Now, since $q\not\in K_{F^+_{a_i},a_i}$, $H_{a_i'}$ contains an edge
   $qq'$ with $q'\in A_i\setminus F^+_{a_i}$.  This then defines a set
-  $X_{q'}$ analagous to $X_{p'}$.  Finally, Property~(PR4), of $H_{a_i'}$
-  ensures that there is at least one edge $p''q''$ with $p''\in X_{p'}$
+  $X_{q'}$ analagous to $X_{p}$.  Finally, Property~(PR4), of $H_{a_i'}$
+  ensures that there is at least one edge $p'q''$ with $p'\in X_{p}$
   and $q''\in X_{q'}$.  This yields a path from $p$ to $q$ of length at most
   \begin{align*}
-    \dist_{G-F}(p,q) & \le \dist(p,p') + \dist_{G-F}(p',p'') +
-      \dist(p'',q'') + \dist_{G-F}(q'',q') + \dist(q',q) \\
-      & \le (2C+2)\diam'(a_i') + \dist(q',q) \\
-      & \le (2C+3)\diam'(a_i') + \diam'(b_i) + \dist(p,q) \\
+    \dist_{G-F}(p,q) & \le \dist_{G-F}(p,p') + \dist(p',q'') + \dist_{G-F}(q'',q') + \dist(q',q) \\
+      & \le (2C+3)\diam'(a_i) + \dist(q',q) \\
+      & \le (2C+4)\diam'(a_i') + \diam'(b_i) + \dist(p,q) \\
+      & \le (1+O(1/s))\dist(p,q) \enspace . 
   \end{align*}
-
-  Therefore, $G-F$ contains a path from $p$ to $q$ of length at most
-  \[  \diam(A_i) + \diam(B_i) + \dist(A_i,B_i) + C\diam'(A_i) = (1+O(1/s))\dist(p,q)
-  \]
-  as required.
+  Choosing $s = c/\epsilon$ for a sufficiently large constant $c$
+  completes the proof.
 \end{proof}
+
+\section{Discussion}
+
 
 
 \bibliographystyle{plain}
