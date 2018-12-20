@@ -10,7 +10,8 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 \title{\MakeUppercase{Robust Geometric Spanners}}
 
-\author{Prosenjit Bose, Paz Carmi, Michael van Dyk, and Pat Morin}
+\author{Prosenjit Bose, Paz Carmi, Vida Dujmovi\'c, 
+        Michael van Dyk, and Pat Morin}
 
 
 \newcommand{\note}[2]{{\color{red}[#1:~#2]}}
@@ -454,153 +455,132 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
 
 For each node $u$ of $T$, define
 $\lbl(u)=\floor{\log_{1+\epsilon}|T_u|}$. We say that a node $u$ of $T$
-is \emph{special} if $u$ is a leaf or if $\lbl(u)$ is different from
-both its children.  If $u$ is special, then $T_u$ is also \emph{special}.
-Observe that for every node $w$ of $T$, $T_w$ contains a special subtree
-$T_u$ with $|T_u|\ge (1-O(\epsilon))|T_w|$.\footnote{Proof: For $\epsilon < 1$ and each node $w$ of $T$ at most one of $w$'s two children have the label $\lbl(u)$.  Therefore $T_w$ contains a special node $u$ with $\lbl(u)=\lbl(w)$. But this implies that $|T_u|\ge |T_w|/(1+\epsilon)$ so $|T_u|\ge (1-O(\epsilon))|T_w|$.}  Let $S(T)$ denote the set of special nodes in $T$.
+is \emph{special} if $u$ is a leaf or if $\lbl(u)$ is different from both
+its children.  If $u$ is special, then $T_u$ is also \emph{special}.
+Observe that for every node $w$ of $T$, $T_w$ contains a special
+subtree $T_u$ with $|T_u|\ge (1-O(\epsilon))|T_w|$.\footnote{Proof:
+Consider the subtree $T_w'$ of $T_w$ induced by all nodes $v$ in $T_w$
+such that $\lbl(v)=\lbl(w)$. $T_w'$ is non-empty and therefore contains
+at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
+|T_w|/(1+\epsilon)$ so $|T_u|\ge (1-2\epsilon)|T_w|$, for $\epsilon \le
+1/2$.}  Let $S(T)$ denote the set of special nodes in $T$.
 
 \begin{lem}\lemlabel{exploder-main}
-  For any constant $\epsilon' >0$, any $n\in\N$, and any $n$-point
+  For any constant $\epsilon >0$, any $n\in\N$, and any $n$-point
   set $P\subset\R^d$ with fair-split tree $T$, there exists a graph
-  $G_P=(P,E)$ with $O(n\log^5 n)$ edges such that, for any $F\subseteq
+  $G_P=(P,E)$ with $O(n\log^4 n\log\log n)$ edges such that, for any 
+  $F\subseteq
   P$, there exists a superset $F^+_P\supseteq F$ with $|F^+_P|\le
-  (1+\epsilon')|F|$ such that for any node $w$ of $T$ and any point
+  (1+6\epsilon)|F|$ such that for any node $w$ of $T$ and any point
   $p\in L(T_w)\setminus F^+_P$, there is a special node $u$ in $T_w$
   and a subset $X\subseteq L(T_u)$
-  with $|X|\ge \epsilon'|T_u|$ such that for every $q\in X$, $G_P-F$
+  with $|X|\ge \epsilon|T_u|$ such that for every $q\in X$, $G_P-F$
   contains a path from $p$ to $q$ of length at most $(C+1)\diam'(T_w)$.
 \end{lem}
 
 
 \begin{proof}
-  Let $\epsilon >0$ be some constant that is upper bounded by some
-  function of $\epsilon'$.  The graph $G_P$ contains all edges of
-  $G_{T_u}$ for each special node $u$.  The parameter $\Delta$ in
-  the construction of $G_{T_u}$ is set to $\Delta=c\log^2 n$ for some
-  sufficiently large constant $c$.  The total number of edges in all of
-  these graphs is $O(n\log^4 n\log\log n)$.
+  The graph $G_P$ contains all edges of $G_{T_u}$ for each special node
+  $u$ of $T$.  The parameter $\Delta$ in the construction of $G_{T_u}$
+  is set to $\Delta=c\log^2 n$ for some sufficiently large constant $c$.
+  The total number of edges in all of these graphs is $O(n\log^4
+  n\log\log n)$.  
 
   We say that a node $w$ with parent $x$ in $T$ is \emph{left out of
-  $u$} if $x$ is not special and the largest special subtree $T_u$
-  in $T_x$ is not contained in $T_w$.  Note that each left out node is
-  the smaller of the two children of $x$, so that any root to leaf
+  node $u$} if $x$ is not special, $T_u$ is the largest special subtree
+  of $T_x$ and $u$ is not in $T_w$. Note that each left out node is the
+  smaller of the two children of its parent, so that any root to leaf
   path in $T$ contains at most $\log_2 n$ left out nodes.  In other words,
   each point $p\in P$ is left out of at most $\log_2 n$ special nodes.
 	
   For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $W_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
-  an expander $H_u$ for the pair
+  an expander graph $H_u$ for the pair
   $(W_u,L(T_u))$. This expander has the property that, for any
-  subset $X\subset L(T_u)$, $|X|\le (1-\epsilon/\log n)|T_u|$, the number of $p\in W_u$
-  with $N_{H_u}(p)\subset X$ is at most $\epsilon|X|/\log_{1+\epsilon} n$.
-  \note{PM}{Lots of overlap here with the construction from the previous
-  section. Can we unify the two?}  The graph $H_u$ has $O(|W_u|\log n\log\log
-  n)$ edges and by summing over all special nodes $u$ this gives a total of
-  $O(n\log^2 n\log\log n)$ edges.  The graph $G_P$ contains $H_u$
-  for each special node $u$.
+  subset $X\subset L(T_u)$ with $|X|\le (1-\epsilon/\log n)|T_u|$, 
+  \[ |\{p\in W_u: N_{H_u}(p)\subseteq X\}| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
+  The graph $H_u$ is obtained from \corref{expander-a} with parameters
+  $k=\log n/\epsilon$ and $\ell=\log_{1+\epsilon n}/\epsilon$.  Therefore,
+  the number of edges in $H_u$ is $O(|W_u|\log n\log\log n)$ edges and
+  by summing over all special nodes $u$ this gives a total of $O(n\log^2
+  n\log\log n)$ edges.  The graph $G_P$ contains $H_u$ for each special
+  node $u$.
 
   This concludes the description of $G_P$ and the analysis of the number
   of edges in $G_P$. What remains it is to describe and analyze the
   set $F^+_P$.
 
 
-  Define the following sets:
-  \[  F^*_P = \bigcup_{u\in S(T)} F^+_{T_u} \]
-  \[  F^{**}_P = \bigcup_{x\in \{x\in V(T): |L(T_x)\cap F^*_P| > (1-3\epsilon)|L(T_x)|\}} L(T_x) \]
-  \[  F^{***}_P = \bigcup_{u\in S(T)} \{w \in W_u : N_{H_u}(w)\subseteq F^{**}_P \} \]
-
-   Observe that $|F^*_P| \le (1+\epsilon)|F|$.  Furthermore, $|F^{**}_P|\le
-   |F^*_P|/(1-2\epsilon) \le (1+4\epsilon)|F|$ and $F^{**}_P\supset F^*_P$.  What remains is to analyze the size of $|F^{***}_P\setminus F^{**}_P|$.  For this, we first observe that, if $T_u$ is the largest special subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon/\log n)|T_u|$ then $L(T_x)\subset F^{**}_P$.  This is because
-\[
-   |F^{**}_P\cap L(T_x)| 
-\ge  
-   |F^+_{T_u}|
-\ge  
-   (1-\epsilon/\log n)|T_u|
-\ge  
-   (1-\epsilon/\log n)(1-2\epsilon)|T_w|
-\ge  
-   (1-3\epsilon/\log n)|T_w| \enspace .
-\]
-Therefore a special node $u$ only contributes to $F^{***}_P\setminus
-F^{**}_P$ if $|F^+_{T_u}| \le (1-1/\log n)|T_u|$.  However, in this case,
-the expander property of $H_u$ ensures that $u$ contributes at most
-$\epsilon F^+_{T_u}/\log_{1+\epsilon} n\le (\epsilon+\epsilon^2)|F\cap L(T_u)|/log_{1+\epsilon} n$ elements to $F^{***}_P\setminus F^{**}_P$.
-Summing this over all special nodes $u$, shows that
-\[
-   |F^{***}_P\setminus F^{**}_P| \le (\epsilon+\epsilon^2)|F| \le 2\epsilon|F|
-\]
-In total, this implies that $F^+_P = F^**_P\cup F^{***}+P$ has size $|F^+_P|\le (1+6\epsilon)|F|$.
-
-Therefore, the graph $G_{T_u}$ has $O(|T_u|\log^4
-  n)$ edges.  For any two special nodes, $u$ and $u'$ with $\lbl(u)=\lbl(u')$,
-  the subtrees $T_u$ and $T_{u'}$ are disjoint.  This implies that the
-  total number of edges in all graphs generated by nodes with label
-  $i$ is $O(n\log^4 n)$.  Since there are only $O(\log n)$ different
-  label values, it follows that the total number of edges in $G_P$
-  is $O(n\log^5 n)$.
-
-  We say that a node $w$ with parent $x$ in $T$ is \emph{left out of
-  $u$} if $x$ is not special and the largest special subtree $T_u$
-  in $T_x$ is not contained in $T_w$.  Note that each special node is
-  the smaller of the two children of $x$, so that any root to leaf
-  path in $T$ contains at most $\log_2 n$ left out nodes.  
-	
-  For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $W_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
-  an expander $H_u$ for the pair
-  $(W_u,L(T_u))$. This expander has the property that, for any
-  subset $X\subset L(T_u)$, $|X|\le (1-a)|T_u|$, the number of $p\in W_u$
-  with $N_{H_u}(p)\subset X$ is at most $\epsilon|X|/\log_2 n$.
-  \note{PM}{Lots of overlap here with the construction from the previous
-  section. Can we unify the two?}  The graph $H_u$ has $O(|W_u|\log^2
-  n)$ edges and by summing over all left out nodes $w$ these graphs have
-  a total of $O(n\log^3 n)$ edges.  The graph $G_P$ contains $H_w$
-  for each left out node $w$.
-
-  This concludes the description of $G_P$
-  and the analysis of the number of edges in $G_P$. What remains it is
-  to describe and analyze the set $F^+_P$.
-
-  For any subset $F\subset P$, the set $F^+_{T_u}$ is defined for every
-  special node $u$ of $T$.  We define
-  \[  F^*_P = \cup\{F^+_{T_u}: \text{$u$ is a special node of $T$}\}
+  Define the set:
+  \[  
+    F^*_P = \bigcup_{u\in S(T)} F^+_{T_u} \enspace .
   \]
-  For each special node $u$, $|F^+_{T_u}| \le (1+O(\epsilon\log
-  n/\Delta))|F\cap L(T_u)|$.  It follows that $|F^*_P| \le (1+\epsilon)|F|$
-  for a sufficiently large constant $c$.
+  By choosing $\Delta \ge (\log_{3/2} n)(\log_{1+\epsilon}
+  n)$, each special node $u$ of $T$ has $|F^+_{T_u}|\le
+  (1+\epsilon/\log_{1+\epsilon} n)|F\cap L(T_u)|$. Therefore, since
+  each point in $F$ appears in at most $\log_{1+\epsilon} n$ special
+  subtrees, $|F^*_P|\le (1+\epsilon)|F|$.
 
-  Next, we define the set $F^{**}_P$ as follows: For each special node $u$
-  and each point $p\in W_u$, we include $p$ in $F^{**}_P$ if $N_{H_u}(w)
-  \subseteq F^+_{T_u}$.  Note that, in this step, each special node $u$
-  contributes at most $\epsilon |F^+_u|/\log n$ points to $F^{**}_P$
-  and therefore $|F^{**}_P| \le (1+O(\epsilon))|F|$.
+  We say that a node $w$ of $T$ is $F^*_P$-dense if $|F^*_P \cap L(T_w)| >
+  (1-3\epsilon)|T_w|$.  Now, define
+  \[  
+     F^{**}_P = \cup\{ L(T_w) : \text{$w$ is an $F^+_P$-dense node of $T$} \}
+  \]
+  For each $p\in F$, the leaf $p$ of $T$ is an $F^+_P$-dense node of
+  $T$. Therefore, $F^{**}_P\supseteq F^{*}_P$.  Furthermore,
+  \[
+      |F^{**}_P| \le |F^*_P|/(1-3\epsilon) \le (1+\epsilon)|F|/(1-3\epsilon) \le (1+5\epsilon)|F|
+  \]
+  \note{PM}{state condition on $\epsilon$ for the last inequality.}
 
-  Next we define 
-  \[  F^{***}_P = \cup\{L(T_u) : |(F^*_P\cup F^{**}_P)\cap L(T_u)| \ge (1-\epsilon)|T_u|\} \enspace . \]
-  Again, it is easily verified that $|F^{***}_P| \le (1+O(\epsilon))|F|$.
+  Finally, define 
+  \[  F^{***}_P = \bigcup_{u\in S(T)} \{p \in W_u : N_{H_u}(p)\subseteq F^{**}_P \} \]
+  What remains is to analyze the size of $|F^{***}_P\setminus F^{**}_P|$.
+  For this, we first observe that, if $T_u$ is the largest special
+  subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon/\log n)|T_u|$ then
+  $L(T_x)\subseteq F^{**}_P$.  This is because
+  \[
+     |F^{**}_P\cap L(T_x)| 
+  \ge  
+     |F^+_{T_u}|
+  \ge  
+     (1-\epsilon/\log_{1+\epsilon} n)|T_u|
+  \ge  
+     (1-\epsilon/\log_{1+\epsilon} n)(1-2\epsilon)|T_w|
+  \ge  
+     (1-3\epsilon/\log n)|T_w| \enspace .
+  \]
+  Therefore a special node $u$ only contributes to $F^{***}_P\setminus
+  F^{**}_P$ if $|F^+_{T_u}| \le (1-1/\log n)|T_u|$.  However,
+  in this case, the expander property of $H_u$ ensures that $u$
+  contributes at most $\epsilon F^+_{T_u}/\log_{1+\epsilon} n\le
+  (\epsilon+\epsilon^2)|F\cap L(T_u)|/log_{1+\epsilon} n$ elements to
+  $F^{***}_P\setminus F^{**}_P$.  Summing this over all special nodes $u$,
+  shows that
+  \[
+     |F^{***}_P\setminus F^{**}_P| \le (\epsilon+\epsilon^2)|F| \le 2\epsilon|F|
+  \]
+  In total, this implies that $F^+_P = F^**_P\cup F^{***}+P$ has size
+  $|F^+_P|\le (1+7\epsilon)|F|$.  This concludes the description of
+  $F^+_P$ and the analysis of its size.
 
-  Finally, we define $F^+_P= F^*_P\cup F^**_P\cup F^{***}_P$.   This
-  concludes the definition of $F^+_P$ and the analysis of its size.
-  Note that by choosing $\epsilon = \epsilon' /c$ for a sufficiently large
-  constant $c$, $|F^+_P|\le (1+\epsilon')|F|$, as required by the theorem.
-  All that remains is to prove that $F^+P$ satisfies the conditions of
-  the theorem.  
-
-  Now, consider any node $w$ of $T$ and any point $p\in L(T_w)\setminus F^+_P$.
-  Let $u$ be a special node in $T_w$ such that $T_u$ is maximum.
+  \note{PM}{Continue here.}
+  Now, consider any node $w$ of $T$ and any point $p\in L(T_w)\setminus
+  F^+_P$.  Let $u$ be a special node in $T_w$ such that $T_u$ is maximum.
   There are two cases to consider:
   \begin{enumerate}
     \item $p\in L(T_u)$. In this case, there is a subset $X\subset L(T(u))$
      such that, for each node $q\in X$, $G_{T_u}$ contains a path from
      $p$ to $q$ of length at most $C\diam(T_u)$. Furthermore,
     \begin{align*}
-	    |X| & \ge (1-a/\log n)|T_u| - F^+_{T_u} \\
-	        & \ge (1-a/\log n)|T_u| - (1-\epsilon)|T_u| \\
-	       & \text{since $F^+_{T_u} \subset F^*_P$ and $|F^*_P\cap T_u|\le (1-\epsilon)|T_u|$} \\
-		& \ge \Omega(\epsilon)|T_u| \\ 
-		& \ge \Omega(\epsilon)(1-\epsilon)|T_w|  \\
-		& \ge \Omega(\epsilon)|T_w| 
+      |X| & \ge (1-a/\log n)|T_u| - F^+_{T_u} \\
+          & \ge (1-a/\log n)|T_u| - (1-\epsilon)|T_u| \\
+             & \text{since $F^+_{T_u} \subset F^*_P$ and $|F^*_P\cap T_u|\le (1-\epsilon)|T_u|$} \\
+         & \ge \Omega(\epsilon)|T_u| \\ 
+         & \ge \Omega(\epsilon)(1-\epsilon)|T_w|  \\
+         & \ge \Omega(\epsilon)|T_w| 
     \end{align*}
     as required.
+
     \item $p\in L(T_w)\setminus L(T_u)$.  In this case, since $p\not\in
     F^{**}_P$, $G_P-F$ contains an edge $pp'$ with $p'\in L(T_u)\setminus
     F^{+}_{T_u}$.  The edge $pp'$ has length at most $\diam(T_x)$.
@@ -619,7 +599,7 @@ and $B_i=L(T_{b_i})$ where $a_i$ and $b_i$ are nodes of $T$.
 
 Our robust spanner begins with the graph $G_P$ described in the previous
 section that is constructed using the fair-split tree $T$.  Next,
-we create a new set of well-separated pair $W'$ as follows:  For each
+we create a new set of well-separated pairs $W'$ as follows:  For each
 pair $(A_i,B_i)\in W$, we find the largest special subtree $T_{a_i'}$
 of $T_{a_i}$ and the largest special subtree $T_{b_i'}$ of $T_{b_i}$
 and add the pair $(A_i',B_i')=(L(T_{a_i'}),L(T_{b_i'}))$ to $W'$.
