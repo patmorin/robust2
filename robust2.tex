@@ -471,10 +471,10 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   $G_P=(P,E)$ with $O(n\log^4 n\log\log n)$ edges such that, for any 
   $F\subseteq
   P$, there exists a superset $F^+_P\supseteq F$ with $|F^+_P|\le
-  (1+6\epsilon)|F|$ such that for any node $w$ of $T$ and any point
+  (1+7\epsilon)|F|$ such that for any node $w$ of $T$ and any point
   $p\in L(T_w)\setminus F^+_P$, there is a special node $u$ in $T_w$
   and a subset $X\subseteq L(T_u)$
-  with $|X|\ge \epsilon|T_u|$ such that for every $q\in X$, $G_P-F$
+  with $|X|\ge \epsilon/4|T_u|$ such that for every $q\in X$, $G_P-F$
   contains a path from $p$ to $q$ of length at most $(C+1)\diam'(T_w)$.
 \end{lem}
 
@@ -493,14 +493,14 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   path in $T$ contains at most $\log_2 n$ left out nodes.  In other words,
   each point $p\in P$ is left out of at most $\log_2 n$ special nodes.
 	
-  For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $W_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
+  For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $K_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
   an expander graph $H_u$ for the pair
-  $(W_u,L(T_u))$. This expander has the property that, for any
+  $(K_u,L(T_u))$. This expander has the property that, for any
   subset $X\subset L(T_u)$ with $|X|\le (1-\epsilon/\log n)|T_u|$, 
-  \[ |\{p\in W_u: N_{H_u}(p)\subseteq X\}| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
+  \[ |\{p\in K_u: N_{H_u}(p)\subseteq X\}| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
   The graph $H_u$ is obtained from \corref{expander-a} with parameters
   $k=\log n/\epsilon$ and $\ell=\log_{1+\epsilon n}/\epsilon$.  Therefore,
-  the number of edges in $H_u$ is $O(|W_u|\log n\log\log n)$ edges and
+  the number of edges in $H_u$ is $O(|K_u|\log n\log\log n)$ edges and
   by summing over all special nodes $u$ this gives a total of $O(n\log^2
   n\log\log n)$ edges.  The graph $G_P$ contains $H_u$ for each special
   node $u$.
@@ -533,7 +533,7 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   \note{PM}{state condition on $\epsilon$ for the last inequality.}
 
   Finally, define 
-  \[  F^{***}_P = \bigcup_{u\in S(T)} \{p \in W_u : N_{H_u}(p)\subseteq F^{**}_P \} \]
+  \[  F^{***}_P = \bigcup_{u\in S(T)} \{p \in K_u : N_{H_u}(p)\subseteq F^{**}_P \} \]
   What remains is to analyze the size of $|F^{***}_P\setminus F^{**}_P|$.
   For this, we first observe that, if $T_u$ is the largest special
   subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon/\log n)|T_u|$ then
@@ -559,13 +559,12 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   \[
      |F^{***}_P\setminus F^{**}_P| \le (\epsilon+\epsilon^2)|F| \le 2\epsilon|F|
   \]
-  In total, this implies that $F^+_P = F^**_P\cup F^{***}+P$ has size
-  $|F^+_P|\le (1+7\epsilon)|F|$.  This concludes the description of
-  $F^+_P$ and the analysis of its size.
+  In total, this implies that $F^+_P = F^{**}_P\cup F^{***}_P$ has size
+  \[ |F^+_P| = |F^{**}_P| + |F^{***}_P\setminus F^{**}_P|\le (1+7\epsilon)|F| \].  This concludes the description of
+  $F^+_P$ and the analysis of its size.  All that remains is to show that, for any node $w$ and any $p\in L(T_w)\setminus F^+_P$, there is a large subset of $L(T_w)$ that is reachable from $p$ in $G-F$ using paths of length at most $(C+1)\diam(T_w)$.
 
-  \note{PM}{Continue here.}
   Now, consider any node $w$ of $T$ and any point $p\in L(T_w)\setminus
-  F^+_P$.  Let $u$ be a special node in $T_w$ such that $T_u$ is maximum.
+  F^+_P$.  Let $T_u$ be the largest special subtree in $T_w$.
   There are two cases to consider:
   \begin{enumerate}
     \item $p\in L(T_u)$. In this case, there is a subset $X\subset L(T(u))$
@@ -575,14 +574,17 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
       |X| & \ge (1-a/\log n)|T_u| - F^+_{T_u} \\
           & \ge (1-a/\log n)|T_u| - (1-\epsilon)|T_u| \\
              & \text{since $F^+_{T_u} \subset F^*_P$ and $|F^*_P\cap T_u|\le (1-\epsilon)|T_u|$} \\
-         & \ge \Omega(\epsilon)|T_u| \\ 
-         & \ge \Omega(\epsilon)(1-\epsilon)|T_w|  \\
-         & \ge \Omega(\epsilon)|T_w| 
+         & \ge (\epsilon-a)|T_u| \\ 
+         & \ge (\epsilon/2)|T_u| 
+           & \text{(for $a \le \epsilon/2$)}\\ 
+         & \ge (\epsilon/2)(1-\epsilon)|T_w|  \\
+         & \ge (\epsilon/4)(1-\epsilon)|T_w| 
+           & \text{(for $\epsilon \le 1/2)$} 
     \end{align*}
     as required.
 
     \item $p\in L(T_w)\setminus L(T_u)$.  In this case, since $p\not\in
-    F^{**}_P$, $G_P-F$ contains an edge $pp'$ with $p'\in L(T_u)\setminus
+    F^{***}_P$, $G_P-F$ contains an edge $pp'$ with $p'\in L(T_u)\setminus
     F^{+}_{T_u}$.  The edge $pp'$ has length at most $\diam(T_x)$.
     We can now proceed, as in the previous case, from $p'$.
   \end{enumerate}
@@ -659,15 +661,18 @@ Finally, the graph $G$ consists of the union of $G_P$ and $G'_P$
 
 
 \begin{clm}
-  For any $n$-point set $P\subset\R^d$, The graph $G'_P$  is a
-  $(1+O(\epsilon))$-robust $t$-spanner of $P$.
+  For any constants $d\ge 1$, $\epsilon >0$, $t>1$, and any $n$-point set
+  $P\subset\R^d$, there exist a $(1+\epsilon)$-robust $t$-spanner of $P$.
 \end{clm}
 
 \begin{proof}
-  For any set $F\subset P$, we define $F^+ = F^+_P \cup (F^+_P)'$, where
-  $F^+_P$ is defined in the proof of \lemref{exploder-main}.  That $|F^+|
-  \le (1+O(\epsilon))|F|$ follows from \lemref{exploder-main}, which
-  shows that $|F^+_P|\le (1+O(\epsilon))|F|$ and \clmref{f-prime-size}.
+  The graph $G$ consists of the union of $G_P$ and $G'_P$ where each
+  graph is constructed with some value $\epsilon' = \epsilon/c$ for
+  some sufficiently large constant $c$.  For any set $F\subset P$, we
+  define $F^+ = F^+_P \cup (F^+_P)'$, where $F^+_P$ is defined in the
+  proof of \lemref{exploder-main}.  That $|F^+| \le (1+\epsilon)|F|$
+  follows from \lemref{exploder-main}, which shows that $|F^+_P|\le
+  (1+\epsilon/2)|F|$, and \clmref{f-prime-size}.
 
   Now, consider any two distinct points $p,q\in P\setminus F^+$ and
   $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
