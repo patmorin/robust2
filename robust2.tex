@@ -88,14 +88,16 @@ by proving the following theorem:
 \begin{thm}\thmlabel{main-i}
   For every constant $d\ge 1$, $\epsilon>0$, $t>1$ and every $n$-point
   set $P\subseteq\R^d$, there exists an $\epsilon$-resilient $t$-spanner
-  $G=(P,E)$ with $|E|=O(n\log^3 n\log\log n)$.
+  $G=(P,E)$ with $|E|=O(n\log^4 n\log\log n)$.
 \end{thm}
 
 Bose \etal\ \cite{bose.dujmovic.ea:robust} show that, for any constants
-$\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point
-sets for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
-n)$ edges.  Thus, \thmlabel{main-i} is within a factor of of $O(\log^2
-n\log\log n)$ of optimal.
+$\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point sets
+for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
+n)$ edges.  Thus, \thmref{main-i} is within a factor of of $O(\log^2
+n\log\log n)$ of optimal in any constant dimension.  (Note that in
+dimension $d=-1$, optimal constructions, having $O(n\log n)$ are known
+\cite{buchin.har-peled.ea:spanner}.)
 
 
 \section{Background}
@@ -560,8 +562,13 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
      |F^{***}_P\setminus F^{**}_P| \le (\epsilon+\epsilon^2)|F| \le 2\epsilon|F|
   \]
   In total, this implies that $F^+_P = F^{**}_P\cup F^{***}_P$ has size
-  \[ |F^+_P| = |F^{**}_P| + |F^{***}_P\setminus F^{**}_P|\le (1+7\epsilon)|F| \].  This concludes the description of
-  $F^+_P$ and the analysis of its size.  All that remains is to show that, for any node $w$ and any $p\in L(T_w)\setminus F^+_P$, there is a large subset of $L(T_w)$ that is reachable from $p$ in $G-F$ using paths of length at most $(C+1)\diam(T_w)$.
+  \[ |F^+_P| = |F^{**}_P| + |F^{***}_P\setminus F^{**}_P|\le (1+7\epsilon)|F| .
+  \]  
+  This concludes the description of $F^+_P$ and the analysis of its
+  size.  All that remains is to show that, for any node $w$ and any
+  $p\in L(T_w)\setminus F^+_P$, there is a large subset of $L(T_w)$
+  that is reachable from $p$ in $G_P-F$ using paths of length at most
+  $(C+1)\diam(T_w)$.
 
   Now, consider any node $w$ of $T$ and any point $p\in L(T_w)\setminus
   F^+_P$.  Let $T_u$ be the largest special subtree in $T_w$.
@@ -615,77 +622,101 @@ the special nodes of $T$ where, for each special node $u\in V(T)$:
 \[
 	W'_u = \{ (A_i',B_i')\in W' : a_i' = u \}
 \]
-For each group $G'_u$, define $B'_u=\bigcup\{B_i' : (L(u),B_i')\in
-W'_u\}$ and let $H'_u$ be on the pair $(L(T_u), B'_u)$ with the following
-properties: 
+For each group $G'_u$, define $B'_u=\bigcup\{B_i' : (L(u),B_i')\in W'_u\}$
+and let $H'_u$ be an expander graph on the pair $(L(T_u), B'_u)$ with
+the following properties:
 \begin{enumerate}
-  \item[(PR3)] For any $X\subseteq P$ with $|X\cap A_i|\le
-  (1-\epsilon/\log n)|A_i|$, define $X'_u = \{p\in B'_u: N_{H'_u}\subseteq
-  X\}$.  Then $|X'_u|\le \epsilon|X|/\log n$.
+  \item[(PR3)] For any $X\subseteq P$ with $|X\cap L(T_u)|\le
+  (1-\epsilon/\log n)|T_u|$, define $K_{X,u}=\{p\in B'_u:
+  N_{H'_u}\subseteq X\cap L(T_u)\}$.  Then
+   \[  |K_{X,u}|\le \epsilon|X|/\log_{1+\epsilon} n \enspace . \]
 
-  \item[(PR4)] For any two sets $X,Y\subset A_i'$ with $|X|,|Y|\ge
-  \epsilon|A_i'|$, $G$ contains at least one edge $xy$ with $x\in X$
+  \item[(PR4)] For any two sets $X,Y\subset L(T_u)$ with $|X|,|Y|\ge
+  \epsilon|T_u|$, $G$ contains at least one edge $xy$ with $x\in X$
   and $y\in Y$.
 \end{enumerate}
 
-Let $G'_P$ denote the graph obtained by taking all the edges of $H'_u$ for every special node $u$ in $T$.
-
-\begin{clm}
-  The graph $G'_P$ has $O(n\log^3 n)$ edges.
+\begin{clm}\clmlabel{edge-count-iii}
+  There exists a graph $H'_u$ that satisifies Properties~(PR3) and (PR4)
+  that has $O(|T_u|\log n\log\log n)$ edges.
 \end{clm}
 
 \begin{proof}
-  Each expander graph $H'_u$ has $O(|T_u|\log^2 n)$.  As usual, the claim
-  then follows by paritition the special nodes of $T$ into $O(\log n)$
-  sets where, for any two nodes $u$ and $u'$ in the same set, $T_u$ and
-  $T_{u'}$ are disjoint.
+  To satisfy Property~(PR1), $H'_u$ contains an expander graph for the
+  pair $(A_i,B_i)$ described by \corref{expander-a} with parameters
+  $k=\ell=\log n/\epsilon$.  This graph has $O(|T_u|\log n\log\log n)$
+  edges.
+
+  To satisfy Property~(PR4), $H'_u$ contains an expander graph for the
+  pair $(L(T_u),L(T_u))$ described by \lemref{expander-a} with parameters
+  $k=\ell=1/\epsilon$.  This graph has $O(|T_u|)$ edges.
+\end{proof}
+
+Let $G'_P$ denote the graph obtained by taking all the edges of $H'_u$
+for every special node $u$ in $T$.
+
+\begin{clm}
+  The graph $G'_P$ has $O(n\log^2 n\log\log n)$ edges.
+\end{clm}
+
+\begin{proof}
+  By \clmref{edge-count-iii}, each expander graph $H'_u$ has $O(|T_u|\log
+  n\log\log n)$ edges.  As usual, the claim then follows by paritition the
+  special nodes of $T$ into $O(\log n)$ sets where, for any two nodes $u$
+  and $u'$ in the same set, $T_u$ and $T_{u'}$ are disjoint.
 \end{proof}
 
 Our final construction $G'_P$ contains the graph $G_P$ described in
 \secref{g-p} as well $H'_u$ for every special node $u$ of $T$.
 
-For any set $X\subset P$, we define $X'\supseteq F$ as 
-$X' = \bigcup_{u\in S(T)} X'_u$.
+For any set $X\subset P$, we define $K_{X} = \bigcup_{u\in
+S(T)} K_{X,u}$.
 
 \begin{clm}\clmlabel{f-prime-size}
-  $|F'| \le O(\epsilon)|F|$.
+  For any $X\subseteq P$, $|K_{X}| \le \epsilon|X|$.
 \end{clm}
 
 \begin{proof}
-  For each special node $u$ of $T$, $|F'_u|\le \epsilon|F\cap L(T_u)|/\log
-  n$.  Again, the claim follows by paritioning the special nodes in
-  $O(\log n)$ sets.
+  Property~(PR3) ensures that, for each special node $u$ of $T$,
+  $|K_{X,u}|\le \epsilon|F\cap L(T_u)|/\log_{1+\epsilon} n n$.  Again, the
+  claim follows by partitioning the special nodes into $O(\log n)$ sets.
 \end{proof}
 
-Finally, the graph $G$ consists of the union of $G_P$ and $G'_P$
+We can now complete the proof of \thmref{main-i}.
 
-
-\begin{clm}
-  For any constants $d\ge 1$, $\epsilon >0$, $t>1$, and any $n$-point set
-  $P\subset\R^d$, there exist a $(1+\epsilon)$-robust $t$-spanner of $P$.
-\end{clm}
-
-\begin{proof}
+\begin{proof}[Proof of \thmref{main}]
   The graph $G$ consists of the union of $G_P$ and $G'_P$ where each
   graph is constructed with some value $\epsilon' = \epsilon/c$ for
   some sufficiently large constant $c$.  For any set $F\subset P$, we
-  define $F^+ = F^+_P \cup (F^+_P)'$, where $F^+_P$ is defined in the
-  proof of \lemref{exploder-main}.  That $|F^+| \le (1+\epsilon)|F|$
+  define $F^+ = F^+_P \cup K_{F^+_P}$, where $F^+_P$ is defined in the
+  proof of \lemref{exploder-main} and $K_{F^+_P}$ is defined above.  
+  That $|F^+| \le (1+\epsilon)|F|$
   follows from \lemref{exploder-main}, which shows that $|F^+_P|\le
-  (1+\epsilon/2)|F|$, and \clmref{f-prime-size}.
+  (1+\epsilon/2)|F|$, and \clmref{f-prime-size} which shows that 
+  \[
+     |K_{F^+_P}|\le (\epsilon/3)|F^+_P|\le (\epsilon/3)(1+\epsilon/2)|F|
+     \le \epsilon|F|/2 \enspace ,
+  \]
+  for any $\epsilon \le 1$.
 
   Now, consider any two distinct points $p,q\in P\setminus F^+$ and
-  $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
-  Since $p\not\in F^+_P$, $|F^+_P\cap A_i'|\le (1-2\epsilon)|A_i'|$.
-  Since $q\not\in F'$, $G-F$ Property~(PR3) of $H'_{a_i'}$ contains
-  an edge $qq'$ with $q'\in A_i'\setminus F^+_P$.
-
-  Therefore, $A_i'$ contains a set $X$ of size
-  $(1-\epsilon)|A_i'|-|F^+_P\cap A_i'|\ge \epsilon|A_i'|$ such that, for
-  every point $r\in X_{q'}$, $G-F$ contains a path from $p'$ to $r$ of
-  length at most $C\diam'(T_{a_i'})$.  There is a similar set $Y\subseteq
-  A_i'$ defined for $p$.  Property~(PR4) of $H'_{a_i'}$ therefore implies
-  that there exists an edge $xy$ with $x\in X$ and $y\in Y$.
+  let $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
+  Since $p\not\in F^+_P$, \clmref{root-explode} implies that there is a
+  subset $X_{p'}\subseteq A_i'$, with $|X_{p'}|\ge (\epsilon/4)|A_i'|$
+  such that, for every $x\in X_{p'}$, $G-F$ contains a path from $p$
+  to $x$ of length at most $C\diam'(T_{a_i'})\le C\diam'(T_{a_i})$.
+  
+  Now, since $q\not\in K_{F^+_{a_i},a_i}$, $H_{a_i'}$ contains an edge
+  $qq'$ with $q'\in A_i\setminus F^+_{a_i}$.  This then defines a set
+  $X_{q'}$ analagous to $X_{p'}$.  Finally, Property~(PR4), of $H_{a_i'}$
+  ensures that there is at least one edge $p''q''$ with $p''\in X_{p'}$
+  and $q''\in X_{q'}$.  This yields a path from $p$ to $q$ of length at most
+  \begin{align*}
+    \dist_{G-F}(p,q) & \le \dist(p,p') + \dist_{G-F}(p',p'') +
+      \dist(p'',q'') + \dist_{G-F}(q'',q') + \dist(q',q) \\
+      & \le (2C+2)\diam'(a_i') + \dist(q',q) \\
+      & \le (2C+3)\diam'(a_i') + \diam'(b_i) + \dist(p,q) \\
+  \end{align*}
 
   Therefore, $G-F$ contains a path from $p$ to $q$ of length at most
   \[  \diam(A_i) + \diam(B_i) + \dist(A_i,B_i) + C\diam'(A_i) = (1+O(1/s))\dist(p,q)
