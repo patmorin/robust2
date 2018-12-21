@@ -147,7 +147,7 @@ Results like the following lemma, and its proof, are fairly standard
 expander constructions (see, for example, the survey by Hoory \etal\
 \cite{hoory.linial.ea:expanders}):
 
-\begin{lem}\lemlabel{expander-a}
+\begin{lem}\lemlabel{expand}
    For any $k\ge 2$, $\ell\ge 2$, $n\in\N$ and any two sets $A$ and $B$
    each of size $\Theta(n)$, there exists a graph $H=(A\cup B,E)$
    with $|E|=O(n(k\log \ell + \ell\log k))$ such that, for any set $B'\subset B$, $|B'|\ge |B|/\ell$, \[ |N_H(B')| \ge (1-1/k)|A| \enspace . \]
@@ -164,7 +164,7 @@ expander constructions (see, for example, the survey by Hoory \etal\
   Let $A$ and $B$ be disjoint $n$-element sets and construct a random
   graph $H$ where each element in $B$ forms an edge with $\Delta$ randomly
   chosen (with replacement) elements in $A$.  For a fixed $A'\subset A$
-  with $|A'|=(1-1/k)|A|$ and a fixed $B'\subset B$ with $|B'| = n/\ell$,
+  with $|A'|=(1-1/k)|A|$ and a fixed $B'\subset B$ with $|B'| = |B|/\ell$,
   \[
     \Pr\{N_H(B') \subseteq A'\} 
         \le (1-1/k)^{\Delta n/\ell} 
@@ -183,18 +183,25 @@ expander constructions (see, for example, the survey by Hoory \etal\
   edges that satisifies the conditions of the lemma.
 \end{proof}
 
-\lemref{expander-a} can be interpreted informally as saying that very
-small subsets of $B$ have neighbourhoods that expand into most of $A$.  
-The following lemma expressed in terms
-of shrinking shadows of subsets of $A$ is also useful:
+\lemref{expand} can be interpreted informally as saying that even small
+subsets of $B$ (of size at least $n/\ell$) have neighbourhoods that
+expand into most of $A$.  The following lemma expressed in terms of
+shrinking shadows of subsets of $A$ is also useful:
 
-\begin{cor}\corlabel{expander-a}
+\begin{lem}\lemlabel{shrink}
    For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with $|A|\ge|B|$,
    there exists a graph $H=(A,B,E)$
-   with $|E|=O(n(k\log \tau + \tau\log k))$ such that
+   with $|E|=O(|B|(k\log \tau + \tau\log k))$ such that
    for any $A'\subset A$ with $|A'|\le (1-1/k)|A|$, 
    \[ |S_H(A')| \le |A'|/\tau \enspace .\]
-\end{cor}
+\end{lem}
+
+The proof of \lemref{shrink} is similar to the proof of \lemref{expand}.
+Each element in $B$ chooses $\Delta$ random neighbours in $A$.  Then, one shows that, for each $x\in\{1,\ldots,\min\{|B|, (1-1/k)|A|/\tau\}\}$,
+\[
+    \binom{n}{\tau x}\binom{|B|}{x}(\tau x/n)^{\Delta x} < 1/|B|
+\]
+for some $\Delta=O(k\log\tau +\tau\log k)$.
 
 
 
@@ -230,7 +237,7 @@ noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
 For any $n$-point set $P\subset\R^d$, a fair-split tree for $P$ can be
 computed in $O(dn\log n)$ time \cite{callahan.kosaraju:decomposition}.
 
-For a finite point set $P\subset\R^d$ and any $s>0$,
+For a finite point set $P\subset\R^d$ and any $s>0$, a
 \emph{well-separated pair decomposition (WSPD)} of $P$ is a set of pairs
 $\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ with the following properties:
 \begin{enumerate}
@@ -263,7 +270,10 @@ well-separated pair decompositions \cite[Section~4.5]{callahan:dealing}:
 
 \section{The Construction}
 
-In this section we describe our $\epsilon$-resilient $t$-spanner construction for an $n$-point set $P\subset\R^d$.
+In this section we describe our $\epsilon$-resilient $t$-spanner
+construction for an $n$-point set $P\subset\R^d$.  Fundamental to the
+analysis of this construction is the \emph{rank} of a tree $T$, defined
+as $\rank(T)=\floor{\log_{3/2}|T|}$.
 
 \subsection{Exploding into the Root}
 
@@ -276,41 +286,54 @@ If $|T|>\kappa$, let $u_0$ be a node of $T$ with the property that
 $|T|/3\le |T_{u_0}|\le 2|T|/3$.  The existence of $u_0$ (or rather
 the edge from $u_0$ to its parent) is a standard result on binary
 trees.\footnote{Proof: Begin by setting $v_0$ to the root of $T$ and then repeatedly set $v_{i+1}$ to be the child of $v_i$ whose subtree contains at least half the leaves of $T_{v_i}$.  The smallest index $i$ for which $|T_{v_i}|\le 2|T|/3$ yields the desired node $u_0=v_i$.}   Let $T_1$ be the full binary tree obtained from
-$T_u-T_{u_0}$ by contracting an edge incident to the unique non-leaf node
-of $T_u-T_{u_0}$ that has only one child.  The graph $G_{T}$ contains
+$T-T_{u_0}$ by contracting an edge incident to the unique non-leaf node
+of $T-T_{u_0}$ that has only one child.  The graph $G_{T}$ contains
 an expander $H_T=(L(T),E_T)$. This expander has parameters $d>1$,
 $\alpha, \beta,\zeta,\eta > 0$ and is constructed so that it satisfies
 the following properties:
 \begin{enumerate}
   \item[(PR1)] For any $X\subset L(T_{u_0})$ with
     $|X|<(1-\beta/\Delta)|T_{u_0}|$, 
-    \[ |\{p\in L(T_1): N_{H_T}(p)\subseteq X\}|\le (\alpha/\Delta)|X| \enspace . \]
+    \[ |S_{H_T})(X)|\le (\alpha/\Delta)|X| \enspace . \]
 
-  \item[(PR2)] For any set $S\subset L(T_{u_0})$ with $|S|\ge
-    (\zeta/\Delta)L(T_{u_0})$, \[ |N_{H_T}(S)|\ge (1-\eta/\Delta)|T| \enspace .\]
+  \item[(PR2)] For any set $Y\subset L(T_{u_0})$ with $|Y|\ge
+    (\zeta/\Delta)L(T_{u_0})$, \[ |N_{H_T}(Y)|\ge (1-\eta/\Delta)|T| \enspace .\]
 \end{enumerate}
-In our construction, $\Delta=\Theta(\log^2 n)$ and the remaining parameters
-are small values that are upper bounded by some function of $\epsilon$. In particular, for any constant $\epsilon >0$, these parameters are also constant.
+Informally, Property~(PR1) tells us that, if some subset $X$
+of $T_{u_0}$ becomes disabled, then this only prevents a much smaller
+subset $S_{H_T}(X)$ of $T_{1}$ from accessing $T_{u_0}$.  Property~(PR2)
+tells us that if some point $p$ can reach a $\zeta/\Delta$ fraction of
+the points in $T_{u_0}$ then $p$ can reach nearly
+all the points in $T$.
+
+In our construction, $\Delta=\Theta(\log^2 n)$ and the remaining
+parameters are small values that are upper bounded by some function
+of $\epsilon$. In particular, for any constant $\epsilon >0$, these
+parameters are also constant. Note that we distinguish here between $n$
+and $|T|$. This is because, in recursive calls $\Delta=\Theta(\log^2 n)$
+remains fixed even though the recursive input has size smaller than $n$.
+
+After constructing $H_T$, we recursively construct $G_{T_{u_0}}$
+and $G_{T_1}$ and add the edges of each of the resulting graphs to
+$G_{T}$. This concludes the description of the graph $G_T$.
 
 \begin{clm}
-  For any constants $\alpha,\beta,\zeta,\eta>0$, the graph $H_T$ has
-  $O(|T|\Delta\log\Delta)$ edges.
+  For any constants $\alpha,\beta,\zeta,\eta>0$, there exists a graph $H_T$ with
+  $O(|T|\Delta\log\Delta)$ edges that satisfies Properties~(PR1) and (PR2).
 \end{clm}
 
 \begin{proof}
   To satisfy Property~(PR1), $H_T$ contains an expander described
-  by \corref{expander-a} for the pair $(A=L(T_{u_0}),B=L(T_1))$ with
-  parameter $k=\Delta/\beta$ and $\ell=\Delta/\alpha$.  This graph has
+  by \lemref{shrink} for the pair $(A=L(T_{u_0}),B=L(T_1))$ with
+  parameter $k=\Delta/\beta$ and $\tau=\Delta/\alpha$.  This graph has
   $O(|T|\Delta\log\Delta)$ edges.
 
   To satisfy Property~(PR2), $H_T$ contains an expander described
-  \lemref{expander-a} for the pair $(A=L(T_{u_0}),B=L(T))$ with
+  \lemref{expand} for the pair $(A=L(T_{u_0}),B=L(T))$ with
   parameters $k=\Delta/\eta$ and $\ell=\Delta/\zeta$. This graph also
   has $O(|T|\Delta\log\Delta)$ edges.
 \end{proof}
 
-Finally, we recursively construct $G_{T_{u_0}}$ and $G_{T_1}$ and add the
-edges of each of the resulting graphs to $G_{T}$. This concludes the description of the graph $G_T$.
 
 \begin{clm}
   $G_{T}$ has $O((\Delta\log\Delta)|T|\log |T|)$ edges.
@@ -330,21 +353,42 @@ the preceding construction, $\rank(T_{u_0}) \le \rank(T)-1$ and
 $\rank(T_1)\le\rank(T)-1$.  Let $F$ be an arbitrary subset of $P$.  We say
 that $T$ is \emph{$F$-dense} if $|L(T)\cap F|\ge (1-\delta\rank(T)/\Delta)|T|$
 for some constant $\delta$ to be discussed shortly.  Define the set
-$F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
+$F^+_T$, recursively, as follows (here $u_0$ and $T_1$ are defined as above):
 
 \begin{enumerate}
-  \item If $T$ is $F$-dense, then $F^+_T\gets L(T)$.
-  \item $F^+_T\gets F^+_{T_{u_0}}\cup F^+_{T_1}$.
-  \item If $|T_{u_0}|\le (1-\beta/\Delta)|T_{u_0}|$
+  \item If $T$ is $F$-dense, then $F^+_T\gets L(T)$. 
+     \newline [Too many points in $T$ are dead so we abandon all points in $T$.]
+  \item $F^+_T\gets F^+_{T_{u_0}}\cup F^+_{T_1}$. 
+     \newline [Recursive computation on $T_{u_0}$ and $T_1$.]
+  \item If $|F^+_{T_{u_0}}|\le (1-\beta/\Delta)|T_{u_0}|$
   \begin{enumerate}
-     \item then $F^+_T\gets F^+_T\cup\{p\in L(T_1): N_{H_T}(p)\subseteq
-     F^+_{T_{u_0}}\}$.
-     \item Otherwise, $|T_{u_0}|> (1-\beta/\Delta)|T_{u_0}|$, and $F^+_T\gets F^+_T\cup L(T_{u_0})$.
+     \item then $F^+_T\gets F^+_T\cup S_{H_T}(F^+_{T_{u_0}})$. 
+         \newline [Abandon points in $T_1$ can only reach $T_{u_0}$ through points abandoned in Step~2.]
+     \item Otherwise, $|F^+_{T_{u_0}}|> (1-\beta/\Delta)|T_{u_0}|$,
+          and $F^+_T\gets F^+_T\cup L(T_{u_0})$.
+        \newline [Too many points in $T_{u_0}$ are already abandoned, abandon everything in $T_{u_0}$.]
   \end{enumerate}
 \end{enumerate}
 
+Below, we claim that $|F^+_T|\le (1+\epsilon \rank(T)/\Delta)|F|$, for
+some small $\epsilon >0$.  Before diving into the proof, we first give an
+informal sketch.  In Step~1, the definition of $F$-density ensures that,
+if $T$ is $F$-dense, then it safe to discard all of $T$.  By induction,
+Step~2 obviously produces a sufficiently small set $F^+_T$.  In fact,
+since $\rank(T_{u_0})$ and $\rank(T_1)$ are both smaller than $\rank(T)$,
+Step~2 produces a set that is smaller than necessary. Specifically, at this
+point we can afford to add an additional $(\epsilon/\Delta)|F\cap L(T)|$
+elements to $F^+_T$.  The condition in Step~3 ensures that, in either
+of the two cases, the number of elements we add to $F^+_T$ is, indeed,
+at most $(\epsilon/\Delta)|F\cap L(T)|$.  In Step~3(a), we know that
+the shadow of $F^+_{T_{u_1}}$ in $T_1$ is sufficiently small to add
+to $F^+_T$.  In Step~3(b) we know that $F^+_{T_{u_0}}$ is so large that
+we can add the rest of it to $F^+_T$.
+
 \begin{clm}
-   For any constant $\epsilon>0$ there are constants $\alpha,\beta,\zeta,\eta >0$ such that, for any $F\subseteq P$,  $|F^+_T| \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)|$.
+   For any constant $\epsilon>0$ there are constants
+   $\alpha,\beta,\zeta,\eta >0$ such that, for any $F\subseteq P$,
+   $|F^+_T| \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)|$.
 \end{clm}
 
 \begin{proof}
@@ -364,12 +408,11 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
     \item $T$ is not $F$-dense. There are two subcases to consider:
     \begin{enumerate}
        \item $|F^+_{T_{u_0}}| \le (1-\beta/\Delta)|T_{u_0}|$.
-         In this case, $F^+_T=F^+_{T_{u_0}}\cup F^+_{T_1}$.
+         In this case, $F^+_T=F^+_{T_{u_0}}\cup F^+_{T_1} \cup S_{H_T}(F^+_{T_{u_0}})$.
          Recall that
         $\rank(T_{u_0}),\rank(T_1)\le\rank(T)-1$ so, by induction,
          \begin{align}
-            |F^+_T| 
-              & = |F^+_{T_{u_0}}| + |F^+_{T_{1}}|  \notag \\
+              |F^+_{T_{u_0}}| + |F^+_{T_{1}}| 
               & \le (1+\epsilon\rank(T_{u_0}))/\Delta)|F\cap L(T_{u_0})| 
                     +(1+\epsilon\rank(T_{1}))/\Delta)|F\cap L(T_{1})| \notag \\
               & \le (1+\epsilon(\rank(T)-1))/\Delta)|F\cap L(T_{u_0})| 
@@ -377,39 +420,38 @@ $F^+_T$ as follows (here $u_0$ and $T_1$ are defined as above):
               & = (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| \enspace .
             \eqlabel{inductio}
          \end{align}
-         All that remains is to consider the set $F^+_{01}$ of points
-         in $L(T_1)$ added to $F^+_T$ in Step~3(a).  In particular,
-         we must show that $|F^+_{01}|\le (\epsilon/\Delta)|F\cap L(T)|$. By
+         All that remains is to show that $|S_{H_T}(F^+_{T_{u_0}})|\le (\epsilon/\Delta)|F\cap L(T)|$  
+         By
          Property~(PR1) of $H_T$,
           \begin{align*}
-          |F^+_{01}| 
+          |S_{H_T}(F^+_{T_{u_0}})| 
             & \le (\alpha/\Delta)|F^+_{T_{u_0}}| \\
             & \le (\alpha/\Delta)(1+\epsilon\rank(T_{u_0})/\Delta)|F\cap L(T_{u_0})| \\
             & \le (\alpha/\Delta)(1+\epsilon\rank(T_{u_0})/\Delta)|F\cap L(T)|\\
             & = (\alpha/\Delta+\alpha\epsilon\rank(T_{u_0})/\Delta^2)|F\cap L(T)| \\
-            & = (\alpha/\Delta+\alpha\epsilon/\Delta)|F\cap L(T)| 
-    	     & \text{(for $\Delta\ge \rank(T)$)} \\
+            & \le (\alpha/\Delta+\alpha\epsilon/\Delta)|F\cap L(T)| 
+    	     & \text{(for $\rank(T)/\Delta\le 1$)} \\
     	& \le (\epsilon/\Delta)|F\cap L(T)| \enspace ,
        \end{align*}
        provided that $\alpha+\alpha\epsilon \le \epsilon$, i.e, 
-       $\alpha \le 1/(1+1/\epsilon)$.   
+       $\alpha \le \epsilon/(\epsilon+1)$.   
 
        \item $|F^+_{T_{u_0}}| > (1-\beta/\Delta)|T_{u_0}|$. In this case, $F^+_T=L(T_{u_0}) \cup F^+_{T_1}$ and
        \begin{align*}
           |F^+_T| 
             & = |T_{u_0}| + |F^+_{T_1}| \\
             & \le (1+2\beta/\Delta)|F^+_{T_{u_0}}| + |F^+_{T_1}|
-              & \text{(for $\beta\le 1/2$)}\\
+              & \text{(for $\beta\le \Delta/2$)}\\
             & = |F^+_{T_{u_0}}| + |F^+_{T_1}| + (2\beta/\Delta)|F^+_{T_{u_0}}| \\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (2\beta/\Delta)|F^+_{T_{u_0}}| 
              & \text{(as in \eqref{inductio})} \\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (4\beta/\Delta)|F\cap L(T_{u_0})|  \\
-              & \qquad \text{(since $|F\cap L(T_{u_0})|\ge |T_{u_0}|/2 \ge |F^+_{T_{u_0}}|$)}\\
+              & \qquad \text{(since $|F\cap L(T_{u_0})| \ge |F^+_{T_{u_0}}|/(1+\epsilon\rank(T_{u_0})/\Delta)\ge|T_{u_0}|/2$)}\\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (4\beta/\Delta)|F\cap L(T)| \\
               & \qquad \text{(since $L(T_{u_0})\subseteq L(T)$)} \\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| \enspace ,
        \end{align*}
-       provided that $\beta \ge \epsilon/4$. \qedhere
+       provided that $\beta \le \epsilon/4$. \qedhere
      \end{enumerate}
    \end{enumerate}
 \end{proof}
@@ -534,11 +576,11 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
 	
   For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $K_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
   an expander graph $H_u$ for the pair
-  $(K_u,L(T_u))$. This expander has the property that, for any
+  $(A=L(T_u),B=K_u)$. This expander has the property that, for any
   subset $X\subset L(T_u)$ with $|X|\le (1-\epsilon/\log n)|T_u|$, 
-  \[ |\{p\in K_u: N_{H_u}(p)\subseteq X\}| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
-  The graph $H_u$ is obtained from \corref{expander-a} with parameters
-  $k=\log n/\epsilon$ and $\ell=\log_{1+\epsilon n}/\epsilon$.  Therefore,
+  \[ |S_{H_u}(X)\cap K_u| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
+  The graph $H_u$ is obtained from \lemref{shrink} with parameters
+  $k=\log n/\epsilon$ and $\tau=\log_{1+\epsilon}n/\epsilon$.  Therefore,
   the number of edges in $H_u$ is $O(|K_u|\log n\log\log n)$ edges and
   by summing over all special nodes $u$ this gives a total of $O(n\log^2
   n\log\log n)$ edges.  The graph $G_P$ contains $H_u$ for each special
@@ -572,7 +614,7 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   \note{PM}{state upper-bound on $\epsilon$ required for the last inequality.}
 
   Finally, define 
-  \[  F^{***}_P = \bigcup_{u\in S(T)} \{p \in K_u : N_{H_u}(p)\subseteq F^{**}_P \} \]
+  \[  F^{***}_P = N_{H_u}(F^{**}_P)  \]
   What remains is to analyze the size of $|F^{***}_P\setminus F^{**}_P|$.
   For this, we first observe that, if $T_u$ is the largest special
   subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon/\log n)|T_u|$ then
@@ -592,7 +634,7 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   F^{**}_P$ if $|F^+_{T_u}| \le (1-1/\log n)|T_u|$.  However,
   in this case, the expander property of $H_u$ ensures that $u$
   contributes at most $\epsilon F^+_{T_u}/\log_{1+\epsilon} n\le
-  (\epsilon+\epsilon^2)|F\cap L(T_u)|/log_{1+\epsilon} n$ elements to
+  (\epsilon+\epsilon^2)|F\cap L(T_u)|/\log_{1+\epsilon} n$ elements to
   $F^{***}_P\setminus F^{**}_P$.  Summing this over all special nodes $u$,
   shows that
   \[
@@ -680,12 +722,12 @@ the following properties:
 
 \begin{proof}
   To satisfy Property~(PR1), $H'_u$ contains an expander graph for the
-  pair $(A_i,B_i)$ described by \corref{expander-a} with parameters
-  $k=\ell=\log n/\epsilon$.  This graph has $O(|T_u|\log n\log\log n)$
+  pair $(A_i,B_i)$ described by \lemref{shrink} with parameters
+  $k=\tau=\log n/\epsilon$.  This graph has $O(|T_u|\log n\log\log n)$
   edges.
 
   To satisfy Property~(PR4), $H'_u$ contains an expander graph for the
-  pair $(L(T_u),L(T_u))$ described by \lemref{expander-a} with parameters
+  pair $(L(T_u),L(T_u))$ described by \lemref{expand} with parameters
   $k=\ell=1/\epsilon$.  This graph has $O(|T_u|)$ edges.
 \end{proof}
 
@@ -758,8 +800,9 @@ We can now complete the proof of \thmref{main-i}.
   completes the proof.
 \end{proof}
 
-\section{Discussion}
+\section*{Acknowledgement}
 
+Pat Morin would like to thank Michiel Smid for pointing him to Callahan's thesis, and then pointing him to Chapter~4, and then reading it for him.
 
 
 \bibliographystyle{plain}
