@@ -178,23 +178,22 @@ expander constructions (see, for example, the survey by Hoory \etal\
         & = \exp((n/k)(1+\ln k) + (n/\ell)(1+\ln(\ell)) - (\Delta n)/(k\ell)) \\
         & < 1
   \end{align*}
-  \note{$k(1+\log \ell) + \ell(1+\log k)$}
-  for $\Delta > (1+k)\log \ell + ((1+\ell)\log k$.  In particular, there
+  for $\Delta > k(1+\log \ell) + \ell(1+\log k)$.  In particular, there
   must exist at least one graph with $O(n(k\log\ell + \ell\log k))$
   edges that satisifies the conditions of the lemma.
 \end{proof}
 
 \lemref{expander-a} can be interpreted informally as saying that very
 small subsets of $B$ have neighbourhoods that expand into most of $A$.  
-The following reinterpretation of \lemref{expander-a} in terms
+The following lemma expressed in terms
 of shrinking shadows of subsets of $A$ is also useful:
 
 \begin{cor}\corlabel{expander-a}
-   For any $k\ge 2$, $\ell\ge 2$, $n\in\N$ and any two sets $A$ and $B$
-   each of size $\Theta(n)$, there exists a graph $H=(A,B,E)$
-   with $|E|=O(n(k\log \ell + \ell\log k))$ such that
+   For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with $|A|\ge|B|$,
+   there exists a graph $H=(A,B,E)$
+   with $|E|=O(n(k\log \tau + \tau\log k))$ such that
    for any $A'\subset A$ with $|A'|\le (1-1/k)|A|$, 
-   \[ |S_H(A')| \le |B|/\ell \enspace .\]
+   \[ |S_H(A')| \le |A'|/\tau \enspace .\]
 \end{cor}
 
 
