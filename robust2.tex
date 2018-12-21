@@ -3,6 +3,7 @@
 \usepackage{hyperref}
 \usepackage{paralist}
 \usepackage[noend]{algorithmic}
+\usepackage{datetime2}
 \hypersetup{colorlinks=true, linkcolor=linkblue,  anchorcolor=linkblue,
 citecolor=linkblue, filecolor=linkblue, menucolor=linkblue,
 urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me} 
@@ -12,6 +13,8 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 \author{Prosenjit Bose, Paz Carmi, Vida Dujmovi\'c, 
         Michael van Dyk, and Pat Morin}
+
+\date{\DTMnow}
 
 
 \newcommand{\note}[2]{{\color{red}[#1:~#2]}}
@@ -29,7 +32,7 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 \begin{abstract}
   For any constants $d\ge 1$, $\epsilon >0$, $t>1$, and any $n$-point
   set $P\subset\R^d$, we show that there is a geometric graph $G=(P,E)$
-  having $O(n\log^3 n\log\log n)$ edges with the following property:
+  having $O(n\log^4 n\log\log n)$ edges with the following property:
   For any $F\subseteq P$, there exists $F^+\supseteq F$, $|F^+| \le
   (1+\epsilon)|F|$ such that, for any pair $p,q\in P\setminus F^+$,
   the graph $G-F$ contains a path from $p$ to $q$ whose (Euclidean)
@@ -45,20 +48,22 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 \section{Introduction}
 
 A geometric graph $G=(P,E)$ with vertex set $P\subset\R^d$ is a (geometric)
-$t$-spanner of a subset $X\subset P$ if, for every pair of distinct vertices
-$v,w\in X$, 
+$t$-spanner of a subset $X\subseteq P$ if, for every pair of distinct vertices
+$p,q\in X$, 
 \begin{equation}
-  \frac{\dist_G(vw)}{\dist(vw)} \le t \enspace , \eqlabel{spanning-ratio}
+  \frac{\dist_G(p,q)}{\dist(p,q)} \le t \enspace , \eqlabel{spanning-ratio}
 \end{equation}
-where $\dist(vw)$ denotes the Euclidean distance between $v$ and $w$ and
-$\dist_G(vw)$ denote the Euclidean length of the shortest path between
-$v$ and $w$ in $G$, where use the convention that $\dist_G(vw)=\infty$
+where $\dist(p,q)$ denotes the Euclidean distance between $p$ and $q$ and
+$\dist_G(p,q)$ denotes the Euclidean length of the shortest path between
+$v$ and $w$ in $G$, where we use the convention that $\dist_G(p,q)=\infty$
 if $v$ and $w$ are in different components of $G$.  Most of the research
 on spanners focuses on \emph{sparse} spanners, where the number of edges
 in $G$ is linear, or close to linear, in $|P|$.  In addition to having
 natural applications to transportation networks, sparse $t$-spanners have
 found numerous applications in approximation algorithms and geometric
 data structures.
+A book \cite{ns07} and handbook chapter \cite{e99} provide
+extensive discussions of geometric $t$-spanners and their applications.
 
 For any non-decreasing function $f\colon\N\to\N$, Bose \etal\
 \cite{bose.dujmovic.ea:robust} say that a geometric graph $G$ is an
@@ -73,17 +78,18 @@ Under this definition, the most robust spanner one could hope for
 would be a $k$-robust spanner, but it is straightforward to argue
 that, even for one dimensional point sets, the complete graph is the
 only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
-$v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
+$v,w\in V(G)$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
 F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
 and is therefore not suitable for many applications.
 
-A natural second-best option is a $(1+\epsilon)k$-robust spanner with a
-near-linear number of edges, for some small $\epsilon >0$.  Buchin \etal\
-\cite{buchin.har-peled.ea:spanner} call these objects $\epsilon$-resilient
-spanners and prove the existence of $\epsilon$-resilient spanners with
-$O(n\log^c n)$ edges, where $c=O(d)$.  In the current paper we reduce
-the dependence on $d$ by proving the following theorem:
+A natural second-best option is a $(1+\epsilon)k$-robust spanner with
+a near-linear number of edges, for some small constant $\epsilon
+>0$.  Buchin \etal\ \cite{buchin.har-peled.ea:spanner} call these
+objects $\epsilon$-resilient spanners and prove the existence of
+$\epsilon$-resilient spanners with $O(n\log^c n)$ edges, where $c=O(d)$.
+In the current paper we reduce the dependence on $d$ by proving the
+following theorem:
 
 \begin{thm}\thmlabel{main-i}
   For every constant $d\ge 1$, $\epsilon>0$, $t>1$ and every $n$-point
@@ -94,9 +100,9 @@ the dependence on $d$ by proving the following theorem:
 Bose \etal\ \cite{bose.dujmovic.ea:robust} show that, for any constants
 $\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point sets
 for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
-n)$ edges.  Thus, \thmref{main-i} is within a factor of of $O(\log^2
+n)$ edges.  Thus, \thmref{main-i} is within a factor of $O(\log^2
 n\log\log n)$ of optimal in any constant dimension.  (Note that in
-dimension $d=1$, optimal constructions, having $O(n\log n)$ are known
+dimension $d=1$, optimal constructions, having $O(n\log n)$ edges are known
 \cite{buchin.har-peled.ea:spanner}.)
 
 The proof of \thmref{main-i} uses several ingredients: The well-separated
@@ -114,11 +120,11 @@ These last two ideas represent a significant departure from the work of
 Buchin \etal\ \cite{buchin.har-peled.ea:spanner} who 
 (among other tools) also use well-separated
 pair decompositions and expanders.  However, their constructions, of
-which there are two, rely on a a reduction to the 1-dimensional problem
-and the fact that the paths obtained in 1-d case have $O(\log n)$ edges.
+which there are two, rely on a reduction to the 1-dimensional problem
+and the fact that the paths obtained in the 1-d case have $O(\log n)$ edges.
 However, they have very little fine-grained control over the lengths of
-these edges, which requires them to construct $d$-dimensional objects
-($\theta$-graphs  \cite{keil.gutwin:classes} and locality-preserving curves \cite{chan.har-peled.ea:on}) in which the relevant
+these edges, which requires them to construct a $d$-dimensional object
+($\theta$-graphs  \cite{keil.gutwin:classes} and locality-preserving orderings \cite{chan.har-peled.ea:on}) in which the relevant
 parameter ($\theta$ and $\varsigma$, respectively) is $O(1/\log n)$.  This leads
 to $\log^{O(d)} n$ factors in the number of edges in their constructions.
 
@@ -131,11 +137,15 @@ construction.
 
 \subsection{Expanders}
 
-For a graph $G$ and a vertex $x\in V(G)$, $N_G(x) = \{ y: xy\in E(G)\}$.  For a subset $X\subseteq V(G)$, $N_G(X)=\bigcup_{x\in X} N_G(x)$.
-Results like the following, and its proof, are fairly standard
-expander constructions (see, for example, the survey by Hoory \etal\
-\cite{hoory.linial.ea:expanders}.
+For a graph $G$ and a vertex $x\in V(G)$, define the \emph{neighbourhood}
+of $x$ in $G$ as $N_G(x) = \{ y: xy\in E(G)\}$.  For a subset $X\subseteq
+V(G)$, $N_G(X)=\bigcup_{x\in X} N_G(x)$.  For a subset $Y\subset
+V(G)$, define the \emph{shadow} of $Y$ in $G$ as $S_G(Y) = \{x\in V(G):
+N_G(X)\subset Y\}$.
 
+Results like the following lemma, and its proof, are fairly standard
+expander constructions (see, for example, the survey by Hoory \etal\
+\cite{hoory.linial.ea:expanders}):
 
 \begin{lem}\lemlabel{expander-a}
    For any $k\ge 2$, $\ell\ge 2$, $n\in\N$ and any two sets $A$ and $B$
@@ -163,24 +173,28 @@ expander constructions (see, for example, the survey by Hoory \etal\
   Let $\mathcal{E}$ be the event that there exists $A'\subset A$, $|A'|=(1-1/k)|A|$, $B'\subset B$, $|B'|=n/\ell$ such that $N_H(B')\subseteq A'$.  Then
   \begin{align*}
     \Pr\{\mathcal{E}\} 
-        & \le \binom{n}{n/k}\binom{n}{n/\Delta}e^{-\frac{\Delta n}{k\ell}} \\
+        & \le \binom{n}{n/k}\binom{n}{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
         & \le (ek)^{n/k} (ed)^{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
         & = \exp((n/k)(1+\ln k) + (n/\ell)(1+\ln(\ell)) - (\Delta n)/(k\ell)) \\
         & < 1
   \end{align*}
+  \note{$k(1+\log \ell) + \ell(1+\log k)$}
   for $\Delta > (1+k)\log \ell + ((1+\ell)\log k$.  In particular, there
   must exist at least one graph with $O(n(k\log\ell + \ell\log k))$
   edges that satisifies the conditions of the lemma.
 \end{proof}
 
-The following reinterpretation of \lemref{expander-a} will also be useful:
+\lemref{expander-a} can be interpreted informally as saying that very
+small subsets of $B$ have neighbourhoods that expand into most of $A$.  
+The following reinterpretation of \lemref{expander-a} in terms
+of shrinking shadows of subsets of $A$ is also useful:
 
 \begin{cor}\corlabel{expander-a}
    For any $k\ge 2$, $\ell\ge 2$, $n\in\N$ and any two sets $A$ and $B$
    each of size $\Theta(n)$, there exists a graph $H=(A,B,E)$
    with $|E|=O(n(k\log \ell + \ell\log k))$ such that
    for any $A'\subset A$ with $|A'|\le (1-1/k)|A|$, 
-   \[ |\{x\in B : N_H(x)\subset A' \}| \le |B|/\ell \enspace .\]
+   \[ |S_H(A')| \le |B|/\ell \enspace .\]
 \end{cor}
 
 
