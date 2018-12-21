@@ -55,8 +55,8 @@ $p,q\in X$,
 \end{equation}
 where $\dist(p,q)$ denotes the Euclidean distance between $p$ and $q$ and
 $\dist_G(p,q)$ denotes the Euclidean length of the shortest path between
-$v$ and $w$ in $G$, where we use the convention that $\dist_G(p,q)=\infty$
-if $v$ and $w$ are in different components of $G$.  Most of the research
+$p$ and $q$ in $G$, where we use the convention that $\dist_G(p,q)=\infty$
+if $p$ and $q$ are in different components of $G$.  Most of the research
 on spanners focuses on \emph{sparse} spanners, where the number of edges
 in $G$ is linear, or close to linear, in $|P|$.  In addition to having
 natural applications to transportation networks, sparse $t$-spanners have
@@ -84,9 +84,9 @@ F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
 and is therefore not suitable for many applications.
 
 A natural second-best option is a $(1+\epsilon)k$-robust spanner with
-a near-linear number of edges, for some small constant $\epsilon
->0$.  Buchin \etal\ \cite{buchin.har-peled.ea:spanner} call these
-objects $\epsilon$-resilient spanners and prove the existence of
+a near-linear number of edges, for some small constant $\epsilon >0$.
+Buchin \etal\ \cite{buchin.har-peled.ea:spanner} call these objects
+\emph{$\epsilon$-resilient} spanners and prove the existence of
 $\epsilon$-resilient spanners with $O(n\log^c n)$ edges, where $c=O(d)$.
 In the current paper we reduce the dependence on $d$ by proving the
 following theorem:
@@ -100,7 +100,7 @@ following theorem:
 Bose \etal\ \cite{bose.dujmovic.ea:robust} show that, for any constants
 $\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point sets
 for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
-n)$ edges.  Thus, \thmref{main-i} is within a factor of $O(\log^2
+n)$ edges.  Thus, \thmref{main-i} is within a factor of $O(\log^3
 n\log\log n)$ of optimal in any constant dimension.  (Note that in
 dimension $d=1$, optimal constructions, having $O(n\log n)$ edges are known
 \cite{buchin.har-peled.ea:spanner}.)
@@ -124,7 +124,7 @@ which there are two, rely on a reduction to the 1-dimensional problem
 and the fact that the paths obtained in the 1-d case have $O(\log n)$ edges.
 However, they have very little fine-grained control over the lengths of
 these edges, which requires them to construct a $d$-dimensional object
-($\theta$-graphs  \cite{keil.gutwin:classes} and locality-preserving orderings \cite{chan.har-peled.ea:on}) in which the relevant
+($\theta$-graphs  \cite{keil.gutwin:classes} or locality-preserving orderings \cite{chan.har-peled.ea:on}) in which the relevant
 parameter ($\theta$ and $\varsigma$, respectively) is $O(1/\log n)$.  This leads
 to $\log^{O(d)} n$ factors in the number of edges in their constructions.
 
@@ -139,9 +139,9 @@ construction.
 
 For a graph $G$ and a vertex $x\in V(G)$, define the \emph{neighbourhood}
 of $x$ in $G$ as $N_G(x) = \{ y: xy\in E(G)\}$.  For a subset $X\subseteq
-V(G)$, $N_G(X)=\bigcup_{x\in X} N_G(x)$.  For a subset $Y\subset
+V(G)$, $N_G(X)=\bigcup_{x\in X} N_G(x)$.  For a subset $Y\subseteq
 V(G)$, define the \emph{shadow} of $Y$ in $G$ as $S_G(Y) = \{x\in V(G):
-N_G(X)\subset Y\}$.
+N_G(x)\subseteq Y\}$.
 
 Results like the following lemma, and its proof, are fairly standard
 expander constructions (see, for example, the survey by Hoory \etal\
@@ -185,8 +185,8 @@ expander constructions (see, for example, the survey by Hoory \etal\
 
 \lemref{expand} can be interpreted informally as saying that even small
 subsets of $B$ (of size at least $n/\ell$) have neighbourhoods that
-expand into most of $A$.  The following lemma expressed in terms of
-shrinking shadows of subsets of $A$ is also useful:
+expand into most of $A$.  The following lemma, expressed in terms of
+shrinking shadows of subsets of $A$, is also useful:
 
 \begin{lem}\lemlabel{shrink}
    For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with $|A|\ge|B|$,
@@ -210,7 +210,7 @@ for some $\Delta=O(k\log\tau +\tau\log k)$.
 
 For two points $p,q\in\R^d$, $\dist(p,q)$, denotes the Euclidean distance
 between $p$ and $q$. For two sets $P,Q\subset\R^d$, the distance between
-$P$ and $Q$ is $\dist(P,Q)=\max\{\dist(p,q):p\in P, q\in Q\}$.  For a
+$P$ and $Q$ is $\dist(P,Q)=\min\{\dist(p,q):p\in P, q\in Q\}$.  For a
 single point set $P\subset\R^d$, the \emph{diameter} of $P$ is denoted
 by $\diam(P)=\max\{\dist(p,q):p,q\in P\}$.
 
@@ -229,7 +229,7 @@ sum of the side lengths of $R(T)$.  A fair-split tree has the following
 \emph{fair-split property}: For any node $w$ with parent $x$, $\diam'(T_w)
 \le (1-1/(2d))\diam'(T_x)$.\footnote{Traditionally, fair-split trees
 are described as splitting $R(x)$ by bisecting its longest side.
-This obviously implies that $\ell(u)\le 1-(1/2d)\ell(x)$.} It is worth
+This obviously implies that $\diam'(u)\le 1-(1/2d)\diam'(x)$.} It is worth
 noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
 \[
 	\diam(L(T)) \le \diam'(T) \le d\cdot\diam(L(T)) \enspace .
@@ -251,7 +251,7 @@ Well-separated pair decompositions were introduced by Callahan and
 Kosaraju \cite{callahan.kosaraju:decomposition}, who construct them
 using fair-split trees.
 
-\begin{thm}[Callaghan and Kosaraju 1995]\thmlabel{wspd}
+\begin{thm}[Callahan and Kosaraju 1995]\thmlabel{wspd}
   For any constant $d\ge 1$, any $s\ge 1$ and any $n$-point set
   $P\subset\R^d$ with fair split tree $T=T(P)$, there exists a WSPD
   $\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ of $P$ with size $m\in O(s^d n)$.
@@ -259,10 +259,10 @@ using fair-split trees.
   and $b_i$ are nodes of $T$.
 \end{thm}
 We call the WSPD guaranteed by \thmref{wspd} a WSPD of $P$ \emph{using}
-$T$.  In his thesis, Callaghan proves an additional useful result about
+$T$.  In his thesis, Callahan proves an additional useful result about
 well-separated pair decompositions \cite[Section~4.5]{callahan:dealing}:
 
-\begin{lem}[Callaghan 1995]\lemlabel{wspd-ii}
+\begin{lem}[Callahan 1995]\lemlabel{wspd-ii}
   In the WSPD of \thmref{wspd},
    $\sum_{i=1}^m\min\{|A_i|,|B_i|\} = O(s^d n\log n)$.
 \end{lem}
@@ -296,8 +296,8 @@ the following properties:
     $|X|<(1-\beta/\Delta)|T_{u_0}|$, 
     \[ |S_{H_T})(X)|\le (\alpha/\Delta)|X| \enspace . \]
 
-  \item[(PR2)] For any set $Y\subset L(T_{u_0})$ with $|Y|\ge
-    (\zeta/\Delta)L(T_{u_0})$, \[ |N_{H_T}(Y)|\ge (1-\eta/\Delta)|T| \enspace .\]
+  \item[(PR2)] For any set $Y\subset L(T)$ with $|Y|\ge
+    (\zeta/\Delta)L(T)$, \[ |N_{H_T}(Y)|\ge (1-\eta/\Delta)|T| \enspace .\]
 \end{enumerate}
 Informally, Property~(PR1) tells us that, if some subset $X$
 of $T_{u_0}$ becomes disabled, then this only prevents a much smaller
@@ -329,7 +329,7 @@ $G_{T}$. This concludes the description of the graph $G_T$.
   $O(|T|\Delta\log\Delta)$ edges.
 
   To satisfy Property~(PR2), $H_T$ contains an expander described
-  \lemref{expand} for the pair $(A=L(T_{u_0}),B=L(T))$ with
+  \lemref{expand} for the pair $(A=L(T),B=L(T))$ with
   parameters $k=\Delta/\eta$ and $\ell=\Delta/\zeta$. This graph also
   has $O(|T|\Delta\log\Delta)$ edges.
 \end{proof}
@@ -385,7 +385,7 @@ the shadow of $F^+_{T_{u_1}}$ in $T_1$ is sufficiently small to add
 to $F^+_T$.  In Step~3(b) we know that $F^+_{T_{u_0}}$ is so large that
 we can add the rest of it to $F^+_T$.
 
-\begin{clm}
+\begin{clm}\clmlabel{f-plus}
    For any constant $\epsilon>0$ there are constants
    $\alpha,\beta,\zeta,\eta >0$ such that, for any $F\subseteq P$,
    $|F^+_T| \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)|$.
@@ -446,7 +446,7 @@ we can add the rest of it to $F^+_T$.
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (2\beta/\Delta)|F^+_{T_{u_0}}| 
              & \text{(as in \eqref{inductio})} \\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (4\beta/\Delta)|F\cap L(T_{u_0})|  \\
-              & \qquad \text{(since $|F\cap L(T_{u_0})| \ge |F^+_{T_{u_0}}|/(1+\epsilon\rank(T_{u_0})/\Delta)\ge|T_{u_0}|/2$)}\\
+              & \qquad \text{(since $|F\cap L(T_{u_0})| \ge |F^+_{T_{u_0}}|/(1+\epsilon\rank(T_{u_0})/\Delta)\ge|F^+_{T_{u_0}}|/2$)}\\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (4\beta/\Delta)|F\cap L(T)| \\
               & \qquad \text{(since $L(T_{u_0})\subseteq L(T)$)} \\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| \enspace ,
@@ -458,46 +458,59 @@ we can add the rest of it to $F^+_T$.
 
 
 \begin{clm}
-  Let $C=4d$ and let $a=\epsilon-3\zeta$.
-  For any $F\subset L(T)$ and every point $p\in L(T)\setminus F^+_T$,
-  there exists $X\subset L(T)$, $|X|\ge (1-a\rank(T)/\Delta)|T|-|F^+_T\cap
-  L(T)|$ such that for every $q\in X$, $G_T-F$ contains a path from $p$
-  to $q$ of length at most $C\diam(T)$, for $C\le 4d$.
+  Let $C=4d$ and let $a=??$.  For any $F\subset L(T)$, there exists
+  $F^+_T\supseteq F$ with $|F^+_T|\le (1+\epsilon)|F|$ such that, for
+  every point $p\in L(T)\setminus F^+_T$, there exists $X\subset L(T)$,
+  $|X|\ge (1-a/\Delta)|T|-|F\cap L(T)|$ such that for every $q\in X$,
+  $G_T-F$ contains a path from $p$ to $q$ of length at most $C\diam(T)$,
+  for $C\le 4d$.
 \end{clm}
 
 \begin{proof}
+  The set $F^+_T$ is obtained from $F$ as follows.  We first compute a set 
+  \[  
+       F_0 = \cup\{ L(T_u) : |F\cap L(T_u)| \ge (1-\epsilon/(100\Delta))|T_u| \}
+  \]
+  It is not hard to see that $|F_0|\le (1+\epsilon/(50\Delta))|F|$.
+  Next, we use \clmref{f-plus} to compute the set $F^+_T$ but
+  with respect to the set $F_0$ and using the value $\epsilon/2$
+  rather than $\epsilon$.  The result set has size $F^+_T\le
+  (1+\epsilon/(50\Delta))(1+\epsilon/(2\Delta))|F| \le
+  (1+\epsilon/\Delta)|F|$.
+
   The proof is by induction on $|T|$.  If $|T|\le\kappa$, the result is
   trivial since $G_T$ is the complete graph.  For $|T|>\kappa$, there
   are several cases to consider:
+  \note{PM}{I'm stuck here. :(}
   \begin{enumerate}
     \item $|F^+_{T_{u_0}}|\le (1-\beta/\Delta)|T_{u_0}|$. In this case, there are two subcases
     to consider:
     \begin{enumerate}
-      \item $p\in L(T_{u_0})$. 
+      \item $p\in L(T_{u_0})$.  In this case, we know that $T_{u_0}$ is not $F$-dense since, if it were, it $F^+_T$ would include $p$.
         Since $u_0$ is not the root of $T$, $\diam'(T_{u_0}) \le
         (1-1/2d)\diam'(T)$.  We can therefore apply induction on $T_{u_0}$
         to find a $p$-reachable set $X_0\subseteq L(T_{u_0})$ of size
 \begin{align*}
-  |X_0| & \ge (1-a\rank(T_{u_0})/\Delta)|T_{u_0}|-F^+_{T_{u_0}} \\
-        & \ge (1-a\rank(T_{u_0})/\Delta)|T_{u_0}|-(1-\epsilon\rank(T_{u_0})/\Delta)|T_{u_0}| \\
-        & = (\epsilon-a)(\rank(T_{u_0})/\Delta)|T_{u_0}| \\
-        & \ge ((\epsilon-a)/\Delta)|T_{u_0}| 
+  |X_0| & \ge (1-a/\Delta)|T_{u_0}|-|F\cap L(T_{u_0})| \\
+        & \ge (1-a/\Delta)|T_{u_0}|-(1-\delta\rank(T_{u_0})/\Delta)|T_{u_0}| & \text{(since $T_{u_0}$ is not $F$-dense.)}\\
+        & \ge (1-a/\Delta)|T_{u_0}|-(1-\delta/\Delta)|T_{u_0}| 
     & \text{(since $\rank(T_{u_0})\ge 1$ when $|T|\ge \kappa \ge 5$)} \\
-        & \ge ((\epsilon-a)/(3d))|T| 
+        & = ((\delta-a)/\Delta)|T_{u_0}| \\
+        & \ge ((\delta-a)/(3\Delta))|T| 
         & \text{(since $|T|/3\le |T_{u_0}|$).} 
 \end{align*}
-      By Property~(PR2) of $H_T$ (with $\zeta = (\epsilon-a)/3$ and $\eta = a\rank(T)$), we can then take $X=N_{H_T}(X_0)\setminus F^+_T$.  Then 
+      By Property~(PR2) of $H_T$ (with $\zeta = (\delta-a)/3$ and $\eta = a$), we can then take $X=N_{H_T}(X_0)\setminus(F\cap L(T))$.  Then 
       \begin{align*}
-         |X| & \ge (1-\eta/\Delta)|T|-|F^+_T| \\
-             & = (1-a\rank(T)/\Delta)|T|-|F^+_T| \\
+         |X| & \ge (1-\eta/\Delta)|T|-|F\cap L(T)| \\
+             & = (1-a/\Delta)|T|-|F\cap L(T)| \\
       \end{align*} and every point $q\in X$ is reachable from $p$ by a path in $G_T-F$ of length at most
         \[ (C(1-(1/2d))+1)\diam'(P) < C\diam'(P) \]
        for $C= 4d$.
 
       \item $p\in L(T_1)$. Since $p\not\in F^+_T$, $H_T$ contains an
-      edge from $p$ to some point $p'\in L(T_{u_1})$.  As described
-      in the previous case, there is a $p'$-reachable set $X$ of
-      size $(1-a\rank(T)/\Delta)|T|-|F^+_T|$ that is reachable from $p'$
+      edge from $p$ to some point $p'\in L(T_{u_0})\setminus F^+_{T_{u_0}}$.  As described
+      in the previous case, there is a set $X$ of
+      size $(1-a\rank(T)/\Delta)|T|-|F\cap L(T)|$ that is reachable from $p'$
       by paths of length at most $((1-1/2d)C+1)\diam'(P)$.
       The edge $pp'$ has length at most
       $\diam'(T)$. Therefore $X$ is $p$-reachable using
@@ -507,28 +520,28 @@ we can add the rest of it to $F^+_T$.
 
     \item $|F^+_{T_{u_0}}|> (1-\beta/\Delta)|T_{u_0}|$.  In this case,
       $F^+_T= L(T_{u_0})\cup F^+_{T_1}$.  Therefore, $p\in L(T_1)$.
-      Now, we apply induction on $T_1$ and obtain a set $X$ that can be
+      Let $T_1'$ and $T_1''$ be the two subtrees of $T_1$ rooted at the children of the root.
+
+
+      Now, we apply induction on $T_1$ and obtain a set $X_1$ that can be
       reached by $p$ in $G_T-F$ with paths of length at most $C\diam'(T_1)\le
-      C\diam'(T)$.  All that remains is to show that $X$ is sufficiently
-      large, as follows:
-  \begin{align*}
-    |X| & \ge (1-a\rank(T_1)/\Delta)|T_1|-|F^+_{T_1} \cap L(T_1)| &
-       \text{(by the inductive hypothesis)} \\
-    & \ge (1-a\rank(T)/\Delta)|T_1|-|F^+_{T_1} \cap L(T_1)| 
-     & \text{(since $\rank(T)>\rank(T_1)$)} \\
-    & \ge (1-a\rank(T)/\Delta)|T_1|-|F^+_{T} \cap L(T_1)| 
-    & \text{(since $F^+_T\supseteq F^+_{T_1}$)} \\
-    & > (1-a\rank(T)/\Delta)|T_1|-|F^+_{T} \cap L(T_1)| \\
-     & \quad {} + (1-a\rank(T)/\Delta)|T_{u_0}|-|F^+_{T}\cap L(T_{u_0})|
-    & \text{(since $|F^+_T \cap L(T_{u_0})|=L(T_{u_0})$} \\
-    & = (1-a\rank(T)/\Delta)|T|-|F^+_{T}\cap L(T_1)| - |F^+_T\cap L(T_{u_0})|
-    & \text{(since $|T_1|+|T_{u_0}|=|T|$)} \\
-%    & = (1-a\rank(T)/\Delta)|T|-|F^+_{T}\cap L(T_1)| - |F^+_T\cap L(T_{u_0})|
-%    & \text{(since $F^+_{T_{u_0}}=F^+_T\cap L(T_{u_0})$)} \\
-    & = (1-a\rank(T)/\Delta)|T|-|F^+_{T}|  
-  \end{align*}
-  since $L(T)=L(T_{u_0})\cup L(T_1)$.
-  \end{enumerate}
+      C\diam'(T)$. Observe that 
+      \[ |F\cap L(T_1)| < (1-\delta\rank(T)/\Delta)|T_1| \]
+      since, otherwise $T$ would be $F$-dense.
+      Therefore,
+     \begin{align*}
+       |X_1| & \ge (1-a\rank(T_1)/\Delta)|T_1| - |F\cap L(T_1)| \\
+           &  \ge (1-a\rank(T_1)/\Delta)|T_1| 
+                - (1-\delta\rank(T)/\Delta)|T_1| \\
+           &  \ge (1-a\rank(T_1)/\Delta)|T_1| 
+                - (1-\delta\rank(T_1)/\Delta)|T_1|  \\
+           &  \ge ((\delta-a)\rank(T_1)/\Delta)|T_1| \\
+           &  \ge ((\delta-a)\rank(T)/(3\Delta))|T|
+     \end{align*}
+     Again, applying Property~(PR2) of $H_T$ shows that the set
+     $X=N_{H_T}(X_1)$ satisfies the conditions of the claim.
+     \note{PM}{Not correct, this gives a path of length $(C+1)\diam'(T)$.}
+    \end{enumerate}
 \end{proof}
 
 \subsection{Multiple Scales}
@@ -705,11 +718,13 @@ For each group $G'_u$, define $B'_u=\bigcup\{B_i' : (L(u),B_i')\in W'_u\}$
 and let $H'_u$ be an expander graph on the pair $(L(T_u), B'_u)$ with
 the following properties:
 \begin{enumerate}
-  \item[(PR3)] For any $X\subseteq P$ with $|X\cap L(T_u)|\le
-  (1-\epsilon/\log n)|T_u|$, define $K_{X,u}=\{p\in B'_u:
-  N_{H'_u}\subseteq X\cap L(T_u)\}$.  Then
-   \[  |K_{X,u}|\le \epsilon|X|/\log_{1+\epsilon} n \enspace . \]
-
+  \item[(PR3)] For any $X\subseteq L(T_u)$ with $|X|\le
+  (1-\epsilon/\log n)|T_u|$, 
+   \[ |S_{H'_u}(X)| \le \epsilon|X|/\log_{1+\epsilon} n \]
+%define $K_{X,u}=\{p\in B'_u:
+%  N_{H'_u}\subseteq X\cap L(T_u)\}$.  Then
+%   \[  |K_{X,u}|\le \epsilon|X|/\log_{1+\epsilon} n \enspace . \]
+%
   \item[(PR4)] For any two sets $X,Y\subset L(T_u)$ with $|X|,|Y|\ge
   \epsilon|T_u|$, $G$ contains at least one edge $xy$ with $x\in X$
   and $y\in Y$.
@@ -717,13 +732,13 @@ the following properties:
 
 \begin{clm}\clmlabel{edge-count-iii}
   There exists a graph $H'_u$ that satisifies Properties~(PR3) and (PR4)
-  that has $O(|T_u|\log n\log\log n)$ edges.
+  that has $O((|T_u|+|B'_u|)\log n\log\log n)$ edges.
 \end{clm}
 
 \begin{proof}
-  To satisfy Property~(PR1), $H'_u$ contains an expander graph for the
-  pair $(A_i,B_i)$ described by \lemref{shrink} with parameters
-  $k=\tau=\log n/\epsilon$.  This graph has $O(|T_u|\log n\log\log n)$
+  To satisfy Property~(PR3), $H'_u$ contains an expander graph for the
+  pair $(A=L(T_u),B=B'_u)$ described by \lemref{shrink} with parameters
+  $k=\tau=\log n/\epsilon$.  This graph has $O(|B'_u|\log n\log\log n)$
   edges.
 
   To satisfy Property~(PR4), $H'_u$ contains an expander graph for the
@@ -739,17 +754,26 @@ for every special node $u$ in $T$.
 \end{clm}
 
 \begin{proof}
-  By \clmref{edge-count-iii}, each expander graph $H'_u$ has $O(|T_u|\log
-  n\log\log n)$ edges.  As usual, the claim then follows by paritition the
-  special nodes of $T$ into $O(\log n)$ sets where, for any two nodes $u$
-  and $u'$ in the same set, $T_u$ and $T_{u'}$ are disjoint.
+  The number of all edges used in graphs created to achieve Property~(PR3) is
+  \[
+      \sum_{u\in S(T)}O(|B_u'|\log n\log\log n)
+      = \sum_{i=1}^m O(|B_i|\log n\log\log n)
+      = O(n\log^2 n\log\log n)
+  \]
+  where the final upper bound follows from the convention that $|A_i|\ge |B_i|$
+  and \lemref{wspd-ii}.
+
+  Each graph used to achieve Property~(PR4) for a node $H'_u$ has
+  $O(|T_u|)$ edges.  As usual, by paritition the special nodes of $T$
+  into $O(\log n)$ sets where, for any two nodes $u$ and $u'$ in the
+  same set, $T_u$ and $T_{u'}$ are disjoint shows that the total number
+  of edges in these graphs is at most $O(n\log n)$.
 \end{proof}
 
 Our final construction $G'_P$ contains the graph $G_P$ described in
 \secref{g-p} as well $H'_u$ for every special node $u$ of $T$.
 
-For any set $X\subset P$, we define $K_{X} = \bigcup_{u\in
-S(T)} K_{X,u}$.
+For any set $X\subset P$, we define $K_{X} = S_{H_u}(X\cap L(T_u))$.
 
 \begin{clm}\clmlabel{f-prime-size}
   For any $X\subseteq P$, $|K_{X}| \le \epsilon|X|$.
@@ -757,8 +781,9 @@ S(T)} K_{X,u}$.
 
 \begin{proof}
   Property~(PR3) ensures that, for each special node $u$ of $T$,
-  $|K_{X,u}|\le \epsilon|F\cap L(T_u)|/\log_{1+\epsilon} n n$.  Again, the
-  claim follows by partitioning the special nodes into $O(\log n)$ sets.
+  $|S_{H'_u}(X\cap L(T_u)| \le \epsilon|F\cap L(T_u)|/\log_{1+\epsilon}
+  n$.  Again, the claim follows by partitioning the special nodes into
+  $\log_{1+\epsilon} n$ ses.
 \end{proof}
 
 We can now complete the proof of \thmref{main-i}.
