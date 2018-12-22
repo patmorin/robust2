@@ -572,13 +572,15 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
 	
   For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $K_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
   an expander graph $H_u$ for the pair
-  $(A=L(T_u),B=K_u)$. This expander has the property that, for any
-  subset $X\subset L(T_u)$ with $|X|\le (1-\epsilon/\log n)|T_u|$, 
-  \[ |S_{H_u}(X)\cap K_u| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
+  $(A=L(T_u),B=K_u)$. The graph $H_u$ has the following property:
+  \begin{enumerate}
+    \item[(PRX)] For any subset $X\subset L(T_u)$ with $|X|\le (1-\epsilon)|T_u|$, 
+  \[ |S_{H_u}(X)| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
+  \end{enumerate}
   The graph $H_u$ is obtained from \lemref{shrink} with parameters
-  $k=\log n/\epsilon$ and $\tau=\log_{1+\epsilon}n/\epsilon$.  Therefore,
-  the number of edges in $H_u$ is $O(|K_u|\log n\log\log n)$ edges and
-  by summing over all special nodes $u$ this gives a total of $O(n\log^2
+  $k=1/\epsilon$ and $\tau=\log_{1+\epsilon}n/\epsilon$.  Therefore,
+  the number of edges in $H_u$ is $O(|K_u|\log n\log\log n)$. 
+  By summing over all special nodes $u$ this gives a total of $O(n\log^2
   n\log\log n)$ edges.  The graph $G_P$ contains $H_u$ for each special
   node $u$.
 
@@ -592,8 +594,11 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
     F^*_P = \bigcup_{u\in S(T)} F^+_{T_u} \enspace .
   \]
   By choosing $\Delta \ge (\log_{3/2} n)(\log_{1+\epsilon}
-  n)$, each special node $u$ of $T$ has $|F^+_{T_u}|\le
-  (1+\epsilon/\log_{1+\epsilon} n)|F\cap L(T_u)|$. Therefore, since
+  n)$, each special node $u$ of $T$ has 
+  \[ |F^+_{T_u}|\le (1+\epsilon\rank(T_{u})/\Delta)|F\cap L(T_u)| 
+        \le (1+\epsilon/\log_{1+\epsilon} n)|F\cap L(T_u)| \enspace . 
+  \]
+   Therefore, since
   each point in $F$ appears in at most $\log_{1+\epsilon} n$ special
   subtrees, $|F^*_P|\le (1+\epsilon)|F|$.
 
@@ -610,32 +615,34 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   for $\epsilon \le 1/15$.
 
   Finally, define 
-  \[  F^{***}_P = N_{H_u}(F^{**}_P)  \]
+  \[  F^{***}_P = \bigcup_{u\in S(T)} S_{H_u}(F^{**}_P\cap L(T_{u}))  \]
   What remains is to analyze the size of $|F^{***}_P\setminus F^{**}_P|$.
   For this, we first observe that, if $T_u$ is the largest special
-  subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon/\log n)|T_u|$ then
-  $L(T_x)\subseteq F^{**}_P$.  This is because
+  subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon)|T_u|$ then
+  $T_x$ is $F^*_P$-dense, so $L(T_x)\subseteq F^{**}_P$.  
+  This is because
   \[
      |F^{**}_P\cap L(T_x)| 
   \ge  
      |F^+_{T_u}|
   \ge  
-     (1-\epsilon/\log_{1+\epsilon} n)|T_u|
+     (1-\epsilon)|T_u|
   \ge  
-     (1-\epsilon/\log_{1+\epsilon} n)(1-2\epsilon)|T_w|
+     (1-\epsilon)|T_w|/(1+\epsilon)
   \ge  
-     (1-3\epsilon/\log n)|T_w| \enspace .
+     (1-3\epsilon)|T_w| \enspace .
   \]
   Therefore a special node $u$ only contributes to $F^{***}_P\setminus
-  F^{**}_P$ if $|F^+_{T_u}| \le (1-1/\log n)|T_u|$.  However,
-  in this case, the expander property of $H_u$ ensures that $u$
-  contributes at most $\epsilon F^+_{T_u}/\log_{1+\epsilon} n\le
-  (\epsilon+\epsilon^2)|F\cap L(T_u)|/\log_{1+\epsilon} n$ elements to
-  $F^{***}_P\setminus F^{**}_P$.  Summing this over all special nodes $u$,
+  F^{**}_P$ if $|F^+_{T_u}| \le (1-\epsilon)|T_u|$.  However,
+  in this case, Property~PRX of $H_u$ ensures that 
+  \[ |S_{H_u}(F^{**}_P\cap L(T_u))\setminus F^{**}_P| \le \epsilon|F^{**}_P\cap L(T_u)|/\log_{1+\epsilon} n \le
+  (\epsilon+5\epsilon^2)|F\cap L(T_u)|/\log_{1+\epsilon} n\enspace . \]
+  Summing this over all special nodes $u\in S(T)$,
   shows that
   \[
-     |F^{***}_P\setminus F^{**}_P| \le (\epsilon+\epsilon^2)|F| \le 2\epsilon|F|
+     |F^{***}_P\setminus F^{**}_P| \le (\epsilon+5\epsilon^2)|F| \le 2\epsilon|F|
   \]
+  for $\epsilon \le 1/5$.
   In total, this implies that $F^+_P = F^{**}_P\cup F^{***}_P$ has size
   \[ |F^+_P| = |F^{**}_P| + |F^{***}_P\setminus F^{**}_P|\le (1+7\epsilon)|F| .
   \]  
@@ -653,15 +660,14 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
      such that, for each node $q\in X$, $G_{T_u}$ contains a path from
      $p$ to $q$ of length at most $C\diam(T_u)$. Furthermore,
     \begin{align*}
-      |X| & \ge (1-a/\log n)|T_u| - F^+_{T_u} \\
-          & \ge (1-a/\log n)|T_u| - (1-\epsilon)|T_u| \\
-             & \text{since $F^+_{T_u} \subset F^*_P$ and $|F^*_P\cap T_u|\le (1-\epsilon)|T_u|$} \\
-         & \ge (\epsilon-a)|T_u| \\ 
-         & \ge (\epsilon/2)|T_u| 
-           & \text{(for $a \le \epsilon/2$)}\\ 
-         & \ge (\epsilon/2)(1-\epsilon)|T_w|  \\
-         & \ge (\epsilon/4)(1-\epsilon)|T_w| 
-           & \text{(for $\epsilon \le 1/2)$} 
+      |X| & \ge (1-a/\Delta)|T_u| - |F^+_{T_u}| \\
+          & \ge (1-a/\Delta)|T_u| - (1-3\epsilon)|T_u| \\
+             & \qquad \text{(since $p\not\in F^*_P$, so $|F^+_{T_u}|\le (1-3\epsilon)|T_u|$)} \\
+         & \ge 2\epsilon|T_u| 
+           & \text{(for $a/\Delta \le \epsilon$)} \\ 
+         & \ge 2\epsilon|T_w|/(1+\epsilon)  \\
+         & \ge \epsilon|T_w| 
+           & \text{(for $\epsilon \le 1)$} 
     \end{align*}
     as required.
 
