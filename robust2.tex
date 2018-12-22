@@ -11,8 +11,7 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 \title{\MakeUppercase{Robust Geometric Spanners}}
 
-\author{Prosenjit Bose, Paz Carmi, Vida Dujmovi\'c, 
-        Michael van Dyk, and Pat Morin}
+\author{Prosenjit Bose, Paz Carmi, Vida Dujmovi\'c, and Pat Morin}
 
 \date{\DTMnow}
 
@@ -24,6 +23,8 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 \DeclareMathOperator{\diam}{diam}
 \DeclareMathOperator{\dist}{dist}
 \DeclareMathOperator{\lbl}{label}
+
+\listfiles
 
 \begin{document}
 \maketitle
@@ -189,10 +190,10 @@ expand into most of $A$.  The following lemma, expressed in terms of
 shrinking shadows of subsets of $A$, is also useful:
 
 \begin{lem}\lemlabel{shrink}
-   For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with $|A|\ge|B|$,
-   there exists a graph $H=(A,B,E)$
-   with $|E|=O(|B|(k\log \tau + \tau\log k))$ such that
-   for any $A'\subset A$ with $|A'|\le (1-1/k)|A|$, 
+   For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with
+   $|A|\ge|B|$, there exists a graph $H=(A\cup B,E)$ with $|E|=O(|B|(k\log
+   \tau + \tau\log k))$ such that for any $A'\subset A$ with $|A'|\le
+   (1-1/k)|A|$,
    \[ |S_H(A')| \le |A'|/\tau \enspace .\]
 \end{lem}
 
@@ -363,7 +364,7 @@ $F^+_T$, recursively, as follows (here $u_0$ and $T_1$ are defined as above):
   \item If $|F^+_{T_{u_0}}|\le (1-\beta/\Delta)|T_{u_0}|$
   \begin{enumerate}
      \item then $F^+_T\gets F^+_T\cup S_{H_T}(F^+_{T_{u_0}})$. 
-         \newline [Abandon points in $T_1$ can only reach $T_{u_0}$ through points abandoned in Step~2.]
+         \newline [Abandon points in $T_1$ that can only reach $T_{u_0}$ through points abandoned in Step~2.]
      \item Otherwise, $|F^+_{T_{u_0}}|> (1-\beta/\Delta)|T_{u_0}|$,
           and $F^+_T\gets F^+_T\cup L(T_{u_0})$.
         \newline [Too many points in $T_{u_0}$ are already abandoned, abandon everything in $T_{u_0}$.]
@@ -458,89 +459,71 @@ we can add the rest of it to $F^+_T$.
 
 
 \begin{clm}
-  Let $C=4d$ and let $a=??$.  For any $F\subset L(T)$, there exists
-  $F^+_T\supseteq F$ with $|F^+_T|\le (1+\epsilon)|F|$ such that, for
+  Let $C=4d$ and let $a=\beta/2$.  For
   every point $p\in L(T)\setminus F^+_T$, there exists $X\subset L(T)$,
-  $|X|\ge (1-a/\Delta)|T|-|F\cap L(T)|$ such that for every $q\in X$,
+  $|X|\ge (1-a/\Delta)|T|-|F^+_T|$ such that for every $q\in X$,
   $G_T-F$ contains a path from $p$ to $q$ of length at most $C\diam(T)$,
   for $C\le 4d$.
 \end{clm}
 
 \begin{proof}
-  The set $F^+_T$ is obtained from $F$ as follows.  We first compute a set 
-  \[  
-       F_0 = \cup\{ L(T_u) : |F\cap L(T_u)| \ge (1-\epsilon/(100\Delta))|T_u| \}
-  \]
-  It is not hard to see that $|F_0|\le (1+\epsilon/(50\Delta))|F|$.
-  Next, we use \clmref{f-plus} to compute the set $F^+_T$ but
-  with respect to the set $F_0$ and using the value $\epsilon/2$
-  rather than $\epsilon$.  The result set has size $F^+_T\le
-  (1+\epsilon/(50\Delta))(1+\epsilon/(2\Delta))|F| \le
-  (1+\epsilon/\Delta)|F|$.
-
   The proof is by induction on $|T|$.  If $|T|\le\kappa$, the result is
   trivial since $G_T$ is the complete graph.  For $|T|>\kappa$, there
   are several cases to consider:
-  \note{PM}{I'm stuck here. :(}
   \begin{enumerate}
     \item $|F^+_{T_{u_0}}|\le (1-\beta/\Delta)|T_{u_0}|$. In this case, there are two subcases
     to consider:
     \begin{enumerate}
-      \item $p\in L(T_{u_0})$.  In this case, we know that $T_{u_0}$ is not $F$-dense since, if it were, it $F^+_T$ would include $p$.
-        Since $u_0$ is not the root of $T$, $\diam'(T_{u_0}) \le
-        (1-1/2d)\diam'(T)$.  We can therefore apply induction on $T_{u_0}$
-        to find a $p$-reachable set $X_0\subseteq L(T_{u_0})$ of size
-\begin{align*}
-  |X_0| & \ge (1-a/\Delta)|T_{u_0}|-|F\cap L(T_{u_0})| \\
-        & \ge (1-a/\Delta)|T_{u_0}|-(1-\delta\rank(T_{u_0})/\Delta)|T_{u_0}| & \text{(since $T_{u_0}$ is not $F$-dense.)}\\
-        & \ge (1-a/\Delta)|T_{u_0}|-(1-\delta/\Delta)|T_{u_0}| 
-    & \text{(since $\rank(T_{u_0})\ge 1$ when $|T|\ge \kappa \ge 5$)} \\
-        & = ((\delta-a)/\Delta)|T_{u_0}| \\
-        & \ge ((\delta-a)/(3\Delta))|T| 
-        & \text{(since $|T|/3\le |T_{u_0}|$).} 
-\end{align*}
-      By Property~(PR2) of $H_T$ (with $\zeta = (\delta-a)/3$ and $\eta = a$), we can then take $X=N_{H_T}(X_0)\setminus(F\cap L(T))$.  Then 
+      \item $p\in L(T_{u_0})$.  Since $u_0$ is not the root of $T$,
+      $\diam'(T_{u_0}) \le (1-1/2d)\diam'(T)$.  We can therefore apply
+      induction on $T_{u_0}$
+       to find a $p$-reachable set $X_0\subseteq L(T_{u_0})$ of size
       \begin{align*}
-         |X| & \ge (1-\eta/\Delta)|T|-|F\cap L(T)| \\
-             & = (1-a/\Delta)|T|-|F\cap L(T)| \\
-      \end{align*} and every point $q\in X$ is reachable from $p$ by a path in $G_T-F$ of length at most
+        |X_0| & \ge (1-a/\Delta)|T_{u_0}|-|F^+_{T_{u_0}}| \\
+              & \ge (1-a/\Delta)|T_{u_0}|-(1-\beta/\Delta)|T_{u_0}|
+              & = ((\beta-a)/\Delta)|T_{u_0}| \\
+              & = (\beta/(2\Delta))|T_{u_0}|
+              & \text{(since $a = \beta/2$).} \\
+              & = (\beta/(6\Delta))|T| \enspace .
+              & \text{(since $|T|/3\le |T_{u_0}|$).} 
+      \end{align*}
+      By Property~(PR2) of $H_T$ (with $\zeta = \beta/6$ and $\eta =
+      a$), we can then take $X=N_{H_T}(X_0)\setminus(F^+_T)$.  Then
+      \begin{align*}
+         |X| & \ge (1-\eta/\Delta)|T|-|F^+_T| \\
+             & = (1-a/\Delta)|T|-|F^+_T| \\
+      \end{align*} 
+      and every point $q\in X$ is reachable from $p$ by a path in $G_T-F$
+      of length at most
         \[ (C(1-(1/2d))+1)\diam'(P) < C\diam'(P) \]
-       for $C= 4d$.
+      for $C= 4d$.
 
-      \item $p\in L(T_1)$. Since $p\not\in F^+_T$, $H_T$ contains an
-      edge from $p$ to some point $p'\in L(T_{u_0})\setminus F^+_{T_{u_0}}$.  As described
-      in the previous case, there is a set $X$ of
-      size $(1-a\rank(T)/\Delta)|T|-|F\cap L(T)|$ that is reachable from $p'$
-      by paths of length at most $((1-1/2d)C+1)\diam'(P)$.
-      The edge $pp'$ has length at most
-      $\diam'(T)$. Therefore $X$ is $p$-reachable using
-      paths of length at most $((1-1/2d)C+2)\diam'(P)
+      \item $p\in L(T_1)$. Since $p\not\in F^+_T$, $H_T$ contains an edge
+      from $p$ to some point $p'\in L(T_{u_0})\setminus F^+_{T_{u_0}}$.
+      As described in the previous case, there is a set $X\subset L(T)$ of size
+      $(1-a/\Delta)|T|-|F^+_{T}|$ that is reachable
+      from $p'$ by paths of length at most $((1-1/2d)C+1)\diam'(P)$.
+      The edge $pp'$ has length at most $\diam'(T)$. Therefore every $q\in X$ is
+      reachable from $p$ using paths of length at most $((1-1/2d)C+2)\diam'(P)
       = C\diam'(P)$ for $C= 4d$.
     \end{enumerate}
 
     \item $|F^+_{T_{u_0}}|> (1-\beta/\Delta)|T_{u_0}|$.  In this case,
-      $F^+_T= L(T_{u_0})\cup F^+_{T_1}$.  Therefore, $p\in L(T_1)$.
-      Let $T_1'$ and $T_1''$ be the two subtrees of $T_1$ rooted at the children of the root.
-
-
-      Now, we apply induction on $T_1$ and obtain a set $X_1$ that can be
+      $F^+_T= L(T_{u_0})\cup F^+_{T_1}$, so $F^+_T= |T_{u_0}| + |F^+_{T_1}|$.  Therefore, $p\in L(T_1)$.
+      Now, we apply induction on $T_1$ and obtain a set $X$ that can be
       reached by $p$ in $G_T-F$ with paths of length at most $C\diam'(T_1)\le
-      C\diam'(T)$. Observe that 
-      \[ |F\cap L(T_1)| < (1-\delta\rank(T)/\Delta)|T_1| \]
-      since, otherwise $T$ would be $F$-dense.
-      Therefore,
+      C\diam'(T)$. 
+      Now,
      \begin{align*}
-       |X_1| & \ge (1-a\rank(T_1)/\Delta)|T_1| - |F\cap L(T_1)| \\
-           &  \ge (1-a\rank(T_1)/\Delta)|T_1| 
-                - (1-\delta\rank(T)/\Delta)|T_1| \\
-           &  \ge (1-a\rank(T_1)/\Delta)|T_1| 
-                - (1-\delta\rank(T_1)/\Delta)|T_1|  \\
-           &  \ge ((\delta-a)\rank(T_1)/\Delta)|T_1| \\
-           &  \ge ((\delta-a)\rank(T)/(3\Delta))|T|
+       |X| & \ge (1-a/\Delta)|T_1| - |F^+_{T_1}| \\
+           & =   (1-a/\Delta)|T_1| - |F^+_{T_1}| 
+                    - |T_{u_0}| + |T_{u_0}| \\
+           & =   (1-a/\Delta)|T_1| - |F^+_{T}| + |T_{u_0}| 
+             & \text{(since $F^+_T= |T_{u_0}| + |F^+_{T_1}|$)} \\
+           & >   (1-a/\Delta)|T| - |F^+_{T}| 
+             & \text{(since $|T|=|T_1|+|T_{u_0}|$),} 
      \end{align*}
-     Again, applying Property~(PR2) of $H_T$ shows that the set
-     $X=N_{H_T}(X_1)$ satisfies the conditions of the claim.
-     \note{PM}{Not correct, this gives a path of length $(C+1)\diam'(T)$.}
+     as required. \qedhere
     \end{enumerate}
 \end{proof}
 
@@ -622,9 +605,9 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
   For each $p\in F$, the leaf $p$ of $T$ is an $F^+_P$-dense node of
   $T$. Therefore, $F^{**}_P\supseteq F^{*}_P$.  Furthermore,
   \[
-      |F^{**}_P| \le |F^*_P|/(1-3\epsilon) \le (1+\epsilon)|F|/(1-3\epsilon) \le (1+5\epsilon)|F|
+      |F^{**}_P| \le |F^*_P|/(1-3\epsilon) \le (1+\epsilon)|F|/(1-3\epsilon) \le (1+5\epsilon)|F| \enspace ,
   \]
-  \note{PM}{state upper-bound on $\epsilon$ required for the last inequality.}
+  for $\epsilon \le 1/15$.
 
   Finally, define 
   \[  F^{***}_P = N_{H_u}(F^{**}_P)  \]
