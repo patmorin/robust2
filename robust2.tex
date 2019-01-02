@@ -67,7 +67,7 @@ A book \cite{ns07} and handbook chapter \cite{e99} provide
 extensive discussions of geometric $t$-spanners and their applications.
 
 For any non-decreasing function $f\colon\N\to\N$, Bose \etal\
-\cite{bose.dujmovic.ea:robust} say that a geometric graph $G$ is an
+\cite{bose.dujmovic.ea:robust} define a geometric graph $G$ to be an
 \emph{$f(k)$-robust $t$-spanner} if, for every set $F\subseteq V(G)$,
 there exists a set $F^+\supseteq F$ such that $|F^+|\le f(|F|)$ and
 the graph $G-F$ is a $t$-spanner of $V(G)\setminus F^+$.  In networking
@@ -77,18 +77,18 @@ number of faulty nodes, independent of the network size $|P|$.
 
 Under this definition, the most robust spanner one could hope for
 would be a $k$-robust spanner, but it is straightforward to argue
-that, even for one dimensional point sets, the complete graph is the
+that, even for one-dimensional point sets, the complete graph is the
 only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V(G)$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
-F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
+F^+=V\setminus F$ for any $t<\infty$.} The complete graph is not sparse,
 and is therefore not suitable for many applications.
 
 A natural second-best option is a $(1+\epsilon)k$-robust spanner with
 a near-linear number of edges, for some small constant $\epsilon >0$.
 Buchin \etal\ \cite{buchin.har-peled.ea:spanner} call these objects
 \emph{$\epsilon$-resilient} spanners and prove the existence of
-$\epsilon$-resilient spanners with $O(n\log^c n)$ edges, where $c=O(d)$.
+$\epsilon$-resilient spanners with $n\log^{O(d)} n$ edges.
 In the current paper we reduce the dependence on $d$ by proving the
 following theorem:
 
@@ -103,15 +103,15 @@ $\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point sets
 for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
 n)$ edges.  Thus, \thmref{main-i} is within a factor of $O(\log^3
 n\log\log n)$ of optimal in any constant dimension.  (Note that in
-dimension $d=1$, optimal constructions, having $O(n\log n)$ edges are known
-\cite{buchin.har-peled.ea:spanner}.)
+dimension $d=1$ optimal constructions, having $O(n\log n)$ edges, are
+known \cite{buchin.har-peled.ea:spanner}.)
 
 The proof of \thmref{main-i} uses several ingredients: The well-separated
 pair decomposition \cite{callahan.kosaraju:decomposition}, which
 is fairly standard in spanner constructions.  Expander graphs
 \cite{hoory.linial.ea:expanders}, that are a natural tool to
 achieve robustness. Two less obvious techniques we use are a centroid
-decompositions (i.e., hierarchical balanced separators) for binary trees
+decomposition (i.e., hierarchical balanced separators) for binary trees
 and an old idea of Willard \cite{willard:maintaining} for file maintenance
 (aka, order maintenance) that involves a hierarchical structure whose
 smaller substructures have more stringent density requirements than
@@ -157,7 +157,7 @@ expander constructions (see, for example, the survey by Hoory \etal\
 \begin{proof}
   For simplicity of calculation, assume that $|A|=|B|=n$.  Fix some
   subset $A'\subset A$ of size $|A'|=(1-1/k)|A|$.  Let $a_1,\ldots,a_r$
-  be a sequence of $n$ iud random samples from $A$.  Then the probability
+  be a sequence of $r$ iud random samples from $A$.  Then the probability
   that all of these samples are in $A'$ is
   \[
      \Pr\{\{a_1,\ldots,a_r\}\subset A'\} = (|A'|/|A|)^r = (1-1/k)^r \le e^{-r/k}
@@ -171,15 +171,17 @@ expander constructions (see, for example, the survey by Hoory \etal\
         \le (1-1/k)^{\Delta n/\ell} 
         \le e^{-\frac{\Delta n}{k\ell}}
   \]
-  Let $\mathcal{E}$ be the event that there exists $A'\subset A$, $|A'|=(1-1/k)|A|$, $B'\subset B$, $|B'|=n/\ell$ such that $N_H(B')\subseteq A'$.  Then
+  Let $\mathcal{E}$ be the event that there exists $A'\subset
+  A$, $|A'|=(1-1/k)|A|$, $B'\subset B$, $|B'|=n/\ell$ such that
+  $N_H(B')\subseteq A'$.  Then
   \begin{align*}
     \Pr\{\mathcal{E}\} 
         & \le \binom{n}{n/k}\binom{n}{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
-        & \le (ek)^{n/k} (ed)^{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
+        & \le (ek)^{n/k} (e\ell)^{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
         & = \exp((n/k)(1+\ln k) + (n/\ell)(1+\ln(\ell)) - (\Delta n)/(k\ell)) \\
         & < 1
   \end{align*}
-  for $\Delta > k(1+\log \ell) + \ell(1+\log k)$.  In particular, there
+  for $\Delta > k(1+\ln \ell) + \ell(1+\ln k)$.  In particular, there
   must exist at least one graph with $O(n(k\log\ell + \ell\log k))$
   edges that satisifies the conditions of the lemma.
 \end{proof}
@@ -191,7 +193,7 @@ shrinking shadows of subsets of $A$, is also useful:
 
 \begin{lem}\lemlabel{shrink}
    For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with
-   $|A|\ge|B|$, there exists a graph $H=(A\cup B,E)$ with $|E|=O(|B|(k\log
+   $|A|=\Omega(|B|)$, there exists a graph $H=(A\cup B,E)$ with $|E|=O(|B|(k\log
    \tau + \tau\log k))$ such that for any $A'\subset A$ with $|A'|\le
    (1-1/k)|A|$,
    \[ |S_H(A')| \le |A'|/\tau \enspace .\]
@@ -212,8 +214,8 @@ for some $\Delta=O(k\log\tau +\tau\log k)$.
 For two points $p,q\in\R^d$, $\dist(p,q)$, denotes the Euclidean distance
 between $p$ and $q$. For two sets $P,Q\subset\R^d$, the distance between
 $P$ and $Q$ is $\dist(P,Q)=\min\{\dist(p,q):p\in P, q\in Q\}$.  For a
-single point set $P\subset\R^d$, the \emph{diameter} of $P$ is denoted
-by $\diam(P)=\max\{\dist(p,q):p,q\in P\}$.
+point set $P\subset\R^d$, the \emph{diameter} of $P$ is denoted by
+$\diam(P)=\max\{\dist(p,q):p,q\in P\}$.
 
 For a rooted binary tree $T$, $L(T)$ denotes the set of leaves in
 $T$. We use the convention that, if $T$ consists of a single node $u$,
@@ -223,14 +225,14 @@ of $T$ rooted at $u$.  We say that $T$ is \emph{full} if each non-leaf
 node of $T$ has exactly two children.
 
 A \emph{fair-split tree} $T$ is a full binary tree whose
-leaves are points in $\R^d$.  We call $T$ a fair-split tree for $L(T)$.
+leaves are points in $\R^d$ and whose nodes have the following fair-split property:  
 We let $R(T)$ denote the minimum
 axis-aligned bounding box of $L(T)$ and we let $\diam'(T)$ denote the
 sum of the side lengths of $R(T)$.  A fair-split tree has the following
 \emph{fair-split property}: For any node $w$ with parent $x$, $\diam'(T_w)
 \le (1-1/(2d))\diam'(T_x)$.\footnote{Traditionally, fair-split trees
 are described as splitting $R(x)$ by bisecting its longest side.
-This obviously implies that $\diam'(u)\le 1-(1/2d)\diam'(x)$.} It is worth
+This obviously implies that $\diam'(w)\le 1-(1/2d)\diam'(x)$.} It is worth
 noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
 \[
 	\diam(L(T)) \le \diam'(T) \le d\cdot\diam(L(T)) \enspace .
@@ -271,41 +273,142 @@ well-separated pair decompositions \cite[Section~4.5]{callahan:dealing}:
 
 \section{The Construction}
 
-In this section we describe our $\epsilon$-resilient $t$-spanner
-construction for an $n$-point set $P\subset\R^d$.  Fundamental to the
-analysis of this construction is the \emph{rank} of a tree $T$, defined
-as $\rank(T)=\floor{\log_{3/2}|T|}$.
+In this section we describe our $\epsilon$-resilient
+$t$-spanner construction for an $n$-point set $P\subset\R^d$.
+Throughout this section, $T$ is a fair-split tree for $P$ and
+$W=\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ is an $s$-well-separated pair
+decomposition for $P$ using $T$.
+
+Our goal is to construct a $(1+\epsilon)$-robust $t$-spanner $G$
+of $P$.  At times we will deal with an arbitrary subset $F\subseteq
+P$ whose elements are \emph{faulty} and we will identify a superset
+$F^+\supseteq F$ so that $G-F$ is a $t$-spanner of $P\setminus F^+$.
+We will say that the elements of $F^+\setminus F$ are \emph{abandoned}.
+Our construction of $G$ proceed in three phases, which are described
+in Sections~\ref{sec:explode-root}--\ref{sec:navigating}, respectively:
+
+\begin{enumerate}
+  \item We first show how to construct a graph $G_T$ where most of the
+  points in $p\in P\setminus F$ have the following property: For the vast
+  majority of points $q\in P\setminus F$, $G_T-F$ contains a path from $p$
+  to $q$ of length $O(\diam'(T))$.  When a point $p\in P\setminus F$ has
+  this property, we say that $p$ is able to \emph{explode into} $P$.  The
+  parameters of $G_T$ are chosen so that the set of points in $P\setminus F$ 
+  that are unable
+  to explode into $P$ has size at most $\epsilon|F|/\log_{1+\epsilon} n$.
+  and the graph $G_T$ has $O(n\log^3\log\log n)$ edges.
+
+  \item Using the construction in the previous step on many \emph{special}
+  subtrees of $T$, we are able to construct a graph $G_P$ where most
+  of the points $p\in P\setminus F$ have the following property:
+  For every node $w$ that contains $p$, $p$ can explode in $L(T_w)$.
+  The special subtrees of $T$ on which we apply our first construction
+  are chosen so each point of $P$ appears in at most $\log_{1+\epsilon}
+  n$ of these subtrees.
+
+  We define $F^+_P$ as the set of vertices $p$ that are \emph{unable}
+  to explode into $L(T_w)$ for some ancestor $w$ of $p$ in $T$.  We will
+  abandon all the points in $F^+_P$.  The fact that each point of $F$
+  appears in at most $\log_{1+\epsilon} n$ special subtrees ensures that
+  $|F^+_P|\le (1+\epsilon)|F|$.
+
+%
+%
+%   We identify a set $S$ of \emph{special} nodes in $T$ with the
+%   property that for any node $w$ in $T$, there is a node $u\in S$
+%   where $u$ is in $T_w$ (possibly $u=w$) and $T_u$ contains most of
+%   the leaves of $T_w$.  Intuitively, $u$ can take the place of $w$
+%   since $u$ contains most of the points in $w$.  The set $S$ is used
+%   as a cost-saving measure, because $\sum_{u\in S}|T_u| = O(n\log n)$.
+%
+%   We then construct the graph $G_{T_{u}}$ for each special node $u\in S$.
+%   Taking the union of all these graphs gives a larger graph $G_P$
+%   with $O(n\log^4\log\log n)$ edges.
+%
+%   Now, for any special node $u$ of $T$ and any point $p\in
+%   L(T_u)\setminus F$, the graph $G_{T_u}$ ensures that
+%   \begin{enumerate}
+%       \item $F$ contains most of the leaves of $T_u$; or
+%       \item $p$ can explode into $L(T_u)$.
+%   \end{enumerate}
+%    
+%   For an arbitrary node $w$ of $T$ and a point $p\in L(T_w)$ a little
+%   more work is required.  In particular, if $u$ is the largest special
+%   node in $T_w$ and $p\in L(T_w)\setminus L(T_u)$ then $p$ has no obvious
+%   way of exploding into $L(T_w)$ since most of $L(T_w)$ is contained in
+%   $L(T_u)$.  To overcome this, $G_P$ contains some additional
+%   edges from these points $p$ that are ``left-out'' of a special node $u$.
+%   These additional edges join $p$ to points in $L(T_u)$.
+%
+%   The end result is that, in the graph $G_P-F$, most of the vertices $p$
+%   have the property that, for any node $w$ of $T$ with $p\in L(T_w)$,
+%   $p$ can explode into $L(T_w)$.  We define $F^+_P$ as the
+%   set of vertices $p$ that are \emph{unable} to explode $L(T_w)$ for
+%   some ancestor $w$ of $p$ in $T$.
+
+   \item Finally, we consider the WSPD $W$. For points $p\in A_i\setminus
+   F^+_P$ and $q\in B_i\setminus F^+_P$ to have a spanner path between
+   them in $G-F$, it is sufficient that $G$ contains an edge $qq'$
+   with $q'\in A_i\setminus F^+_P$.  This is because both $p$ and $q'$
+   can explode into $A_i$ and the subsets of
+   $A_i\setminus F$ that $p$ and $q'$ can explode into are so large that
+   they must overlap.
+
+   The third step in our construction, therefore, is to consider each pair
+   $(A_i,B_i)\in W$ with $|A_i|\ge |B_i|$ and construct an expander $H$
+   from $B_i$ into $A_i$.  By doing this carefully, we ensure that
+  \begin{enumerate}
+     \item $F^+_P$ contains most of $A_i$; or
+     \item $S_{H}(F^+_P)$ is much smaller than $F^+_P\cap A_i$.
+  \end{enumerate}
+  In the latter case, we can abandon all the points in $A_i$ without
+  abandoning too many additional points. In the former case, we can
+  abandon the points in $S_{H}(F^+_P)$ without abandoning too many additional 
+  points.
+\end{enumerate}
+
+
 
 \subsection{Exploding into the Root}
+\seclabel{explode-root}
 
-Let $T$ be the fair-split tree for an $n$-point set $P$ and consider
-the following recursively constructed graph $G_{T}$ whose vertex set
+In this section we describe the graph $G_T$ that allows most of the
+nodes in $P\setminus F$ to explode into $P$.  In
+
+Consider the following recursively constructed graph $G_{T}$ whose vertex set
 is $P=L(T)$.  If $|T| \le \kappa$ for some constant $\kappa$, then $G_T$
-is the complete graph on $L(T)$. For our particular application, we will choose $\kappa\ge 5$.  Note that, for $|T|\ge\kappa\ge 5$, $\rank(T_{u_0}) \ge \floor{\log_{3/2}(5/3)} \ge 1$.
-
+is the complete graph on $L(T)$. For our particular application, we will
+choose $\kappa\ge 5$.  
 If $|T|>\kappa$, let $u_0$ be a node of $T$ with the property that
 $|T|/3\le |T_{u_0}|\le 2|T|/3$.  The existence of $u_0$ (or rather
 the edge from $u_0$ to its parent) is a standard result on binary
-trees.\footnote{Proof: Begin by setting $v_0$ to the root of $T$ and then repeatedly set $v_{i+1}$ to be the child of $v_i$ whose subtree contains at least half the leaves of $T_{v_i}$.  The smallest index $i$ for which $|T_{v_i}|\le 2|T|/3$ yields the desired node $u_0=v_i$.}   Let $T_1$ be the full binary tree obtained from
-$T-T_{u_0}$ by contracting an edge incident to the unique non-leaf node
-of $T-T_{u_0}$ that has only one child.  The graph $G_{T}$ contains
-an expander $H_T=(L(T),E_T)$. This expander has parameters $d>1$,
-$\alpha, \beta,\zeta,\eta > 0$ and is constructed so that it satisfies
-the following properties:
+trees.\footnote{Proof: Begin by setting $v_0$ to the root of $T$ and then
+repeatedly set $v_{i+1}$ to be the child of $v_i$ whose subtree contains
+at least half the leaves of $T_{v_i}$.  The smallest index $i$ for which
+$|T_{v_i}|\le 2|T|/3$ yields the desired node $u_0=v_i$.} 
+
+Fundamental to the analysis in this section is the \emph{rank} of a
+tree $T$, defined as $\rank(T)=\floor{\log_{3/2}|T|}$.  Note that, for
+$|T|\ge\kappa\ge 5$, $\rank(T_{u_0}) \ge \floor{\log_{3/2}(5/3)} \ge 1$.
+
+Let $T_1$ be the full binary tree obtained from $T-T_{u_0}$ by contracting
+an edge incident to the unique non-leaf node of $T-T_{u_0}$ that has only
+one child.  The graph $G_{T}$ contains an expander $H_T=(L(T),E_T)$. This
+expander has parameters $d>1$, $\alpha, \beta,\zeta,\eta > 0$ and is
+constructed so that it satisfies the following properties:
 \begin{enumerate}
   \item[(PR1)] For any $X\subset L(T_{u_0})$ with
     $|X|<(1-\beta/\Delta)|T_{u_0}|$, 
-    \[ |S_{H_T})(X)|\le (\alpha/\Delta)|X| \enspace . \]
+    \[ |S_{H_T}(X)|\le (\alpha/\Delta)|X| \enspace . \]
 
   \item[(PR2)] For any set $Y\subset L(T)$ with $|Y|\ge
     (\zeta/\Delta)L(T)$, \[ |N_{H_T}(Y)|\ge (1-\eta/\Delta)|T| \enspace .\]
 \end{enumerate}
-Informally, Property~(PR1) tells us that, if some subset $X$
-of $T_{u_0}$ becomes disabled, then this only prevents a much smaller
-subset $S_{H_T}(X)$ of $T_{1}$ from accessing $T_{u_0}$.  Property~(PR2)
-tells us that if some point $p$ can reach a $\zeta/\Delta$ fraction of
-the points in $T_{u_0}$ then $p$ can reach nearly
-all the points in $T$.
+Informally, Property~(PR1) tells us that, if some subset $X$ of
+$T_{u_0}$ becomes disabled, then this only prevents a much smaller subset
+$S_{H_T}(X)$ of $T_{1}$ from accessing $T_{u_0}$.  Property~(PR2) tells
+us that if some point $p$ can reach a $\zeta/\Delta$ fraction of the
+points in $L(T)$ then $p$ can reach nearly all the points in $L(T)$.
 
 In our construction, $\Delta=\Theta(\log^2 n)$ and the remaining
 parameters are small values that are upper bounded by some function
@@ -343,7 +446,7 @@ $G_{T}$. This concludes the description of the graph $G_T$.
 \begin{proof}
   The graph $H_T$ has
   $O(|T|\Delta\log\Delta)$ edges.  The recursive constructions are on two trees $T_{u_0}$
-  and $T_1$ where $|T_{u_0}|+|T_1|=|T|$ and $\max\{|T_{u_0}|,T_1\}\le
+  and $T_1$ where $|T_{u_0}|+|T_1|=|T|$ and $\max\{|T_{u_0}|,|T_1|\}\le
   2|T|/3$. It follows that the depth of recursion is at most
   $\log_{3/2}|T|$ and each level of recursion contributes a total of
   $O((\Delta\log\Delta)|T|)$ edges for a total of $O((\Delta\log\Delta)|T|\log|T|)$ edges.
@@ -382,7 +485,7 @@ point we can afford to add an additional $(\epsilon/\Delta)|F\cap L(T)|$
 elements to $F^+_T$.  The condition in Step~3 ensures that, in either
 of the two cases, the number of elements we add to $F^+_T$ is, indeed,
 at most $(\epsilon/\Delta)|F\cap L(T)|$.  In Step~3(a), we know that
-the shadow of $F^+_{T_{u_1}}$ in $T_1$ is sufficiently small to add
+the shadow of $F^+_{T_{u_1}}$ in $T_1$ is sufficiently small to add it
 to $F^+_T$.  In Step~3(b) we know that $F^+_{T_{u_0}}$ is so large that
 we can add the rest of it to $F^+_T$.
 
@@ -680,6 +783,7 @@ at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
 
 
 \subsection{Navigating the Well-Separated Pairs}
+\seclabel{navigating}
 
 Let $P\subset\R^d$ be an $n$-point set, let $T$ be a fair-split tree for
 $P$ and let $W=\{(A_i,B_i):i\in\{1,\ldots,m\}$ be an $s$-well-separated
