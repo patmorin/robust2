@@ -40,7 +40,7 @@ This research was partly funded by NSERC.
 \begin{abstract}
   For any constants $d\ge 1$, $\epsilon >0$, $t>1$, and any $n$-point
   set $P\subset\R^d$, we show that there is a geometric graph $G=(P,E)$
-  having $O(n\log^4 n\log\log n)$ edges with the following property:
+  having $O(n\log^2 n\log\log n)$ edges with the following property:
   For any $F\subseteq P$, there exists $F^+\supseteq F$, $|F^+| \le
   (1+\epsilon)|F|$ such that, for any pair $p,q\in P\setminus F^+$,
   the graph $G-F$ contains a path from $p$ to $q$ whose (Euclidean)
@@ -102,13 +102,13 @@ following theorem:
 \begin{thm}\thmlabel{main-i}
   For every constant $d\ge 1$, $\epsilon>0$, $t>1$ and every $n$-point
   set $P\subseteq\R^d$, there exists an $\epsilon$-resilient $t$-spanner
-  $G=(P,E)$ with $|E|=O(n\log^4 n\log\log n)$.
+  $G=(P,E)$ with $|E|=O(n\log^2 n\log\log n)$.
 \end{thm}
 
 Bose \etal\ \cite{bose.dujmovic.ea:robust} show that, for any constants
 $\epsilon>0$ and $t\ge 1$, there exists $1$-dimensional point sets
 for which any $(1+\epsilon)k$-robust $t$-spanner has $\Omega(n\log
-n)$ edges.  Thus, \thmref{main-i} is within a factor of $O(\log^3
+n)$ edges.  Thus, \thmref{main-i} is within a factor of $O(\log
 n\log\log n)$ of optimal in any constant dimension.  (Note that in
 dimension $d=1$ optimal constructions, having $O(n\log n)$ edges, are
 known \cite{buchin.har-peled.ea:spanner}.)
@@ -227,20 +227,19 @@ $\diam(P)=\max\{\dist(p,q):p,q\in P\}$.
 For a rooted binary tree $T$, $L(T)$ denotes the set of leaves in
 $T$. We use the convention that, if $T$ consists of a single node $u$,
 then $L(T)=\{u\}$. The \emph{size} of $T$, denoted $|T|$ is the number of
-leaves $|L(T)|$ of $T$. For a node $u$ in $T$, $T_u$ denotes the subtree
+leaves, $|L(T)|$, of $T$. For a node $u$ in $T$, $T_u$ denotes the subtree
 of $T$ rooted at $u$.  We say that $T$ is \emph{full} if each non-leaf
 node of $T$ has exactly two children.
 
-A \emph{fair-split tree} $T$ is a full binary tree whose
-leaves are points in $\R^d$ and whose nodes have the following fair-split property:  
-We let $R(T)$ denote the minimum
-axis-aligned bounding box of $L(T)$ and we let $\diam'(T)$ denote the
-sum of the side lengths of $R(T)$.  A fair-split tree has the following
-\emph{fair-split property}: For any node $w$ with parent $x$, $\diam'(T_w)
+A \emph{fair-split tree} $T$ is a full binary tree whose leaves are
+points in $\R^d$ and whose nodes have the following \emph{fair-split
+property}: We let $R(T)$ denote the minimum axis-aligned bounding
+box of $L(T)$ and we let $\diam'(T)$ denote the sum of the side
+lengths of $R(T)$.  For any node $w$ with parent $x$, $\diam'(T_w)
 \le (1-1/(2d))\diam'(T_x)$.\footnote{Traditionally, fair-split trees
 are described as splitting $R(x)$ by bisecting its longest side.
-This obviously implies that $\diam'(w)\le 1-(1/2d)\diam'(x)$.} It is worth
-noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
+This obviously implies that $\diam'(w)\le 1-(1/(2d))\diam'(x)$.} It is
+worth noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
 \[
 	\diam(L(T)) \le \diam'(T) \le d\cdot\diam(L(T)) \enspace .
 \]	
@@ -291,96 +290,51 @@ of $P$.  At times we will deal with an arbitrary subset $F\subseteq
 P$ whose elements are \emph{faulty} and we will identify a superset
 $F^+\supseteq F$ so that $G-F$ is a $t$-spanner of $P\setminus F^+$.
 We will say that the elements of $F^+\setminus F$ are \emph{abandoned}.
-Our construction of $G$ proceed in three phases, which are described
-in Sections~\ref{sec:explode-root}--\ref{sec:navigating}, respectively:
+Our construction of $G$ proceed in two phases, which are described
+in Sections~\ref{sec:exploding} and \ref{sec:navigating}, respectively:
 
 \begin{enumerate}
   \item We first show how to construct a graph $G_T$ where most of the
-  points in $p\in P\setminus F$ have the following property: For the vast
-  majority of points $q\in P\setminus F$, $G_T-F$ contains a path from $p$
-  to $q$ of length $O(\diam'(T))$.  When a point $p\in P\setminus F$ has
-  this property, we say that $p$ is able to \emph{explode into} $P$.  The
-  parameters of $G_T$ are chosen so that the set of points in $P\setminus F$ 
-  that are unable
-  to explode into $P$ has size at most $\epsilon|F|/\log_{1+\epsilon} n$.
-  and the graph $G_T$ has $O(n\log^3\log\log n)$ edges.
+  points in $p\in P\setminus F$ have the following property: For every
+  ancestor $u$ of $p$ in $T$, and for the vast majority of points $q\in
+  L(T_u)\setminus F$, $G_T-F$ contains a path from $p$ to $q$ of length
+  $O(\diam'(T_u))$.  When a point $p\in P\setminus F$ has this property,
+  we say that $p$ is able to \emph{explode into} $u$.
 
-  \item Using the construction in the previous step on many \emph{special}
-  subtrees of $T$, we are able to construct a graph $G_P$ where most
-  of the points $p\in P\setminus F$ have the following property:
-  For every node $w$ that contains $p$, $p$ can explode in $L(T_w)$.
-  The special subtrees of $T$ on which we apply our first construction
-  are chosen so each point of $P$ appears in at most $\log_{1+\epsilon}
-  n$ of these subtrees.
+  We define $F^+_T$ as the set of points $p\in P$ such that $p$ has an
+  ancestor $u$ and $p$ is \emph{un}able to explode into $u$.  We will
+  have to abandon the points in $F^+_T$.  The parameters of $G_T$ are
+  chosen so that $F^+_T\setminus F$ has size at most $\epsilon|F|$.
+  and the graph $G_T$ has $O(n\log^2 n\log\log n)$ edges.
 
-  We define $F^+_P$ as the set of vertices $p$ that are \emph{unable}
-  to explode into $L(T_w)$ for some ancestor $w$ of $p$ in $T$.  We will
-  abandon all the points in $F^+_P$.  The fact that each point of $F$
-  appears in at most $\log_{1+\epsilon} n$ special subtrees ensures that
-  $|F^+_P|\le (1+\epsilon)|F|$.
-
-%
-%
-%   We identify a set $S$ of \emph{special} nodes in $T$ with the
-%   property that for any node $w$ in $T$, there is a node $u\in S$
-%   where $u$ is in $T_w$ (possibly $u=w$) and $T_u$ contains most of
-%   the leaves of $T_w$.  Intuitively, $u$ can take the place of $w$
-%   since $u$ contains most of the points in $w$.  The set $S$ is used
-%   as a cost-saving measure, because $\sum_{u\in S}|T_u| = O(n\log n)$.
-%
-%   We then construct the graph $G_{T_{u}}$ for each special node $u\in S$.
-%   Taking the union of all these graphs gives a larger graph $G_P$
-%   with $O(n\log^4\log\log n)$ edges.
-%
-%   Now, for any special node $u$ of $T$ and any point $p\in
-%   L(T_u)\setminus F$, the graph $G_{T_u}$ ensures that
-%   \begin{enumerate}
-%       \item $F$ contains most of the leaves of $T_u$; or
-%       \item $p$ can explode into $L(T_u)$.
-%   \end{enumerate}
-%    
-%   For an arbitrary node $w$ of $T$ and a point $p\in L(T_w)$ a little
-%   more work is required.  In particular, if $u$ is the largest special
-%   node in $T_w$ and $p\in L(T_w)\setminus L(T_u)$ then $p$ has no obvious
-%   way of exploding into $L(T_w)$ since most of $L(T_w)$ is contained in
-%   $L(T_u)$.  To overcome this, $G_P$ contains some additional
-%   edges from these points $p$ that are ``left-out'' of a special node $u$.
-%   These additional edges join $p$ to points in $L(T_u)$.
-%
-%   The end result is that, in the graph $G_P-F$, most of the vertices $p$
-%   have the property that, for any node $w$ of $T$ with $p\in L(T_w)$,
-%   $p$ can explode into $L(T_w)$.  We define $F^+_P$ as the
-%   set of vertices $p$ that are \emph{unable} to explode $L(T_w)$ for
-%   some ancestor $w$ of $p$ in $T$.
-
-   \item Finally, we consider the WSPD $W$. For points $p\in A_i\setminus
-   F^+_P$ and $q\in B_i\setminus F^+_P$ to have a spanner path between
+   \item Next, we consider the WSPD $W$. For points $p\in A_i\setminus
+   F^+_T$ and $q\in B_i\setminus F^+_T$ to have a spanner path between
    them in $G-F$, it is sufficient that $G$ contains an edge $qq'$
-   with $q'\in A_i\setminus F^+_P$.  This is because both $p$ and $q'$
-   can explode into $A_i$ and the subsets of
-   $A_i\setminus F$ that $p$ and $q'$ can explode into are so large that
-   they must overlap.
+   with $q'\in A_i\setminus F^+_T$.  This is because both $p$ and $q'$
+   can explode into $A_i$ and the subsets of $A_i\setminus F$ that $p$
+   and $q'$ can explode into are so large that they must have at least
+   one edge joining them.
 
    The third step in our construction, therefore, is to consider each pair
    $(A_i,B_i)\in W$ with $|A_i|\ge |B_i|$ and construct an expander $H$
    from $B_i$ into $A_i$.  By doing this carefully, we ensure that
   \begin{enumerate}
-     \item $F^+_P$ contains most of $A_i$; or
+     \item $F^+_T$ contains most of $A_i$; or
      \item $S_{H}(F^+_P)$ is much smaller than $F^+_P\cap A_i$.
   \end{enumerate}
-  In the latter case, we can abandon all the points in $A_i$ without
-  abandoning too many additional points. In the former case, we can
+  In the former case, we can abandon all the points in $A_i$ without
+  abandoning too many additional points. In the latter case, we can
   abandon the points in $S_{H}(F^+_P)$ without abandoning too many additional 
   points.
 \end{enumerate}
 
 
 
-\subsection{Exploding into the Root}
-\seclabel{explode-root}
+\subsection{Exploding in the Fair-Split Tree}
+\seclabel{exploding}
 
 In this section we describe the graph $G_T$ that allows most of the
-nodes in $P\setminus F$ to explode into $P$.  In
+points in $P\setminus F$ to explode into any of their ancestors in $T$.
 
 Consider the following recursively constructed graph $G_{T}$ whose vertex set
 is $P=L(T)$.  If $|T| \le \kappa$ for some constant $\kappa$, then $G_T$
@@ -401,7 +355,7 @@ $|T|\ge\kappa\ge 5$, $\rank(T_{u_0}) \ge \floor{\log_{3/2}(5/3)} \ge 1$.
 Let $T_1$ be the full binary tree obtained from $T-T_{u_0}$ by contracting
 an edge incident to the unique non-leaf node of $T-T_{u_0}$ that has only
 one child.  The graph $G_{T}$ contains an expander $H_T=(L(T),E_T)$. This
-expander has parameters $d>1$, $\alpha, \beta,\zeta,\eta > 0$ and is
+expander has parameters $\Delta>1$, $\alpha, \beta,\zeta,\eta > 0$ and is
 constructed so that it satisfies the following properties:
 \begin{enumerate}
   \item[(PR1)] For any $X\subset L(T_{u_0})$ with
@@ -417,11 +371,11 @@ $S_{H_T}(X)$ of $T_{1}$ from accessing $T_{u_0}$.  Property~(PR2) tells
 us that if some point $p$ can reach a $\zeta/\Delta$ fraction of the
 points in $L(T)$ then $p$ can reach nearly all the points in $L(T)$.
 
-In our construction, $\Delta=\Theta(\log^2 n)$ and the remaining
+In our construction, $\Delta=\ceil{\log_{3/2} n}$ and the remaining
 parameters are small values that are upper bounded by some function
 of $\epsilon$. In particular, for any constant $\epsilon >0$, these
 parameters are also constant. Note that we distinguish here between $n$
-and $|T|$. This is because, in recursive calls $\Delta=\Theta(\log^2 n)$
+and $|T|$. This is because, in recursive calls $\Delta=\ceil{\log_{3/2} n}$
 remains fixed even though the recursive input has size smaller than $n$.
 
 After constructing $H_T$, we recursively construct $G_{T_{u_0}}$
@@ -439,15 +393,15 @@ $G_{T}$. This concludes the description of the graph $G_T$.
   parameter $k=\Delta/\beta$ and $\tau=\Delta/\alpha$.  This graph has
   $O(|T|\Delta\log\Delta)$ edges.
 
-  To satisfy Property~(PR2), $H_T$ contains an expander described
+  To satisfy Property~(PR2), $H_T$ contains an expander described by
   \lemref{expand} for the pair $(A=L(T),B=L(T))$ with
   parameters $k=\Delta/\eta$ and $\ell=\Delta/\zeta$. This graph also
   has $O(|T|\Delta\log\Delta)$ edges.
 \end{proof}
 
 
-\begin{clm}
-  $G_{T}$ has $O((\Delta\log\Delta)|T|\log |T|)$ edges.
+\begin{clm}\clmlabel{edges-t}
+  The graph $G_{T}$ has $O((\Delta\log\Delta)|T|\log |T|)$ edges.
 \end{clm}
 
 \begin{proof}
@@ -468,7 +422,7 @@ $F^+_T$, recursively, as follows (here $u_0$ and $T_1$ are defined as above):
 
 \begin{enumerate}
   \item If $T$ is $F$-dense, then $F^+_T\gets L(T)$. 
-     \newline [Too many points in $T$ are dead so we abandon all points in $T$.]
+     \newline [Too many points in $T$ are faulty so we abandon all points in $T$.]
   \item $F^+_T\gets F^+_{T_{u_0}}\cup F^+_{T_1}$. 
      \newline [Recursive computation on $T_{u_0}$ and $T_1$.]
   \item If $|F^+_{T_{u_0}}|\le (1-\beta/\Delta)|T_{u_0}|$
@@ -532,7 +486,7 @@ we can add the rest of it to $F^+_T$.
             \eqlabel{inductio}
          \end{align}
          All that remains is to show that $|S_{H_T}(F^+_{T_{u_0}})|\le
-         (\epsilon/\Delta)|F\cap L(T)|$ By Property~(PR1) of $H_T$,
+         (\epsilon/\Delta)|F\cap L(T)|$. By Property~(PR1) of $H_T$,
           \begin{align*}
           |S_{H_T}(F^+_{T_{u_0}})| 
             & \le (\alpha/\Delta)|F^+_{T_{u_0}}| \\
@@ -540,7 +494,7 @@ we can add the rest of it to $F^+_T$.
             & \le (\alpha/\Delta)(1+\epsilon\rank(T_{u_0})/\Delta)|F\cap L(T)|\\
             & = (\alpha/\Delta+\alpha\epsilon\rank(T_{u_0})/\Delta^2)|F\cap L(T)| \\
             & \le (\alpha/\Delta+\alpha\epsilon/\Delta)|F\cap L(T)| 
-    	     & \text{(for $\rank(T)/\Delta\le 1$)} \\
+    	     & \text{(for $\rank(T_{u_0})/\Delta\le 1$)} \\
     	& \le (\epsilon/\Delta)|F\cap L(T)| \enspace ,
        \end{align*}
        provided that $\alpha+\alpha\epsilon \le \epsilon$, i.e, 
@@ -551,7 +505,7 @@ we can add the rest of it to $F^+_T$.
           |F^+_T| 
             & = |T_{u_0}| + |F^+_{T_1}| \\
             & \le (1+2\beta/\Delta)|F^+_{T_{u_0}}| + |F^+_{T_1}|
-              & \text{(for $\beta\le \Delta/2$)}\\
+              & \text{(for $\beta/\Delta\le 1/2$)}\\
             & = |F^+_{T_{u_0}}| + |F^+_{T_1}| + (2\beta/\Delta)|F^+_{T_{u_0}}| \\
             & \le (1+\epsilon\rank(T)/\Delta)|F\cap L(T)| - (\epsilon/\Delta)|F\cap L(T)| + (2\beta/\Delta)|F^+_{T_{u_0}}| 
              & \text{(as in \eqref{inductio})} \\
@@ -567,7 +521,10 @@ we can add the rest of it to $F^+_T$.
 \end{proof}
 
 
-\begin{clm}
+Next we show that any point of $P$ not in $F^+_T$ can explode into any of its
+ancestors in $T$.
+
+\begin{clm}\clmlabel{explode}
   Let $C=4d$ and let $a=\beta/2$.  For any node $u$ of $T$ and
   every point $p\in L(T_u)\setminus F^+_T$, there exists $X\subset L(T_u)$,
   $|X|\ge (1-a/\Delta)|T_u|-|F^+_T\cap L(T_u)|$ such that for every $q\in X$,
@@ -579,7 +536,7 @@ we can add the rest of it to $F^+_T$.
   The proof is by induction on $|T|$.  If $|T|\le\kappa$, the result
   is trivial since $G_T$ is the complete graph.  Thus, we may assume
   that $|T|>\kappa$.  If $T_u$ is contained in $T_{u_0}$ then we can
-  apply induction on $T_{u_0}$.   This yields a set $X$ of size
+  apply induction on $T_{u_0}$ (with $T=T_{u_0}$ and $u=u$).   This yields a set $X$ of size
   \[
      (1-a/\Delta)|T_u|-|F^+_{T_{u_0}}\cap L(T_u)|
      \ge (1-a/\Delta)|T_u|-|F^+_{T}\cap L(T_u)| \enspace .
@@ -595,24 +552,25 @@ we can add the rest of it to $F^+_T$.
     to consider:
     \begin{enumerate}
       \item $p\in L(T_{u_0})$.  Since $u_0$ is not the root of $T$,
-      $\diam'(T_{u_0}) \le (1-1/2d)\diam'(T_u)$.  We can therefore apply
+      $\diam'(T_{u_0}) \le (1-1/2d)\diam'(T_u)$.  We apply
       induction on $T_{u_0}$ (with $T=T_{u_0}$ and $u=u_0$)
        to find a $p$-reachable set $X_0\subseteq L(T_{u_0})$ of size
       \begin{align*}
         |X_0| & \ge (1-a/\Delta)|T_{u_0}|-|F^+_{T_{u_0}}| \\
-              & \ge (1-a/\Delta)|T_{u_0}|-(1-\beta/\Delta)|T_{u_0}|
+              & \ge (1-a/\Delta)|T_{u_0}|-(1-\beta/\Delta)|T_{u_0}| \\
               & = ((\beta-a)/\Delta)|T_{u_0}| \\
               & = (\beta/(2\Delta))|T_{u_0}|
               & \text{(since $a = \beta/2$).} \\
-              & = (\beta/(6\Delta))|T| \enspace .
+              & \ge (\beta/(6\Delta))|T| \enspace .
               & \text{(since $|T|/3\le |T_{u_0}|$).} 
       \end{align*}
       By Property~(PR2) of $H_T$ (with $\zeta = \beta/6$ and $\eta =
-      a/3$), we can then take $X=N_{H_T}(X_0)\cap L(T_u)\setminus(F^+_T)$.  Then
+      a/3$), we can then take $X=N_{H_T}(X_0)\cap L(T_u)\setminus F^+_T $.  Then
       \begin{align*}
          |X| & \ge (1-\eta/\Delta)|T|-|F^+_T\cap L(T_u)| - (|T|-|T_u|) \\
              & = |T_u|-(\eta/\Delta)|T|-|F^+_T\cap L(T_u)| \\
-             & \ge (1-3\eta/\Delta)|T_u|-|F^+_T\cap L(T_u)| \\
+             & \ge (1-3\eta/\Delta)|T_u|-|F^+_T\cap L(T_u)| 
+                & \text{(since $3|T_u|\ge |T|$)}\\
              & = (1-a/\Delta)|T_u|-|F^+_T\cap L(T_u)| \\
       \end{align*} 
       and every point $q\in X$ is reachable from $p$ by a path in $G_T-F$
@@ -631,8 +589,8 @@ we can add the rest of it to $F^+_T$.
     \end{enumerate}
 
     \item $|F^+_{T_{u_0}}|> (1-\beta/\Delta)|T_{u_0}|$.  In this case,
-     $F^+_T= L(T_{u_0})\cup F^+_{T_1}$, so $F^+_T= |T_{u_0}|
-     + |F^+_{T_1}|$.  Therefore, $p\in L(T_1)$.  Now, we apply
+     $F^+_T= L(T_{u_0})\cup F^+_{T_1}$.
+     Therefore, $p\in L(T_1)$.  Now, we apply
      induction on $T_1$ (with $T=T_1$ and $u=u$) and obtain a set $X\subseteq L(T_u)$
      that can be reached by $p$ in $G_T-F$ with paths of length at most
      $C\diam'(T_u)$.  Now,
@@ -642,8 +600,8 @@ we can add the rest of it to $F^+_T$.
                     - |T_{u_0}| + |T_{u_0}| \\
            & \ge   (1-a/\Delta)|(T_1)_u| - |F^+_{T}\cap L((T_1)_u)|
                     - |T_{u_0}| + |T_{u_0}| \\
-           & =   (1-a/\Delta)|(T_1)_u| - |F^+_{T}\cap L(T_u)| + |T_{u_0}| 
-             & \text{(since $F^+_T= L(T_{u_0}) \cup |F^+_{T_1}|$)} \\
+           & =   (1-a/\Delta)|(T_1)_u| - |F^+_{T}\cap L(T_u)| + |T_{u_0}| \\
+             & \qquad \text{(since $F^+_T\cap L(T_u)= L(T_{u_0}) \cup (F^+_T\cap L((T_1)_u))$)} \\
            & >   (1-a/\Delta)|T_u| - |F^+_{T}\cap L(T_u)| 
              & \text{(since $|T_u|=|(T_1)_u|+|T_{u_0}|$),} 
      \end{align*}
@@ -651,189 +609,53 @@ we can add the rest of it to $F^+_T$.
     \end{enumerate}
 \end{proof}
 
-\subsection{Multiple Scales}
-\seclabel{g-p}
-
-For each node $u$ of $T$, define
-$\lbl(u)=\floor{\log_{1+\epsilon}|T_u|}$. We say that a node $u$ of $T$
-is \emph{special} if $u$ is a leaf or if $\lbl(u)$ is different from both
-its children.  If $u$ is special, then $T_u$ is also \emph{special}.
-Observe that for every node $w$ of $T$, $T_w$ contains a special
-subtree $T_u$ with $|T_u|\ge (1-O(\epsilon))|T_w|$.\footnote{Proof:
-Consider the subtree $T_w'$ of $T_w$ induced by all nodes $v$ in $T_w$
-such that $\lbl(v)=\lbl(w)$. $T_w'$ is non-empty and therefore contains
-at least one leaf $u$. $T_u$ is a special subtree of $T_w$ and $|T_u|\ge
-|T_w|/(1+\epsilon)$ so $|T_u|\ge (1-2\epsilon)|T_w|$, for $\epsilon \le
-1/2$.}  Let $S(T)$ denote the set of special nodes in $T$.
-
-\begin{lem}\lemlabel{exploder-main}
-  For any constant $\epsilon >0$, any $n\in\N$, and any $n$-point
-  set $P\subset\R^d$ with fair-split tree $T$, there exists a graph
-  $G_P=(P,E)$ with $O(n\log^4 n\log\log n)$ edges such that, for any 
-  $F\subseteq
-  P$, there exists a superset $F^+_P\supseteq F$ with $|F^+_P|\le
-  (1+7\epsilon)|F|$ such that for any node $w$ of $T$ and any point
-  $p\in L(T_w)\setminus F^+_P$, there is a special node $u$ in $T_w$
-  and a subset $X\subseteq L(T_u)$
-  with $|X|\ge \epsilon/4|T_u|$ such that for every $q\in X$, $G_P-F$
-  contains a path from $p$ to $q$ of length at most $(C+1)\diam'(T_w)$.
-\end{lem}
-
-
-\begin{proof}
-  The graph $G_P$ contains all edges of $G_{T_u}$ for each special node
-  $u$ of $T$.  The parameter $\Delta$ in the construction of $G_{T_u}$
-  is set to $\Delta=c\log^2 n$ for some sufficiently large constant $c$.
-  The total number of edges in all of these graphs is $O(n\log^4
-  n\log\log n)$.  
-
-  We say that a node $w$ with parent $x$ in $T$ is \emph{left out of
-  node $u$} if $x$ is not special, $T_u$ is the largest special subtree
-  of $T_x$ and $u$ is not in $T_w$. Note that each left out node is the
-  smaller of the two children of its parent, so that any root to leaf
-  path in $T$ contains at most $\log_2 n$ left out nodes.  In other words,
-  each point $p\in P$ is left out of at most $\log_2 n$ special nodes.
-	
-  For a special node $u$, let $w_1,\ldots,w_k$ be the nodes left out of $u$, and  let $K_u=\bigcup_{i=1}^k L(w_i)$.  For each special node $u$ we construct
-  an expander graph $H_u$ for the pair
-  $(A=L(T_u),B=K_u)$. The graph $H_u$ has the following property:
-  \begin{enumerate}
-    \item[(PRX)] For any subset $X\subset L(T_u)$ with $|X|\le (1-\epsilon)|T_u|$, 
-  \[ |S_{H_u}(X)| \le \epsilon|X|/\log_{1+\epsilon} n \enspace . \] 
-  \end{enumerate}
-  The graph $H_u$ is obtained from \lemref{shrink} with parameters
-  $k=1/\epsilon$ and $\tau=\log_{1+\epsilon}n/\epsilon$.  Therefore,
-  the number of edges in $H_u$ is $O(|K_u|\log n\log\log n)$. 
-  By summing over all special nodes $u$ this gives a total of $O(n\log^2
-  n\log\log n)$ edges.  The graph $G_P$ contains $H_u$ for each special
-  node $u$.
-
-  This concludes the description of $G_P$ and the analysis of the number
-  of edges in $G_P$. What remains it is to describe and analyze the
-  set $F^+_P$.
-
-
-  Define the set:
-  \[  
-    F^*_P = \bigcup_{u\in S(T)} F^+_{T_u} \enspace .
-  \]
-  By choosing $\Delta \ge (\log_{3/2} n)(\log_{1+\epsilon}
-  n)$, each special node $u$ of $T$ has 
-  \[ |F^+_{T_u}|\le (1+\epsilon\rank(T_{u})/\Delta)|F\cap L(T_u)| 
-        \le (1+\epsilon/\log_{1+\epsilon} n)|F\cap L(T_u)| \enspace . 
-  \]
-   Therefore, since
-  each point in $F$ appears in at most $\log_{1+\epsilon} n$ special
-  subtrees, $|F^*_P|\le (1+\epsilon)|F|$.
-
-  We say that a node $w$ of $T$ is $F^*_P$-dense if $|F^*_P \cap L(T_w)| >
-  (1-3\epsilon)|T_w|$.  Now, define
-  \[  
-     F^{**}_P = \cup\{ L(T_w) : \text{$w$ is an $F^+_P$-dense node of $T$} \}
-  \]
-  For each $p\in F$, the leaf $p$ of $T$ is an $F^+_P$-dense node of
-  $T$. Therefore, $F^{**}_P\supseteq F^{*}_P$.  Furthermore,
-  \[
-      |F^{**}_P| \le |F^*_P|/(1-3\epsilon) \le (1+\epsilon)|F|/(1-3\epsilon) \le (1+5\epsilon)|F| \enspace ,
-  \]
-  for $\epsilon \le 1/15$.
-
-  Finally, define 
-  \[  F^{***}_P = \bigcup_{u\in S(T)} S_{H_u}(F^{**}_P\cap L(T_{u}))  \]
-  What remains is to analyze the size of $|F^{***}_P\setminus F^{**}_P|$.
-  For this, we first observe that, if $T_u$ is the largest special
-  subtree in $T_x$ and $F^+_{T_u} > (1-\epsilon)|T_u|$ then
-  $T_x$ is $F^*_P$-dense, so $L(T_x)\subseteq F^{**}_P$.  
-  This is because
-  \[
-     |F^{**}_P\cap L(T_x)| 
-  \ge  
-     |F^+_{T_u}|
-  \ge  
-     (1-\epsilon)|T_u|
-  \ge  
-     (1-\epsilon)|T_w|/(1+\epsilon)
-  \ge  
-     (1-3\epsilon)|T_w| \enspace .
-  \]
-  Therefore a special node $u$ only contributes to $F^{***}_P\setminus
-  F^{**}_P$ if $|F^+_{T_u}| \le (1-\epsilon)|T_u|$.  However,
-  in this case, Property~PRX of $H_u$ ensures that 
-  \[ |S_{H_u}(F^{**}_P\cap L(T_u))\setminus F^{**}_P| \le \epsilon|F^{**}_P\cap L(T_u)|/\log_{1+\epsilon} n \le
-  (\epsilon+5\epsilon^2)|F\cap L(T_u)|/\log_{1+\epsilon} n\enspace . \]
-  Summing this over all special nodes $u\in S(T)$,
-  shows that
-  \[
-     |F^{***}_P\setminus F^{**}_P| \le (\epsilon+5\epsilon^2)|F| \le 2\epsilon|F|
-  \]
-  for $\epsilon \le 1/5$.
-  In total, this implies that $F^+_P = F^{**}_P\cup F^{***}_P$ has size
-  \[ |F^+_P| = |F^{**}_P| + |F^{***}_P\setminus F^{**}_P|\le (1+7\epsilon)|F| .
-  \]  
-  This concludes the description of $F^+_P$ and the analysis of its
-  size.  All that remains is to show that, for any node $w$ and any
-  $p\in L(T_w)\setminus F^+_P$, there is a large subset of $L(T_w)$
-  that is reachable from $p$ in $G_P-F$ using paths of length at most
-  $(C+1)\diam(T_w)$.
-
-  Now, consider any node $w$ of $T$ and any point $p\in L(T_w)\setminus
-  F^+_P$.  Let $T_u$ be the largest special subtree in $T_w$.
-  There are two cases to consider:
-  \begin{enumerate}
-    \item $p\in L(T_u)$. In this case, there is a subset $X\subset L(T(u))$
-     such that, for each node $q\in X$, $G_{T_u}$ contains a path from
-     $p$ to $q$ of length at most $C\diam(T_u)$. Furthermore,
-    \begin{align*}
-      |X| & \ge (1-a/\Delta)|T_u| - |F^+_{T_u}| \\
-          & \ge (1-a/\Delta)|T_u| - (1-3\epsilon)|T_u| \\
-             & \qquad \text{(since $p\not\in F^*_P$, so $|F^+_{T_u}|\le (1-3\epsilon)|T_u|$)} \\
-         & \ge 2\epsilon|T_u| 
-           & \text{(for $a/\Delta \le \epsilon$)} \\ 
-         & \ge 2\epsilon|T_w|/(1+\epsilon)  \\
-         & \ge \epsilon|T_w| 
-           & \text{(for $\epsilon \le 1)$} 
-    \end{align*}
-    as required.
-
-    \item $p\in L(T_w)\setminus L(T_u)$.  In this case, since $p\not\in
-    F^{***}_P$, $G_P-F$ contains an edge $pp'$ with $p'\in L(T_u)\setminus
-    F^{+}_{T_u}$.  The edge $pp'$ has length at most $\diam(T_x)$.
-    We can now proceed, as in the previous case, from $p'$.
-  \end{enumerate}
-\end{proof}
-
 
 \subsection{Navigating the Well-Separated Pairs}
 \seclabel{navigating}
 
-Let $P\subset\R^d$ be an $n$-point set, let $T$ be a fair-split tree for
-$P$ and let $W=\{(A_i,B_i):i\in\{1,\ldots,m\}$ be an $s$-well-separated
-pair decomposition for $P$ using $T$. We use the convention that,
-for each $i\in\{1,\ldots,m\}$, $|A_i|\ge |B_i|$ and $A_i=L(T_{a_i})$
-and $B_i=L(T_{b_i})$ where $a_i$ and $b_i$ are nodes of $T$.
+Assume $\epsilon < 1/2$.  For each node $u$ of $T$, define
+$\lbl(u)=\floor{\log_{1+\epsilon}|T_u|}$. We say that a node $u$ of $T$
+is \emph{special} if $u$ is a leaf or if $\lbl(u)$ is different from both
+its children.  If $u$ is special, then $T_u$ is also \emph{special}.
+Observe that for every node $w$ of $T$, $T_w$ contains a special
+subtree $T_{w'}$ with $|T_{w'}|\ge (1-2\epsilon)|T_w|$.\footnote{Proof:
+Consider the subtree $T_w'$ of $T_w$ induced by all nodes $v$ in $T_w$
+such that $\lbl(v)=\lbl(w)$. $T_w'$ is non-empty and therefore contains
+at least one leaf $w'$ which, by definition, is a special node of $T$.
+Therefore $T_{w'}$ is a special subtree of $T_w$ and $|T_{w'}|\ge
+|T_w|/(1+\epsilon)$ which implies $|T_{w'}|\ge (1-2\epsilon)|T_w|$, for
+$\epsilon \le 1/2$.}  Let $S(T)$ denote the set of special nodes in $T$.
 
-Our robust spanner begins with the graph $G_P$ described in the previous
-section that is constructed using the fair-split tree $T$.  Next,
-we create a new set of well-separated pairs $W'$ as follows:  For each
-pair $(A_i,B_i)\in W$, we find the largest special subtree $T_{a_i'}$
-of $T_{a_i}$ and the largest special subtree $T_{b_i'}$ of $T_{b_i}$
-and add the pair $(A_i',B_i')=(L(T_{a_i'}),L(T_{b_i'}))$ to $W'$.
-Although each pair $(A_i',B_i')\in W'$ is well-separated, $W'$ is not
-necessarily a WSPD for $P$.  In particular, there are pairs of points
-with $p\in A_i\setminus A_i'$, $q\in B_i\setminus B_i'$ that are not
-represented in $W'$.
+Recall that $W=\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ is an $s$-well-separated
+pair decomposition for $P$ using $T$. For each $i\in\{1,\ldots,m\}$,
+we use the following notational conventions:  $|A_i|\ge |B_i|$,
+$A_i=L(T_{a_i})$, and $B_i=L(T_{b_i})$, where $a_i$ and $b_i$ are nodes
+of $T$.
 
-Next, we partition $W'$ into groups $\{W'_u: u\in V(T)\}$ indexed by
-the special nodes of $T$ where, for each special node $u\in V(T)$:
+Our robust spanner begins with the graph $G_T$ described in the
+previous section that is constructed using the fair-split tree $T$.
+Next, we will add a new graph $G_W$ that provides connections between
+the well-separated pairs in $W$.
+
+To begin, we create a new set of well-separated pairs $W'$ as follows:
+For each pair $(A_i,B_i)\in W$, we find the largest special subtree
+$T_{a_i'}$ of $T_{a_i}$ and add the pair $(A_i',B_i)=(L(T_{a_i'}),B_i))$
+to $W'$.  [Although each pair $(A_i',B_i)\in W'$ is $s$-well-separated,
+$W'$ is not necessarily a WSPD for $P$.  In particular, there are pairs
+of points with $p\in A_i\setminus A_i'$ and $q\in B_i$ that
+are not represented in $W'$.]
+
+Next, we partition $W'$ into groups $\{W'_u: u\in S(T)\}$ indexed by
+the special nodes of $T$ where, for each $u\in S(T)$,
 \[
-	W'_u = \{ (A_i',B_i')\in W' : a_i' = u \}
+	W'_u = \{ (A_i',B_i)\in W' : a_i' = u \}
 \]
-For each group $G'_u$, define $B'_u=\bigcup\{B_i' : (L(u),B_i')\in W'_u\}$
+For each group $W'_u$, define $B'_u=\bigcup_{(A,B)\in W'_u} B$
 and let $H'_u$ be an expander graph on the pair $(L(T_u), B'_u)$ with
 the following properties:
 \begin{enumerate}
   \item[(PR3)] For any $X\subseteq L(T_u)$ with $|X|\le
-  (1-\epsilon/\log n)|T_u|$, 
+  (1-\epsilon)|T_u|$, 
    \[ |S_{H'_u}(X)| \le \epsilon|X|/\log_{1+\epsilon} n \]
 %define $K_{X,u}=\{p\in B'_u:
 %  N_{H'_u}\subseteq X\cap L(T_u)\}$.  Then
@@ -852,19 +674,20 @@ the following properties:
 \begin{proof}
   To satisfy Property~(PR3), $H'_u$ contains an expander graph for the
   pair $(A=L(T_u),B=B'_u)$ described by \lemref{shrink} with parameters
-  $k=\tau=\log n/\epsilon$.  This graph has $O(|B'_u|\log n\log\log n)$
-  edges.
+  $k=1/\epsilon$ and $\tau=\log_{1+\epsilon} n/\epsilon$.  For constant
+  $\epsilon >0$, this graph has $O(|B'_u|\log n\log\log n)$ edges.
 
   To satisfy Property~(PR4), $H'_u$ contains an expander graph for the
   pair $(L(T_u),L(T_u))$ described by \lemref{expand} with parameters
-  $k=\ell=1/\epsilon$.  This graph has $O(|T_u|)$ edges.
+  $k=\ell=1/\epsilon$.  For constant $\epsilon >0$, this graph has 
+  $O(|T_u|)$ edges.
 \end{proof}
 
-Let $G'_P$ denote the graph obtained by taking all the edges of $H'_u$
+Let $G_W$ denote the graph obtained by taking all the edges of $H'_u$
 for every special node $u$ in $T$.
 
-\begin{clm}
-  The graph $G'_P$ has $O(n\log^2 n\log\log n)$ edges.
+\begin{clm}\clmlabel{edges-w}
+  The graph $G_W$ has $O(n\log^2 n\log\log n)$ edges.
 \end{clm}
 
 \begin{proof}
@@ -874,65 +697,133 @@ for every special node $u$ in $T$.
       = \sum_{i=1}^m O(|B_i|\log n\log\log n)
       = O(n\log^2 n\log\log n)
   \]
-  where the final upper bound follows from the convention that $|A_i|\ge |B_i|$
-  and \lemref{wspd-ii}.
+  where the final upper bound follows from the convention that $|A_i|\ge
+  |B_i|$ and \lemref{wspd-ii}.
 
   Each graph used to achieve Property~(PR4) for a node $H'_u$ has
-  $O(|T_u|)$ edges.  As usual, by paritition the special nodes of $T$
-  into $O(\log n)$ sets where, for any two nodes $u$ and $u'$ in the
-  same set, $T_u$ and $T_{u'}$ are disjoint shows that the total number
-  of edges in these graphs is at most $O(n\log n)$.
+  $O(|T_u|)$ edges.  By parititioning the special nodes of $T$ into
+  $\ceil{\log_{1+\epsilon} n}$ sets where, for any two nodes $u$ and $u$
+  in the same set, $T_u$ and $T_{w}$ are disjoint shows that the total
+  number of edges in these graphs is at most $O(n\log n)$.
 \end{proof}
 
-Our final construction $G'_P$ contains the graph $G_P$ described in
-\secref{g-p} as well $H'_u$ for every special node $u$ of $T$.
-
-For any set $X\subset P$, we define $K_{X} = S_{H_u}(X\cap L(T_u))$.
-
-\begin{clm}\clmlabel{f-prime-size}
-  For any $X\subseteq P$, $|K_{X}| \le \epsilon|X|$.
-\end{clm}
-
-\begin{proof}
-  Property~(PR3) ensures that, for each special node $u$ of $T$,
-  $|S_{H'_u}(X\cap L(T_u)| \le \epsilon|F\cap L(T_u)|/\log_{1+\epsilon}
-  n$.  Again, the claim follows by partitioning the special nodes into
-  $\log_{1+\epsilon} n$ ses.
-\end{proof}
+%For any set $X\subset P$, we define $K_{X} = \bigcup_{u\in
+%S(T)}S_{H_u}(X\cap L(T_u))$.
+%
+%\begin{clm}\clmlabel{f-prime-size}
+%  For any $X\subseteq P$, $|K_{X}| \le \epsilon|X|$.
+%\end{clm}
+%
+%\begin{proof}
+%  Property~(PR3) ensures that, for each special node $u$ of $T$,
+%  $|S_{H'_u}(X\cap L(T_u)| \le \epsilon|F\cap L(T_u)|/\log_{1+\epsilon}
+%  n$.  Again, the claim follows by partitioning the special nodes into
+%  $\log_{1+\epsilon} n$ sets.
+%\end{proof}
 
 We can now complete the proof of \thmref{main-i}.
 
 \begin{proof}[Proof of \thmref{main-i}]
-  The graph $G$ consists of the union of $G_P$ and $G'_P$ where each
-  graph is constructed with some value $\epsilon' = \epsilon/c$ for
-  some sufficiently large constant $c$.  For any set $F\subset P$, we
-  define $F^+ = F^+_P \cup K_{F^+_P}$, where $F^+_P$ is defined in the
-  proof of \lemref{exploder-main} and $K_{F^+_P}$ is defined above.  
-  That $|F^+| \le (1+\epsilon)|F|$
-  follows from \lemref{exploder-main}, which shows that $|F^+_P|\le
-  (1+\epsilon/2)|F|$, and \clmref{f-prime-size} which shows that 
-  \[
-     |K_{F^+_P}|\le (\epsilon/3)|F^+_P|\le (\epsilon/3)(1+\epsilon/2)|F|
-     \le \epsilon|F|/2 \enspace ,
-  \]
-  for any $\epsilon \le 1$.
+  Our final construction $G$ contains the graph $G_T$ described in
+  \secref{exploding} as well the graph $G_W$ described above.  That $G$
+  has $O(n\log^2 n\log\log n)$ edges follows from Claims~\ref{clm:edges-t}
+  and \ref{clm:edges-w}.  Given any $F\subseteq P$, we define the set $F^+$
+  as follows:
+  \begin{enumerate}
+     \item Let $D_0=\{u\in V(T): |F^+_T\cap L(T_u)|>(1-3\epsilon)|T_u|\}$.
+      [The nodes in $D_0$ are $F^+_T$-dense, so we will abandon
+       everything in them.]
 
-  Now, consider any two distinct points $p,q\in P\setminus F^+$ and
-  let $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
-  Since $p\not\in F^+_P$, \lemref{exploder-main} implies that there is a
-  subset $X_{p}\subseteq A_i'$, with $|X_{p}|\ge (\epsilon/4)|A_i'|$
-  such that, for every $x\in X_{p}$, $G-F$ contains a path from $p$
-  to $x$ of length at most $(C+1)\diam'(T_{a_i})$.
-  
-  Now, since $q\not\in K_{F^+_{a_i},a_i}$, $H_{a_i'}$ contains an edge
-  $qq'$ with $q'\in A_i\setminus F^+_{a_i}$.  This then defines a set
-  $X_{q'}$ analagous to $X_{p}$.  Finally, Property~(PR4), of $H_{a_i'}$
-  ensures that there is at least one edge $p'q''$ with $p'\in X_{p}$
-  and $q''\in X_{q'}$.  This yields a path from $p$ to $q$ of length at most
+     \item For each node $u$ of $T$, let $u'$ denote the root of the largest
+      special subtree $T_{u'}$ contained in $T_u$ (possibly $u'=u$) and 
+      let $D_1=\{u\in V(T): u' \in D_0\}$. 
+      [The nodes in $D_1$ have had their largest special subtree abandoned, so we abandon them as well.] 
+
+     \item Let $F^+_0 = \bigcup_{u\in D_1} L(u)$.
+     \item Let $E=S(T)\setminus D_1$ and $F_1^+=\bigcup_{a'\in E}
+       S_{H_a'}(F^+_0\cap L(T_u))$. [Each point $q\in F^+_1$ participates
+       in a pair $(A_i,B_i)$ with $q\in B_i$, but $q$ has no surviving
+       edge to $A_i'$ so we abandon $q$.]
+  \end{enumerate}
+  Finally, we define $F^+=F^+_0\cup F^+_1$.  Note that $F\subset F^+$
+  because $F\subset F^+_T$ and every $x\in F$ is a leaf of $T$ that
+  satisfies Condition~1 and therefore Condition~2, so $x\in F^+_0$.
+
+  First we analyze the size of $F^+$.  Let $D'\subseteq D_1$ consist of only those nodes $u$
+  such that no ancestor of $u$ is in $D_1$.  Then $L(T_u)$ and $L(T_w)$ are
+  disjoint for any distinct nodes $u,w\in D'$ and $F^+_0=\bigcup_{u\in
+  D'} L(T_u)$.  
+  For each node $u$ in $D'$, 
+  \[
+      |L(T_u)\cap F^+_T| \ge |L(T_{u'})\cap F^+_T| > (1-3\epsilon)|T_{u'}| 
+        \enspace ,
+  \]
+  so
+  \[
+      |T_{u'}| < |L(T_u)\cap F^+_T|/ (1-3\epsilon) \enspace .
+  \]
+  This implies
   \begin{align*}
-    \dist_{G-F}(p,q) & \le \dist_{G-F}(p,p') + \dist(p',q'') + \dist_{G-F}(q'',q') + \dist(q',q) \\
-      & \le (2C+3)\diam'(a_i) + \dist(q',q) \\
-      & \le (2C+4)\diam'(a_i') + \diam'(b_i) + \dist(p,q) \\
+     |F^+_0| & = \sum_{u\in D'} |F^+_0\cap L(T_u)| \\
+             & = \sum_{u\in D'} |T_u| \\
+             & \le \sum_{u\in D'} (1+\epsilon)|T_{u'}| \\
+             & \le \sum_{u\in D'} (1+\epsilon)|F^+_T\cap L(T_u)|/(1-3\epsilon) \\
+             & = (1+\epsilon)|F^+_T|/(1-3\epsilon) \enspace .
+  \end{align*}
+
+  Now, the nodes of $E$ can be partitioned into
+  $r=\floor{\log_{1+\epsilon} n}+1$ sets $E_1,\ldots,E_r$ where $E_i =
+  \{u \in E :\lbl(u)=i\}$.  For any two distinct nodes $u,w\in E_i$,
+  $L(T_u)$ and $L(T_w)$ are disjoint, so
+  \begin{align*}
+     |F^+_1| 
+     & = \left|\bigcup_{u\in E} S_{H_u}(F^+_0\cap L(T_u))\right| \\
+     & = \left|\bigcup_{i=1}^r\bigcup_{u\in E_i} S_{H_u}(F^+_0\cap L(T_u))\right| \\
+     & \le \sum_{i=1}^r\sum_{u\in E_i} |S_{H_u}(F^+_0\cap L(T_u))| \\
+     & \le \sum_{i=1}^r\sum_{u\in E_i} \epsilon|F^+_0\cap L(T_u)|/\log_{1+\epsilon} n & \text{(By Property~(PR3))} \\
+     & \le \sum_{i=1}^r \epsilon|F^+_0|/\log_{1+\epsilon} n \\
+     & \le \epsilon|F^+_0|
+  \end{align*}
+  Combining the two preceding bounds \clmref{f-plus} we get
+  \[
+      |F^+|\le |F^+_0|+|F^+_1|
+      \le (1+\epsilon)|F^+_0|
+      \le (1+\epsilon)^2|F^+_T|/(1-3\epsilon)
+      \le (1+\epsilon)^3|F|/(1-3\epsilon)
+      \le (1+7\epsilon)|F| \enspace ,
+  \]
+  for $\epsilon \le \sqrt{145}-12$.
+
+  Next we show that $G-F$ is a $t$-spanner of $P\setminus F^+$.
+  Consider any two distinct points $p,q\in P\setminus F^+$ and
+  let $(A_i,B_i)\in W$ be the pair such that $p\in A_i$ and $q\in B_i$.
+
+
+  Since $q$ is not in $F^+_1$, $G_W$ contains an edge $qq'$ with $q'\in
+  A_i'\setminus F^+_0$.
+  Since $q'$ is not in $F^+_0\supseteq F^+_T$, $q'$ is able to explode
+  into $a_i'$.  Specifically, \clmref{explode} implies that there is
+  a subset $X_{q'}\subseteq A_i'$, with
+  \[  |X_{q'}|\ge (1-a)|A_i'| - |F^+_T\cap A_i'| 
+        \ge (1-a)|A_i'| - (1-3\epsilon)|A_i'| 
+        \ge (3\epsilon-a)|A_i'| \ge 2\epsilon|A_i'|
+  \] 
+  (for $a < \epsilon$)
+  such that, for every $y\in X_{q'}$, $G-F$ contains a path from $q'$ to $y$
+  of length at most $\diam'(T_{a_i'})\le \diam'(a_i)$.
+
+  Similarly, $p$ can explode into $A_i$, so there exists an analogous
+  set $X_p\subset A_i$ of size \[  |X_p| \ge (3\epsilon-a)|A_i|
+  \ge 2\epsilon|A_i| \enspace .  \] for $a\le\epsilon$.  Now,
+  since $|A_i\setminus A_i'|\le \epsilon |A_i|$, 
+  \[ |X_p\cap A_i'|\ge |X_p|-|A_i\setminus A_i'|\ge \epsilon|A_i| \ge \epsilon|A_i'| \enspace . \]
+
+  By Property~(PR4) of $H_{a_i'}$, $G_W$ contains an edge $xy$ with $x\in X_p\cap A_i'$ and $y\in X_{q'}$.  
+   This yields a path from $p$ to $q$ of length at most
+  \begin{align*}
+    \dist_{G-F}(p,q) & \le \dist_{G-F}(p,x) + \dist(x,y) + \dist_{G-F}(y,q') + \dist(q',q) \\
+      & \le (2C+1)\diam'(a_i) + \dist(q',q) \\
+      & \le (2C+2)\diam'(a_i') + \diam'(b_i) + \dist(p,q) \\
       & \le (1+O(1/s))\dist(p,q) \enspace . 
   \end{align*}
   Choosing $s = c/\epsilon$ for a sufficiently large constant $c$

@@ -5,7 +5,7 @@ texsources=$(name).tex
 
 $(name).pdf : $(texsources) $(name).bib figs/
 	make -C figs
-	latexmk -pdf $(name)
+	latexmk -pdf -interaction=nonstopmode $(name)
 
 reset : clean $(name).pdf
 
