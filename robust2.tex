@@ -30,6 +30,7 @@ This research was partly funded by NSERC.
 \DeclareMathOperator{\diam}{diam}
 \DeclareMathOperator{\dist}{dist}
 \DeclareMathOperator{\lbl}{label}
+\DeclareMathOperator{\ar}{area}
 
 \listfiles
 
@@ -46,10 +47,11 @@ This research was partly funded by NSERC.
   the graph $G-F$ contains a path from $p$ to $q$ whose (Euclidean)
   length is at most $t$ times the Euclidean distance between $p$ and $q$.
   
-  In the terminology of robust spanners (Bose \etal\ 2013) the graph $G$
-  is a $(1+\epsilon)k$-robust $t$-spanner of $P$. This construction is
-  more sparse than the most recent work (Buchin, Ol\`ah, and Har-Peled 2018)
-  which proves the existence of $(1+\epsilon)k$-robust $t$-spanners with
+  In the terminology of robust spanners (Bose \etal, SICOMP,
+  42(4):1720--1736, 2013) the graph $G$ is a $(1+\epsilon)k$-robust
+  $t$-spanner of $P$. This construction is sparser than the recent
+  constructions of Buchin, Ol\`ah, and Har-Peled (arXiv:1811.06898)
+  who prove the existence of $(1+\epsilon)k$-robust $t$-spanners with
   $n\log^{O(d)} n$ edges.
 \end{abstract}
 
@@ -61,29 +63,30 @@ $p,q\in X$,
 \begin{equation}
   \frac{\dist_G(p,q)}{\dist(p,q)} \le t \enspace , \eqlabel{spanning-ratio}
 \end{equation}
-where $\dist(p,q)$ denotes the Euclidean distance between $p$ and $q$ and
-$\dist_G(p,q)$ denotes the Euclidean length of the shortest path between
-$p$ and $q$ in $G$, where we use the convention that $\dist_G(p,q)=\infty$
-if $p$ and $q$ are in different components of $G$.  Most of the research
-on spanners focuses on \emph{sparse} spanners, where the number of edges
-in $G$ is linear, or close to linear, in $|P|$.  In addition to having
-natural applications to transportation networks, sparse $t$-spanners have
-found numerous applications in approximation algorithms and geometric
-data structures.
-A book \cite{ns07} and handbook chapter \cite{e99} provide
-extensive discussions of geometric $t$-spanners and their applications.
+where $\dist(p,q)$ denotes the Euclidean distance between $p$ and
+$q$ and $\dist_G(p,q)$ denotes the Euclidean length of the shortest
+path between $p$ and $q$ in $G$, where we use the convention that
+$\dist_G(p,q)=\infty$ if $p$ and $q$ are in different components of $G$.
+Most of the research on spanners focuses on \emph{sparse} spanners,
+where the number of edges in $G$ is linear, or close to linear, in $|P|$.
+In addition to having natural applications to transportation networks,
+sparse $t$-spanners have found numerous applications in communication
+networks, approximation algorithms, and geometric data structures.
+A book \cite{ns07} and handbook chapter \cite{e99} provide extensive
+discussions of geometric $t$-spanners and their applications.
 
 For any non-decreasing function $f\colon\N\to\N$, Bose \etal\
-\cite{bose.dujmovic.ea:robust} define a geometric graph $G$ to be an
-\emph{$f(k)$-robust $t$-spanner} if, for every set $F\subseteq V(G)$,
+\cite{bose.dujmovic.ea:robust} define a geometric graph $G=(P,E)$ to be an
+\emph{$f(k)$-robust $t$-spanner} if, for every set $F\subseteq P$,
 there exists a set $F^+\supseteq F$ such that $|F^+|\le f(|F|)$ and
 the graph $G-F$ is a $t$-spanner of $V(G)\setminus F^+$.  In networking
-applications, this definition captures the idea that the number of nodes
-harmed by a set of faulty nodes should be bounded by a function of the
-number of faulty nodes, independent of the network size $|P|$.
+applications, this definition captures the idea that the number
+of nodes ($|F^+|$) harmed by a set of faulty nodes ($F$) should be bounded by a function
+($f$) of the number of faulty nodes ($|F|$), independent of the network
+size ($|P|$).
 
 Under this definition, the most robust spanner one could hope for
-would be a $k$-robust spanner, but it is straightforward to argue
+is a $k$-robust spanner, but it is straightforward to argue
 that, even for one-dimensional point sets, the complete graph is the
 only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V(G)$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
@@ -172,18 +175,19 @@ expander constructions (see, for example, the survey by Hoory \etal\
   Let $A$ and $B$ be disjoint $n$-element sets and construct a random
   graph $H$ where each element in $B$ forms an edge with $\Delta$ randomly
   chosen (with replacement) elements in $A$.  For a fixed $A'\subset A$
-  with $|A'|=(1-1/k)|A|$ and a fixed $B'\subset B$ with $|B'| = |B|/\ell$,
+  with $|A'|=(1-1/k)n$ and a fixed $B'\subset B$ with $|B'| = n/\ell$,
   \[
     \Pr\{N_H(B') \subseteq A'\} 
         \le (1-1/k)^{\Delta n/\ell} 
         \le e^{-\frac{\Delta n}{k\ell}}
   \]
   Let $\mathcal{E}$ be the event that there exists $A'\subset
-  A$, $|A'|=(1-1/k)|A|$, $B'\subset B$, $|B'|=n/\ell$ such that
+  A$, $|A'|=(1-1/k)n$, $B'\subset B$, $|B'|=n/\ell$ such that
   $N_H(B')\subseteq A'$.  Then
   \begin{align*}
     \Pr\{\mathcal{E}\} 
-        & \le \binom{n}{n/k}\binom{n}{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
+        & \le \binom{n}{(1-1/k)n}\binom{n}{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
+        & = \binom{n}{n/k}\binom{n}{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
         & \le (ek)^{n/k} (e\ell)^{n/\ell}e^{-\frac{\Delta n}{k\ell}} \\
         & = \exp((n/k)(1+\ln k) + (n/\ell)(1+\ln(\ell)) - (\Delta n)/(k\ell)) \\
         & < 1
@@ -201,17 +205,43 @@ shrinking shadows of subsets of $A$, is also useful:
 \begin{lem}\lemlabel{shrink}
    For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with
    $|A|=\Omega(|B|)$, there exists a graph $H=(A\cup B,E)$ with $|E|=O(|B|(k\log
-   \tau + \tau\log k))$ such that for any $A'\subset A$ with $|A'|\le
+   \tau + \tau\log k + \log|B|))$ such that for any $A'\subset A$ with $|A'|\le
    (1-1/k)|A|$,
    \[ |S_H(A')| \le |A'|/\tau \enspace .\]
 \end{lem}
 
-The proof of \lemref{shrink} is similar to the proof of \lemref{expand}.
+
+%\begin{proof}
+%   For simplicity of calculations, assume $n=|A|\ge |B|$.  We construct a graph $H$ where each vertex in $B$ chooses $\Delta$ random neighbours in $A$. 
+%   Let $\mathcal{E}_x$ denote the event ``there exists $B'\subset B$, $|B'|=x$ and $A'\subset A$, $|A'|=\tau x$ such that $N_H(B')\subset A'$.
+%
+%\begin{align*}
+%   \Pr\{\mathcal{E}_x\} 
+%     & \le \binom{n}{\tau x}\binom{|B|}{x}(\tau x/n)^{\Delta x} \\
+%     & \le \left(\frac{en}{\tau x}\right)^{\tau x}\left(\frac{e|B|}{x}\right)^{x}(\tau x/n)^{\Delta x} \\
+%     & = \exp\left(\tau x (1+\ln(n/(\tau x))) + x(1 + \ln(|B|/x)) - \Delta x\ln(n/(\tau x))\right) \\
+%     & \le \exp\left(2\tau x \ln(n/(\tau x)) + x(1 + \ln(|B|/x)) - \Delta x\ln(n/(\tau x))\right) 
+%          & \text{(for $\tau x \le n/e$)} \\
+%     & = \exp\left(x(1 + \ln(|B|/x)) - (\Delta-2\tau) x\ln(n/(\tau x))\right) \\
+%     & \le 1/|B| \enspace , \\
+%\end{align*}
+%   for $\Delta\ge 2\tau + 2\ln|B| + 1$.  For $\tau x \ge n/e$ we argue as follows:
+%   \begin{align*}
+%   \Pr\{\mathcal{E}_x\} 
+%     & \le \binom{n}{n-\tau x}\binom{|B|}{x}(\tau x/n)^{\Delta x} \\
+%     & \le \left(\frac{en}{n-\tau x}\right)^{n-\tau x}\left(\frac{e|B|}{x}\right)^{x}(\tau x/n)^{\Delta x} \\
+%     & = \exp\left((n-\tau x)(1+\ln(n/(n-\tau x))) + x(1 + \ln(|B|/x)) - \Delta x\ln(n/(\tau x))\right) \\
+%     & \ldots \\
+%  \end{align*}
+% At this point things get hairy.  But to cancel the first term, it's enough to handle the extreme case when $\tau x=(1-1/k)n$ in which case $\Delta > c\tau\ln k$ is good enough. To cancel the second term, you have to look at some limiting case where $|B|\approx n$.
+%\end{proof}
+
+The proof of \lemref{shrink} is similar to, but somewhat more involved than, the proof of \lemref{expand}.
 Each element in $B$ chooses $\Delta$ random neighbours in $A$.  Then, one shows that, for each $x\in\{1,\ldots,\min\{|B|, (1-1/k)|A|/\tau\}\}$,
 \[
     \binom{n}{\tau x}\binom{|B|}{x}(\tau x/n)^{\Delta x} < 1/|B|
 \]
-for some $\Delta=O(k\log\tau +\tau\log k)$.
+for some $\Delta=O(k\log\tau +\tau\log k + \log|B|)$.
 
 
 
@@ -829,6 +859,45 @@ We can now complete the proof of \thmref{main-i}.
   Choosing $s = c/\epsilon$ for a sufficiently large constant $c$
   completes the proof.
 \end{proof}
+
+\section{Discussion}
+
+The obvious open problem left by this work is to close the gap between the
+$\Omega(n\log n)$ lower bound and our $O(n\log^2\log\log n)$ upper bound
+on the number of edges required in a $(1+\epsilon)k$-robust $t$-spanner.
+
+A less obvious object of study is the relation between robustness and
+various notions of dimension.  Bose \etal\ show that, any $f(k)$-robust
+spanner of the 1-dimensional point set $P_1=\{1,\ldots,n\}$ requires a
+superlinear number of edges, for any non-decreasing function $f:\N\to\N$.
+For example, they show that, for any constants $\delta>0$ and $t>1$, any
+$O(k^{1+\delta})$-robust $t$-spanner of $P$ must have $\Omega(n\log\log
+n)$ edges.
+
+The obvious 2-dimensional generalization of $P_1$ is the
+$\sqrt{n}\times\sqrt{n}$ grid $P_2=\{1,\ldots,\floor{\sqrt{n}}\}^2$.
+However, it turns out that the square grid on $P_2$ is a
+$O(k^2)$-robust $3$-spanner with a linear number of edges
+(\cite[Section~4]{bose.dujmovic.ea:robust}).  More generally, for any
+constant $d$, the $d$-dimensional cubic grid is an $O(k^{d/(d-1)})$-robust
+$O(\sqrt{d})$-spanner with a linear number of edges.
+
+The preceding discussion suggests that robustness is a property that is
+more easily achieved as the ``true'' dimension of a point set increases,
+and this idea is worth exploring.  As a concrete question in this vein,
+we propose the following:  Let $P\subset[0,1]^2$ be an $n$-point set
+with the property that, for any square $S\subset [0,1]$,
+\[
+    \floor{an\cdot\ar(S)} \le |P\cap S| \le An\cdot\ar(S)
+\]
+for some constants $a < 1 < A$.  Determine the slowest-growing function
+$f:\N\to\N$ such that $P$ has an $f(k)$-robust spanner with $O(n)$
+edges.  Binning the points of $P$ into grid cells of area $1/(an)$ and
+use the result described above shows that $f(k)=O(k^2)$.  Is this the
+best possible?
+
+
+
 
 \section*{Acknowledgement}
 
