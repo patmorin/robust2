@@ -79,7 +79,7 @@ For any non-decreasing function $f\colon\N\to\N$, Bose \etal\
 \cite{bose.dujmovic.ea:robust} define a geometric graph $G=(P,E)$ to be an
 \emph{$f(k)$-robust $t$-spanner} if, for every set $F\subseteq P$,
 there exists a set $F^+\supseteq F$ such that $|F^+|\le f(|F|)$ and
-the graph $G-F$ is a $t$-spanner of $V(G)\setminus F^+$.  In networking
+the graph $G-F$ is a $t$-spanner of $P\setminus F^+$.  In networking
 applications, this definition captures the idea that the number
 of nodes ($|F^+|$) harmed by a set of faulty nodes ($F$) should be bounded by a function
 ($f$) of the number of faulty nodes ($|F|$), independent of the network
@@ -132,7 +132,8 @@ Buchin \etal\ \cite{buchin.har-peled.ea:spanner} who
 (among other tools) also use well-separated
 pair decompositions and expanders.  Their constructions, of
 which there are two, rely on a reduction to the 1-dimensional problem
-and the fact that the paths obtained in the 1-d case have $O(\log n)$ edges.
+and the fact that the paths obtained in the 1-dimensional constructions 
+have $O(\log n)$ edges.
 However, they have very little fine-grained control over the lengths of
 these edges, which requires them to construct a $d$-dimensional object
 ($\theta$-graphs  \cite{keil.gutwin:classes} or locality-preserving orderings \cite{chan.har-peled.ea:on}) in which the relevant
@@ -165,6 +166,7 @@ expander constructions (see, for example, the survey by Hoory \etal\
 \end{lem}
 
 \begin{proof}
+  Here, and throughout, we omit floors and ceilings when they are not crucial.
   For simplicity of calculation, assume that $|A|=|B|=n$.  Fix some
   subset $A'\subset A$ of size $|A'|=(1-1/k)|A|$.  Let $a_1,\ldots,a_r$
   be a sequence of $r$ iud random samples from $A$.  Then the probability
@@ -199,15 +201,15 @@ expander constructions (see, for example, the survey by Hoory \etal\
 
 \lemref{expand} can be interpreted informally as saying that even small
 subsets of $B$ (of size at least $n/\ell$) have neighbourhoods that
-expand into most of $A$.  The following lemma, expressed in terms of
-shrinking shadows of subsets of $A$, is also useful:
+\emph{expand} into most of $A$.  The following lemma, expressed in terms of
+\emph{shrinking shadows} of subsets of $A$, is also useful:
 
 \begin{lem}\lemlabel{shrink}
    For any $k\ge 2$, $\tau\ge 1$ and any two sets $A$ and $B$ with
    $|A|=\Omega(|B|)$, there exists a graph $H=(A\cup B,E)$ with $|E|=O(|B|(k\log
    \tau + \tau\log k + \log|B|))$ such that for any $A'\subset A$ with $|A'|\le
    (1-1/k)|A|$,
-   \[ |S_H(A')| \le |A'|/\tau \enspace .\]
+   \[ |S_H(A')\cap B| \le |A'|/\tau \enspace .\]
 \end{lem}
 
 
@@ -276,9 +278,9 @@ worth noting that $\diam(L(T))$ and $\diam'(T)$ are bounded by each other:
 For any $n$-point set $P\subset\R^d$, a fair-split tree for $P$ can be
 computed in $O(dn\log n)$ time \cite{callahan.kosaraju:decomposition}.
 
-For a finite point set $P\subset\R^d$ and any $s>0$, a
-\emph{well-separated pair decomposition (WSPD)} of $P$ is a set of pairs
-$\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ with the following properties:
+For a finite point set $P\subset\R^d$ and any $s>0$, an
+\emph{$s$-well-separated pair decomposition ($s$-WSPD)} of $P$ is a set of pairs
+$W=\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ with the following properties:
 \begin{enumerate}
   \item For every $i\in\{1,\ldots,m\}$, 
     $\dist(A_i,B_i)\ge s\cdot\max\{\diam(A_i),\diam(B_i)\}$.
@@ -292,17 +294,17 @@ using fair-split trees.
 
 \begin{thm}[Callahan and Kosaraju 1995]\thmlabel{wspd}
   For any constant $d\ge 1$, any $s\ge 1$ and any $n$-point set
-  $P\subset\R^d$ with fair split tree $T=T(P)$, there exists a WSPD
+  $P\subset\R^d$ with fair split tree $T=T(P)$, there exists an $s$-WSPD
   $\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ of $P$ with size $m\in O(s^d n)$.
   Furthermore, each pair $(A_i,B_i)=(L(T_{a_i}),L(T_{b_i}))$ where $a_i$
   and $b_i$ are nodes of $T$.
 \end{thm}
-We call the WSPD guaranteed by \thmref{wspd} a WSPD of $P$ \emph{using}
+We call the $s$-WSPD guaranteed by \thmref{wspd} a WSPD of $P$ \emph{using}
 $T$.  In his thesis, Callahan proves an additional useful result about
 well-separated pair decompositions \cite[Section~4.5]{callahan:dealing}:
 
 \begin{lem}[Callahan 1995]\lemlabel{wspd-ii}
-  In the WSPD of \thmref{wspd},
+  In the $s$-WSPD of \thmref{wspd},
    $\sum_{i=1}^m\min\{|A_i|,|B_i|\} = O(s^d n\log n)$.
 \end{lem}
 
@@ -315,8 +317,7 @@ Throughout this section, $T$ is a fair-split tree for $P$ and
 $W=\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ is an $s$-well-separated pair
 decomposition for $P$ using $T$.
 
-Our goal is to construct a $(1+\epsilon)$-robust $t$-spanner $G$
-of $P$.  At times we will deal with an arbitrary subset $F\subseteq
+At times we will deal with an arbitrary subset $F\subseteq
 P$ whose elements are \emph{faulty} and we will identify a superset
 $F^+\supseteq F$ so that $G-F$ is a $t$-spanner of $P\setminus F^+$.
 We will say that the elements of $F^+\setminus F$ are \emph{abandoned}.
@@ -325,7 +326,7 @@ in Sections~\ref{sec:exploding} and \ref{sec:navigating}, respectively:
 
 \begin{enumerate}
   \item We first show how to construct a graph $G_T$ where most of the
-  points in $p\in P\setminus F$ have the following property: For every
+  points $p\in P\setminus F$ have the following property: For every
   ancestor $u$ of $p$ in $T$, and for the vast majority of points $q\in
   L(T_u)\setminus F$, $G_T-F$ contains a path from $p$ to $q$ of length
   $O(\diam'(T_u))$.  When a point $p\in P\setminus F$ has this property,
@@ -338,7 +339,7 @@ in Sections~\ref{sec:exploding} and \ref{sec:navigating}, respectively:
   and the graph $G_T$ has $O(n\log^2 n\log\log n)$ edges.
 
    \item Next, we consider the WSPD $W$. For points $p\in A_i\setminus
-   F^+_T$ and $q\in B_i\setminus F^+_T$ to have a spanner path between
+   F^+_T$ and $q\in B_i\setminus F^+_T$ to have a $t$-spanning path between
    them in $G-F$, it is sufficient that $G$ contains an edge $qq'$
    with $q'\in A_i\setminus F^+_T$.  This is because both $p$ and $q'$
    can explode into $A_i$ and the subsets of $A_i\setminus F$ that $p$
@@ -350,7 +351,7 @@ in Sections~\ref{sec:exploding} and \ref{sec:navigating}, respectively:
    from $B_i$ into $A_i$.  By doing this carefully, we ensure that
   \begin{enumerate}
      \item $F^+_T$ contains most of $A_i$; or
-     \item $S_{H}(F^+_P)$ is much smaller than $F^+_P\cap A_i$.
+     \item $S_{H}(F^+_T)\cap B_i$ is much smaller than $F^+_T\cap A_i$.
   \end{enumerate}
   In the former case, we can abandon all the points in $A_i$ without
   abandoning too many additional points. In the latter case, we can
@@ -384,7 +385,7 @@ $|T|\ge\kappa\ge 5$, $\rank(T_{u_0}) \ge \floor{\log_{3/2}(5/3)} \ge 1$.
 
 Let $T_1$ be the full binary tree obtained from $T-T_{u_0}$ by contracting
 an edge incident to the unique non-leaf node of $T-T_{u_0}$ that has only
-one child.  The graph $G_{T}$ contains an expander $H_T=(L(T),E_T)$. This
+one child.  Our graph $G_{T}$ contains an expander $H_T=(L(T),E_T)$. This
 expander has parameters $\Delta>1$, $\alpha, \beta,\zeta,\eta > 0$ and is
 constructed so that it satisfies the following properties:
 \begin{enumerate}
@@ -396,7 +397,7 @@ constructed so that it satisfies the following properties:
     (\zeta/\Delta)L(T)$, \[ |N_{H_T}(Y)|\ge (1-\eta/\Delta)|T| \enspace .\]
 \end{enumerate}
 Informally, Property~(PR1) tells us that, if some subset $X$ of
-$T_{u_0}$ becomes disabled, then this only prevents a much smaller subset
+$T_{u_0}$ becomes unuseable, then this only prevents a much smaller subset
 $S_{H_T}(X)$ of $T_{1}$ from accessing $T_{u_0}$.  Property~(PR2) tells
 us that if some point $p$ can reach a $\zeta/\Delta$ fraction of the
 points in $L(T)$ then $p$ can reach nearly all the points in $L(T)$.
@@ -477,8 +478,8 @@ elements to $F^+_T$.  The condition in Step~3 ensures that, in either
 of the two cases, the number of elements we add to $F^+_T$ is, indeed,
 at most $(\epsilon/\Delta)|F\cap L(T)|$.  In Step~3(a), we know that
 the shadow of $F^+_{T_{u_1}}$ in $T_1$ is sufficiently small to add it
-to $F^+_T$.  In Step~3(b) we know that $F^+_{T_{u_0}}$ is so large that
-we can add the rest of it to $F^+_T$.
+to $F^+_T$.  In Step~3(b) we know that $F^+_{T_{u_0}}$ contains such
+a large fraction of $L(T_{u_0})$ that we can add all of $L(T_{u_0})$ to $F^+_T$.
 
 \begin{clm}\clmlabel{f-plus}
    For any constant $\epsilon>0$ there are constants
@@ -648,13 +649,13 @@ $\lbl(u)=\floor{\log_{1+\epsilon}|T_u|}$. We say that a node $u$ of $T$
 is \emph{special} if $u$ is a leaf or if $\lbl(u)$ is different from both
 its children.  If $u$ is special, then $T_u$ is also \emph{special}.
 Observe that for every node $w$ of $T$, $T_w$ contains a special
-subtree $T_{w'}$ with $|T_{w'}|\ge (1-2\epsilon)|T_w|$.\footnote{Proof:
+subtree $T_{w'}$ with $|T_{w'}|\ge (1-2\epsilon)|T_w|$  (where $w'=w$ if $w$ is special).\footnote{Proof:
 Consider the subtree $T_w'$ of $T_w$ induced by all nodes $v$ in $T_w$
 such that $\lbl(v)=\lbl(w)$. $T_w'$ is non-empty and therefore contains
 at least one leaf $w'$ which, by definition, is a special node of $T$.
 Therefore $T_{w'}$ is a special subtree of $T_w$ and $|T_{w'}|\ge
 |T_w|/(1+\epsilon)$ which implies $|T_{w'}|\ge (1-2\epsilon)|T_w|$, for
-$\epsilon \le 1/2$.}  Let $S(T)$ denote the set of special nodes in $T$.
+$\epsilon \le 1/2$.} Let $S(T)$ denote the set of special nodes in $T$.
 
 Recall that $W=\{(A_i,B_i):i\in\{1,\ldots,m\}\}$ is an $s$-well-separated
 pair decomposition for $P$ using $T$. For each $i\in\{1,\ldots,m\}$,
@@ -670,10 +671,10 @@ the well-separated pairs in $W$.
 To begin, we create a new set of well-separated pairs $W'$ as follows:
 For each pair $(A_i,B_i)\in W$, we find the largest special subtree
 $T_{a_i'}$ of $T_{a_i}$ and add the pair $(A_i',B_i)=(L(T_{a_i'}),B_i))$
-to $W'$.  [Although each pair $(A_i',B_i)\in W'$ is $s$-well-separated,
+to $W'$.  (Although each pair $(A_i',B_i)\in W'$ is $s$-well-separated,
 $W'$ is not necessarily a WSPD for $P$.  In particular, there are pairs
 of points with $p\in A_i\setminus A_i'$ and $q\in B_i$ that
-are not represented in $W'$.]
+are not represented in $W'$.)
 
 Next, we partition $W'$ into groups $\{W'_u: u\in S(T)\}$ indexed by
 the special nodes of $T$ where, for each $u\in S(T)$,
@@ -686,7 +687,7 @@ the following properties:
 \begin{enumerate}
   \item[(PR3)] For any $X\subseteq L(T_u)$ with $|X|\le
   (1-\epsilon)|T_u|$, 
-   \[ |S_{H'_u}(X)| \le \epsilon|X|/\log_{1+\epsilon} n \]
+   \[ |S_{H'_u}(X)| \le \epsilon|X|/(1+\log_{1+\epsilon} n) \]
 %define $K_{X,u}=\{p\in B'_u:
 %  N_{H'_u}\subseteq X\cap L(T_u)\}$.  Then
 %   \[  |K_{X,u}|\le \epsilon|X|/\log_{1+\epsilon} n \enspace . \]
@@ -697,8 +698,9 @@ the following properties:
 \end{enumerate}
 
 \begin{clm}\clmlabel{edge-count-iii}
-  There exists a graph $H'_u$ that satisifies Properties~(PR3) and (PR4)
-  that has $O((|T_u|+|B'_u|)\log n\log\log n)$ edges.
+  For any constant $\epsilon >0$, there exists a graph $H'_u$ that
+  satisifies Properties~(PR3) and (PR4) that has $O(|T_u|+|B'_u|\log
+  n\log\log n)$ edges.
 \end{clm}
 
 \begin{proof}
