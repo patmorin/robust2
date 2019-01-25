@@ -706,8 +706,8 @@ the following properties:
 \begin{proof}
   To satisfy Property~(PR3), $H'_u$ contains an expander graph for the
   pair $(A=L(T_u),B=B'_u)$ described by \lemref{shrink} with parameters
-  $k=1/\epsilon$ and $\tau=\log_{1+\epsilon} n/\epsilon$.  For constant
-  $\epsilon >0$, this graph has $O(|B'_u|\log n\log\log n)$ edges.
+  $k=1/\epsilon$ and $\tau=(1+\log_{1+\epsilon} n)/\epsilon$.  
+  This graph has $O(|B'_u|\log n\log\log n)$ edges.
 
   To satisfy Property~(PR4), $H'_u$ contains an expander graph for the
   pair $(L(T_u),L(T_u))$ described by \lemref{expand} with parameters
@@ -733,9 +733,9 @@ for every special node $u$ in $T$.
   |B_i|$ and \lemref{wspd-ii}.
 
   Each graph used to achieve Property~(PR4) for a node $H'_u$ has
-  $O(|T_u|)$ edges.  By parititioning the special nodes of $T$ into
-  $\ceil{\log_{1+\epsilon} n}$ sets where, for any two nodes $u$ and $u$
-  in the same set, $T_u$ and $T_{w}$ are disjoint shows that the total
+  $O(|T_u|)$ edges.  Parititioning the special nodes of $T$ into
+  $1+\ceil{\log_{1+\epsilon} n}$ sets where $T_u$ and $T_w$ are disjoint
+  for any special nodes $u$ and $w$ in the same set shows that the total
   number of edges in these graphs is at most $O(n\log n)$.
 \end{proof}
 
@@ -772,8 +772,8 @@ We can now complete the proof of \thmref{main-i}.
       [The nodes in $D_1$ have had their largest special subtree abandoned, so we abandon them as well.] 
 
      \item Let $F^+_0 = \bigcup_{u\in D_1} L(u)$.
-     \item Let $E=S(T)\setminus D_1$ and $F_1^+=\bigcup_{a'\in E}
-       S_{H_a'}(F^+_0\cap L(T_u))$. [Each point $q\in F^+_1$ participates
+     \item Let $E=S(T)\setminus D_1$ and $F_1^+=\bigcup_{u\in E}
+       S_{H_u'}(F^+_0\cap L(T_u))\cap B'_u$. [Each point $q\in F^+_1$ participates
        in a pair $(A_i,B_i)$ with $q\in B_i$, but $q$ has no surviving
        edge to $A_i'$ so we abandon $q$.]
   \end{enumerate}
@@ -804,7 +804,7 @@ We can now complete the proof of \thmref{main-i}.
   \end{align*}
 
   Now, the nodes of $E$ can be partitioned into
-  $r=\floor{\log_{1+\epsilon} n}+1$ sets $E_1,\ldots,E_r$ where $E_i =
+  $r=1+\floor{\log_{1+\epsilon} n}$ sets $E_1,\ldots,E_r$ where $E_i =
   \{u \in E :\lbl(u)=i\}$.  For any two distinct nodes $u,w\in E_i$,
   $L(T_u)$ and $L(T_w)$ are disjoint, so
   \begin{align*}
@@ -812,11 +812,11 @@ We can now complete the proof of \thmref{main-i}.
      & = \left|\bigcup_{u\in E} S_{H_u}(F^+_0\cap L(T_u))\right| \\
      & = \left|\bigcup_{i=1}^r\bigcup_{u\in E_i} S_{H_u}(F^+_0\cap L(T_u))\right| \\
      & \le \sum_{i=1}^r\sum_{u\in E_i} |S_{H_u}(F^+_0\cap L(T_u))| \\
-     & \le \sum_{i=1}^r\sum_{u\in E_i} \epsilon|F^+_0\cap L(T_u)|/\log_{1+\epsilon} n & \text{(By Property~(PR3))} \\
-     & \le \sum_{i=1}^r \epsilon|F^+_0|/\log_{1+\epsilon} n \\
+     & \le \sum_{i=1}^r\sum_{u\in E_i} \epsilon|F^+_0\cap L(T_u)|/(1+\log_{1+\epsilon} n) & \text{(By Property~(PR3))} \\
+     & \le \sum_{i=1}^r \epsilon|F^+_0|/(1+\log_{1+\epsilon} n) \\
      & \le \epsilon|F^+_0|
   \end{align*}
-  Combining the two preceding bounds \clmref{f-plus} we get
+  Combining the two preceding bounds with \clmref{f-plus} we get
   \[
       |F^+|\le |F^+_0|+|F^+_1|
       \le (1+\epsilon)|F^+_0|
@@ -850,7 +850,7 @@ We can now complete the proof of \thmref{main-i}.
   since $|A_i\setminus A_i'|\le \epsilon |A_i|$, 
   \[ |X_p\cap A_i'|\ge |X_p|-|A_i\setminus A_i'|\ge \epsilon|A_i| \ge \epsilon|A_i'| \enspace . \]
 
-  By Property~(PR4) of $H_{a_i'}$, $G_W$ contains an edge $xy$ with $x\in X_p\cap A_i'$ and $y\in X_{q'}$.  
+  By Property~(PR4), $G_W$ contains an edge $xy$ with $x\in X_p\cap A_i'$ and $y\in X_{q'}$.  
    This yields a path from $p$ to $q$ of length at most
   \begin{align*}
     \dist_{G-F}(p,q) & \le \dist_{G-F}(p,x) + \dist(x,y) + \dist_{G-F}(y,q') + \dist(q',q) \\
@@ -895,7 +895,7 @@ with the property that, for any square $S\subset [0,1]$,
 for some constants $a < 1 < A$.  Determine the slowest-growing function
 $f:\N\to\N$ such that $P$ has an $f(k)$-robust spanner with $O(n)$
 edges.  Binning the points of $P$ into grid cells of area $1/(an)$ and
-use the result described above shows that $f(k)=O(k^2)$.  Is this the
+using the result described above shows that $f(k)=O(k^2)$.  Is this the
 best possible?
 
 
