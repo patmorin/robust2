@@ -23,15 +23,20 @@ urlcolor=linkblue, pdfcreator=Me, pdfproducer=Me}
 
 
 \begin{abstract}
-  For any $\epsilon >0$ and any $n\in\N$, we construct a graph $G=(V,E)$
-  with vertex set $V=\{0,\ldots,n-1\}$ having $O(\epsilon^{-3}n\log n)$
-  edges, and such that, for any $F\subseteq V$, $G-F$ contains a monotone
-  path of length at least $n-(1+\epsilon)|F|$.  For any constant $\epsilon
-  >0$, the number of edges in $G$ matches a lower-bound of Bose \etal\
-  (2013) and improves the previous construction of Buchin, Hulshof and
-  Ol\'ah (2018) which has $O(n^{1+1/\ell})$ edges and guarantees a
-  monotone path of length $n- c^{\ell}|F|$, for some constant
-  $c\ge 3$ and any $\ell\in\N$.
+  For any $\epsilon >0$, $E=1/\epsilon$ and any $n\in\N$, we construct
+  a graph $G=(V,E)$ with vertex set $V=\{0,\ldots,n-1\}$ having
+  $O(-(\epsilon^{-2}\log\epsilon) n\log n)$ edges, and such that, for
+  any $F\subseteq V$ and there exists a set $F^+\supseteq F$, $|F^+|\le
+  (1+\epsilon)|F|$ such that, for any two points $s,t\in V\setminus F$,
+  $G-F$ contains a monotone path from $s$ to $t$ with $O(\log n)$ edges.
+
+  The dependence of the number of edges on $\epsilon$ is slightly
+  better than an independently discovered construction of Buchin \etal\
+  (arXiv:1811.06898). Using this construction yields $O(k)$-robust
+  geometric spanners for point sets in $\mathbb{R}^d$ having $O(n\log
+  n(\log\log n)^2\log\log\log n)$ edges. This shaves a whopping $(\log\log
+  n)^4/\log\log\log n$ factor off the number of edges in the robust
+  geometric spanners of Buchin \etal
 \end{abstract}
 
 \section{Introduction}
@@ -67,9 +72,34 @@ only $k$-robust spanner.\footnote{Proof: Consider any pair of vertices
 $v,w\in V$ that are not adjacent in $G$ and let $F=V\setminus\{v,w\}$.
 Then $\|vw\|_{G-F}=\infty$ so $G-F$ is a not a $t$-spanner of $V\setminus
 F=V\setminus F^*$ for any $t<\infty$.} The complete graph is not sparse,
-and is therefore not suitable for many applications. A natural second-best
-option is a $ck$-robust spanner with a near-linear number of edges,
-for some $c>1$ .
+and is therefore not suitable for many applications.
+
+A natural second-best option is a $(1+\epsilon)k$-robust spanner with
+a near-linear number of edges, for some small constant $\epsilon
+>0$.  Buchin \etal\ \cite{buchin.har-peled.ea:spanner} call these
+objects \emph{$\epsilon$-resilient} spanners.  
+
+
+The discovery of
+$\epsilon$-resilient spanners with a near-linear number of edges in 1-dimension 
+seems
+to have happened simultaneously and independently by two groups. Rather
+than a collaborative effort, this has resulted in a \emph{race to the
+bottom} as outlined in \tabref{results}.  The current paper is the latest
+progress in the ongoing saga\ldots
+
+\begin{table}
+   \begin{center}
+   \begin{tabular}{|l|l|r|r|r|}
+      \hline
+      Date & Ref & Robustness & Edges (1-D) & Edges ($d$-D) \\ \hline\hline
+      2018-03-23 & \cite{buchin-hushof.ea:robust} &  $6^\ell$ & $O(n^{1/\ell})$ & --- \\
+   \hline
+   \end{tabular}
+   \end{center}
+   \caption{Results on $\epsilon$-resilient geometric spanners.}
+\end{table}
+
 
 Bose \etal \cite[Theorem~3]{bose.dujmovic.ea:robust} show that for any
 constants $c,t>1$ and any $n$-element set $V\subset\R$, any $ck$-robust
